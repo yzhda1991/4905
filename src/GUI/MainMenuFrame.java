@@ -75,7 +75,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         bookToolBar.setForeground(new java.awt.Color(240, 240, 240));
         bookToolBar.setRollover(true);
 
-        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12));
         addnewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/add.png"))); // NOI18N
         addnewBookButton.setToolTipText("Add New Book");
         addnewBookButton.setFocusable(false);
@@ -129,8 +129,10 @@ public class MainMenuFrame extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 20);
         getContentPane().add(ProgressBar, gridBagConstraints);
 
@@ -217,7 +219,6 @@ public void initMainPanel(){
         gridBagConstraints.weighty = 2.0;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         getContentPane().add(mainPannel, gridBagConstraints);
-    setStatus("Panel inited !");
 }
 
 
