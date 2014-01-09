@@ -16,12 +16,24 @@ import java.awt.event.MouseListener;
  *
  * @author byang1
  */
-public class PageListPannel extends javax.swing.JPanel {
+public final class PageListPannel extends javax.swing.JPanel {
 
     /** Creates new form PageListPannel */
+    MouseListener doubleClickBookListListener;
     MouseListener doubleClickPageListListener;
-    public PageListPannel() {
+    public PageListPannel(MouseListener pageList, MouseListener bookList) {
+        doubleClickPageListListener =pageList;
+        doubleClickBookListListener =bookList;
         initComponents();
+        enableListener();
+        
+    }
+    public void enableListener(){
+        this.BookList.addMouseListener(doubleClickBookListListener);
+        this.PageList.addMouseListener(doubleClickPageListListener);
+    }
+    public void disableListener(){
+        this.BookList.remove(Book);
     }
 
     /** This method is called from within the constructor to
@@ -34,19 +46,20 @@ public class PageListPannel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        BookList = new javax.swing.JList();
         Book = new javax.swing.JLabel();
         SeachTextField = new javax.swing.JTextField();
         seachButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        PageList = new javax.swing.JList();
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        BookList.setBorder(javax.swing.BorderFactory.createTitledBorder("Book List"));
+        BookList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(BookList);
 
         Book.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Book.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
@@ -55,12 +68,13 @@ public class PageListPannel extends javax.swing.JPanel {
         seachButton.setText("Search Page");
         seachButton.setToolTipText("Search Page");
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
+        PageList.setBorder(javax.swing.BorderFactory.createTitledBorder("Page List"));
+        PageList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(PageList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -79,7 +93,7 @@ public class PageListPannel extends javax.swing.JPanel {
                         .addGap(24, 24, 24)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,9 +114,9 @@ public class PageListPannel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Book;
+    private javax.swing.JList BookList;
+    private javax.swing.JList PageList;
     private javax.swing.JTextField SeachTextField;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton seachButton;

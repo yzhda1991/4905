@@ -30,6 +30,7 @@ public class BookListPannel extends javax.swing.JPanel {
         doubleClickPageListListener =DoubleClicked;
         keyListstener =key;
         initComponents();
+        enableListener();
     }
     public JList getBookList(){
         return BookList;
@@ -39,6 +40,14 @@ public class BookListPannel extends javax.swing.JPanel {
     }
     public JButton getSearchButton(){
         return seachButton;
+    }
+    public final void enableListener(){
+        BookList.addMouseListener(doubleClickPageListListener);
+        seachTextField.addKeyListener(this.keyListstener);
+    }
+    public void disenableListener(){
+        BookList.removeMouseListener(doubleClickPageListListener);
+        seachTextField.removeKeyListener(keyListstener);
     }
     
 
@@ -60,12 +69,12 @@ public class BookListPannel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
+        BookList.setBorder(javax.swing.BorderFactory.createTitledBorder("Book List"));
         BookList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        BookList.addMouseListener(doubleClickPageListListener);
         BookListScroll.setViewportView(BookList);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -88,7 +97,6 @@ public class BookListPannel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
         add(seachTextField, gridBagConstraints);
-        seachTextField.addKeyListener(this.keyListstener);
 
         seachButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search32.png"))); // NOI18N
         seachButton.setText("SearchBook");
