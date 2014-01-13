@@ -19,7 +19,7 @@ public class Book {
     
     
     //constructor with full paramater;
-    public  Book(int id,String name, String code, String path, String a , int page){
+    public  Book(int id,String code,String name,  String path, String a , int page){
         bookId = id;
         bookName = name;
         bookCode = code;

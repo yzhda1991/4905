@@ -10,39 +10,210 @@
  */
 package GUI;
 
+import bookviewer.Book;
+import bookviewer.Page;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 //basic viewer for BookViewer;
 public class MainMenuFrame extends javax.swing.JFrame {
 
-    ActionListener  addnewBookListener;
-    ActionListener  editBookButtonListener;
-    ActionListener  removeBookListener;
-    ActionListener  searchBookListener;
+    private static BookListPannel  booklistPanel;
+    private static PageListPannel  pagelistPanel;
+    private static PageViewer      pageViewerPanel;
+    
+    private static ActionListener  addnewBookListener;
+    private static ActionListener  editBookListener;
+    private static ActionListener  removeBookListener;
+    private static ActionListener  searchBookListener;
+    private static MouseListener   doubleClickBookListListener;
+    private static MouseListener   doubleClickBooktitleListener;
+    private static MouseListener   doubleClickPageTitleListener;
+    private static KeyListener     keyListstener;   
+    
+    private static String          editedItem;
+    private static Book            editedBook;
+    private static Page            editedPage;
+    
+    private static ArrayList<Book> bookCollection;
+    private static ArrayList<Page> pageCollection;
      
     //constractor with title;
-    public MainMenuFrame(String t,ActionListener addbook, ActionListener editbook, ActionListener removebook, ActionListener searchbook){
+    public MainMenuFrame(String t){
         super(t);
-        addnewBookListener =addbook;
-        editBookButtonListener =editbook;
-        removeBookListener =removebook;
-        searchBookListener =searchbook;
+        bookCollection =new ArrayList<Book>();
+        pageCollection = new ArrayList<Page>();
+        initListener();
         initComponents();
     }
     
-    //constractor with no-title
-    public MainMenuFrame(ActionListener addbook, ActionListener editbook, ActionListener removebook, ActionListener searchbook) {
-        super("Book Viewer");
-        addnewBookListener =addbook;
-        editBookButtonListener =editbook;
-        removeBookListener =removebook;
-        searchBookListener =searchbook;
+    public MainMenuFrame(String t, ArrayList<Book> books,ArrayList<Page> pages){
+         super(t);
+        bookCollection =books;
+        pageCollection = pages;
+        editedPage = null;
+        editedBook = null;
+        initListener();
         initComponents();
     }
-
+    //update Status Message;
    
+    
+    private void initListener(){
+        //Listener: clicked add button in tool bar or select addbook opotion in edit menu 
+        addnewBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("add new books");
+            }
+        };
+        
+         //Listener : select edit book option in edit menu
+         editBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("edit book");
+            }
+        };
+         
+         //Listener: clicked remove button in tool bar or select deletebook in edit menu
+         removeBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               setStatus("remove book");
+            }
+        };
+         
+         //Listener: clicked seach book in tool bar
+         searchBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("search book");
+                searchbook();
+                
+            }
+        };
+         
+         //Listener for BookListPanel;
+         //Listener : double clicked book title in BookListPannel
+         doubleClickBookListListener = new MouseAdapter() { 
+            @Override
+            public void mouseClicked(MouseEvent event) { 
+                if (event.getClickCount() == 2) { 
+                    JList theList = (JList) event.getSource(); 
+                    int index = theList.locationToIndex(event.getPoint()); 
+                    editedBook = (Book) theList.getModel().getElementAt(index); 
+                   setStatus("Double Click on: " + editedBook); 
+                   viewPageList(editedBook);
+                }  
+                      
+            }}; 
+         
+         //Listener for PageListpanel;
+         //Listener: double clicked book title in PageListPannel 
+         doubleClickBooktitleListener = new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent event) { 
+                if (event.getClickCount() == 2) { 
+                    JList theList = (JList) event.getSource(); 
+                    int index = theList.locationToIndex(event.getPoint()); 
+                    editedBook = (Book) theList.getModel().getElementAt(index); 
+                   setStatus("Double Click on Book : " + editedBook); 
+                  
+                }  
+                      
+            }}; 
+         
+         //Listener: doubleClicked page Title in PageListPannel
+            doubleClickPageTitleListener = new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent event) { 
+                if (event.getClickCount() == 2) { 
+                    JList theList = (JList) event.getSource(); 
+                    int index = theList.locationToIndex(event.getPoint()); 
+                    editedPage = (Page) theList.getModel().getElementAt(index); 
+                   setStatus("Double Click on Page: " + editedPage); 
+                   viewPage(editedPage);
+                 }  
+                      
+            }}; 
+          
+        
+        
+    }
+    
+    //rest Main Panel;
+    private void initMainPanel(JPanel panel){
+    java.awt.GridBagConstraints gridBagConstraints;
+    getContentPane().remove(mainPannel);
+    mainPannel = new JPanel();
+    mainPannel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
+        mainPannel.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 200;
+        gridBagConstraints.ipady = 200;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 2.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        getContentPane().add(mainPannel, gridBagConstraints);
+        mainPannel.add(panel, java.awt.BorderLayout.CENTER);
+        
+}
+    // display pagelist from t book;
+    private void viewPageList(Book b){
+        
+        
+        if(pagelistPanel ==null){
+            pagelistPanel = new PageListPannel(doubleClickPageTitleListener,doubleClickBooktitleListener,bookCollection,pageCollection);;
+        }
+        initMainPanel(pagelistPanel);
+        }  
+
+    // display page  
+    private void viewPage(Page p){
+        
+        String path = "src/Resources/test.pdf";
+        
+        if(pageViewerPanel ==null){
+            pageViewerPanel = new PageViewer(doubleClickPageTitleListener,keyListstener);
+        }
+        initMainPanel(pageViewerPanel);
+        
+        pageViewerPanel.setTittle(p.getPageTitle());
+        pageViewerPanel.openPage(path);
+        
+   
+      
+    }
+    
+    private void  searchbook(){
+        //mainFrame.initMainPanel();
+       // mainFrame.getMainPanel().add(booklistPanel, java.awt.BorderLayout.CENTER);
+       
+    }
+    private void setStatus(String s){
+    statusBar.setText("Status : "+s);
+    }
+    
+    public JLabel getStatus(){
+      return statusBar;
+    }
+
+    public JPanel getMainPanel(){
+      return mainPannel;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -75,7 +246,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         bookToolBar.setForeground(new java.awt.Color(240, 240, 240));
         bookToolBar.setRollover(true);
 
-        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12));
+        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         addnewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/add.png"))); // NOI18N
         addnewBookButton.setToolTipText("Add New Book");
         addnewBookButton.setFocusable(false);
@@ -175,7 +346,6 @@ public class MainMenuFrame extends javax.swing.JFrame {
 
         editBookMenuItem.setText("EditBook");
         Edit.add(editBookMenuItem);
-        editBookMenuItem.addActionListener(this.editBookButtonListener);
 
         topMenuBar.add(Edit);
 
@@ -191,44 +361,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-public JLabel getStatus(){
-    return statusBar;
-}
-public void setStatus(String s){
-    statusBar.setText("Status : "+s);
-}
-
-public JPanel getMainPanel(){
-    return mainPannel;
-}
-
-public void initMainPanel(){
-    java.awt.GridBagConstraints gridBagConstraints;
-    getContentPane().remove(mainPannel);
-    mainPannel = new JPanel();
-    mainPannel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
-        mainPannel.setLayout(new java.awt.BorderLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 200;
-        gridBagConstraints.ipady = 200;
-        gridBagConstraints.weightx = 2.0;
-        gridBagConstraints.weighty = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        getContentPane().add(mainPannel, gridBagConstraints);
-}
-
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-      
-    }
-    
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
     private javax.swing.JMenu Edit;

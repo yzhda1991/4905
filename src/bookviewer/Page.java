@@ -16,7 +16,7 @@ public class Page {
     private int    pageNum;
     
     //Page Constructor with full paramater;
-    public Page(int id, String code, String title,int num){
+    public Page(int id,String title, String code, int num){
         pageID = id;
         bookCode = code;
         pageTitle = title;

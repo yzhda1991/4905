@@ -10,7 +10,12 @@
  */
 package GUI;
 
+import bookviewer.Book;
+import bookviewer.Page;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
+import javax.swing.JList;
 
 /**
  *
@@ -21,11 +26,26 @@ public final class PageListPannel extends javax.swing.JPanel {
     /** Creates new form PageListPannel */
     MouseListener doubleClickBookListListener;
     MouseListener doubleClickPageListListener;
-    public PageListPannel(MouseListener pageList, MouseListener bookList) {
-        doubleClickPageListListener =pageList;
-        doubleClickBookListListener =bookList;
+    
+    ArrayList<Book> bookCollection;
+    ArrayList<Page> pageCollection;
+    
+    Book            selectedBook;
+    Page            selectedPage;
+    
+    
+    
+    public PageListPannel(MouseListener doublePageListener, MouseListener doubleBookListener,
+                           ArrayList<Book> books, ArrayList<Page> pages) {
+        doubleClickPageListListener =doublePageListener;
+        doubleClickBookListListener =doubleBookListener;
+        
+        bookCollection = books;
+        pageCollection = pages;
+        selectedBook = null;
+        selectedPage = null;
         initComponents();
-        enableListener();
+        
         
     }
     public void enableListener(){
@@ -33,8 +53,43 @@ public final class PageListPannel extends javax.swing.JPanel {
         this.PageList.addMouseListener(doubleClickPageListListener);
     }
     public void disableListener(){
-        this.BookList.remove(Book);
+       // this.BookList.remove(Book);
     }
+    
+    
+    private void updateList(){
+        Book bookArray[] = new Book[1]; //just to establish array type
+	    getBookList().setListData(((Book []) bookCollection.toArray(bookArray)));
+        Page pageArray[] = new Page[1]; //just to establish array type
+	    getPageList().setListData(((Page []) pageCollection.toArray(pageArray)));
+            
+            if (selectedBook != null)
+			getBookList().setSelectedValue(selectedBook, true);
+		if (selectedPage != null)
+			getPageList().setSelectedValue(selectedPage, true);
+    }
+    
+    public Book getSelectedBook(){
+         return selectedBook;   
+    }
+    
+    public Page getSelectedPage(){
+        return selectedPage;
+    }
+    
+    public JList getBookList(){
+        return BookList;
+    }
+    
+    public JList getPageList(){
+        return PageList;
+    }
+    
+    public void update(){
+        updateList();
+        enableListener();
+    }
+    
 
     /** This method is called from within the constructor to
      * initialize the form.

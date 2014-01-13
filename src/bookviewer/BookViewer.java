@@ -1,22 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package bookviewer;
 
-
-import GUI.BookListPannel;
 import GUI.MainMenuFrame;
-import GUI.PageListPannel;
-
-import GUI.PageViewer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JList;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,148 +12,48 @@ import javax.swing.JList;
 
 public class BookViewer {
 
-    /**
-     * @param args the command line arguments
-     */
+    
     private static MainMenuFrame   mainFrame;
-    private static BookListPannel  booklistPanel;
-    private static PageListPannel  pagelistPanel;
-    private static PageViewer      pageViewerPanel;
-    private static ActionListener  addnewBookListener;
-    private static ActionListener  editBookListener;
-    private static ActionListener  removeBookListener;
-    private static ActionListener  searchBookListener;
-    private static MouseListener   doubleClickBookListListener;
-    private static MouseListener   doubleClickBooktitleListener;
-    private static MouseListener   doubleClickPageTitleListener;
-    private static KeyListener     keyListstener;   
-    private static String          editedItem;
-     
-    public static void initComponents(){
-       initListener();
-        booklistPanel = new BookListPannel(doubleClickBookListListener,keyListstener);
-        
-        
-    }
-    public static void initListener(){
-        
-       //Listener: clicked add button in tool bar or select addbook opotion in edit menu 
-        addnewBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.setStatus("add new books");
-            }
-        };
-        
-        //Listener : select edit book option in edit menu
-         editBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.setStatus("edit book");
-            }
-        };
-         
-         //Listener: clicked remove button in tool bar or select deletebook in edit menu
-         removeBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.setStatus("remove book");
-            }
-        };
-         
-         //Listener: clicked seach book in tool bar
-         searchBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.setStatus("search book");
-                searchbook();
-                
-            }
-        };
-         
-         //Listener : double clicked book title in BookListPannel
-         doubleClickBookListListener = new MouseAdapter() { 
-            @Override
-            public void mouseClicked(MouseEvent event) { 
-                if (event.getClickCount() == 2) { 
-                    JList theList = (JList) event.getSource(); 
-                    int index = theList.locationToIndex(event.getPoint()); 
-                    editedItem = (String) theList.getModel().getElementAt(index); 
-                   mainFrame.setStatus("Double Click on: " + editedItem); 
-                   viewPageList(editedItem);
-                }  
-                      
-            }}; 
-         
-         //Listener: double clicked book title in PageListPannel
-         doubleClickBooktitleListener = new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent event) { 
-                if (event.getClickCount() == 2) { 
-                    JList theList = (JList) event.getSource(); 
-                    int index = theList.locationToIndex(event.getPoint()); 
-                    editedItem = (String) theList.getModel().getElementAt(index); 
-                   mainFrame.setStatus("Double Click on Book : " + editedItem); 
-                  
-                }  
-                      
-            }}; 
-         //Listener: doubleClicked page Title in PageListPannel
-            doubleClickPageTitleListener = new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent event) { 
-                if (event.getClickCount() == 2) { 
-                    JList theList = (JList) event.getSource(); 
-                    int index = theList.locationToIndex(event.getPoint()); 
-                    editedItem = (String) theList.getModel().getElementAt(index); 
-                   mainFrame.setStatus("Double Click on Page: " + editedItem); 
-                   viewPage(editedItem);
-                 }  
-                      
-            }}; 
-    }
     
-    // display pagelist from t book;
-    public static void viewPageList(String t){
-        
-        mainFrame.initMainPanel();
-        if(pagelistPanel ==null){
-            pagelistPanel = new PageListPannel(doubleClickPageTitleListener,doubleClickBooktitleListener);
-        }
-        mainFrame.getMainPanel().add(pagelistPanel, java.awt.BorderLayout.CENTER);
-        }
+    private static ArrayList<Book> bookList;
+    private static ArrayList<Page> pageList;
     
-
-    // search book which contain t , and update list
-    public static void searchbook(){
-        mainFrame.initMainPanel();
-        mainFrame.getMainPanel().add(booklistPanel, java.awt.BorderLayout.CENTER);
-       
-    }
-    
-    public static void viewPage(String t){
-        String path = "src/Resources/test.pdf";
-        mainFrame.initMainPanel();
-        if(pageViewerPanel ==null){
-            pageViewerPanel = new PageViewer(doubleClickPageTitleListener,keyListstener);
-        }
-        pageViewerPanel.setTittle(t);
-        pageViewerPanel.openPage(path);
-         mainFrame.getMainPanel().add(pageViewerPanel, java.awt.BorderLayout.CENTER);
-       
-   
-      
-    }
-    
-    
+ 
     public static void main(String[] args) {
         // TODO code application logic here
-        initComponents();   
-        mainFrame = new MainMenuFrame(addnewBookListener,editBookListener,removeBookListener,searchBookListener);
+          
+        bookList = new ArrayList<Book>();
+        pageList = new ArrayList<Page>();
+        
+        String path = "src/Resources/test.pdf";
+        String author = "UnKnown Author";
+        Book book1 = new Book(1,"SPC1","Spaces Vol1",path,author,1);
+        Book book2 = new Book(2,"SPC2","Spaces Vol2",path,author,1);
+        Book book3 = new Book(3,"SPC3","Spaces Vol3",path,author,1);
+        Book book4 = new Book(4,"1THS","1000 Songs",path,author,1);
+        
+        bookList.add(book1);
+        bookList.add(book2);
+        bookList.add(book3);
+        bookList.add(book4);
+        
+      
+        Page page1 = new Page(1,"ALFIE","SPC4",198);
+        Page page2 = new Page(2,"ALICE IN WONDERLAND(FAIN/HILLARD)","SPC4",12);
+        Page page3 = new Page(3,"ALL AT ONCE ITS LOVE","SPC4",196);
+        Page page4 = new Page(4,"ALL MY TOMORROWS(CAHN/VAN HOUSEN)","SPC4",1);
+        Page page5 = new Page(5,"ALL THE JIVE IS GONE","SPC4",262);
+        Page page6 = new Page(6,"ALL THE THINGS YOU ARE(HAMMERSTEIN/KERN)","SPC4",2);
+
+        pageList.add(page1);
+        pageList.add(page2);
+        pageList.add(page3);
+        pageList.add(page4);
+        pageList.add(page5);
+        pageList.add(page6);
+        System.out.print(book4);
+        
+        mainFrame = new MainMenuFrame("Book Viewer",bookList,pageList);
         mainFrame.pack();
         mainFrame.setVisible(true);
           
