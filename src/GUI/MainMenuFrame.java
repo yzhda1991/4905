@@ -16,30 +16,40 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 //basic viewer for BookViewer;
-public class MainMenuFrame extends javax.swing.JFrame {
+public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
 
     private static BookListPannel  booklistPanel;
     private static PageListPannel  pagelistPanel;
     private static PageViewer      pageViewerPanel;
+    private static aboutDialog     aboutDetailDialog;
+    private static BookInfoDialog  theBookInfoDialog;
     
     private static ActionListener  addnewBookListener;
     private static ActionListener  editBookListener;
     private static ActionListener  removeBookListener;
     private static ActionListener  searchBookListener;
+    private static ActionListener  aboutMenuListener;
+
     private static MouseListener   doubleClickBookListListener;
     private static MouseListener   doubleClickBooktitleListener;
     private static MouseListener   doubleClickPageTitleListener;
+     
     private static KeyListener     keyListstener;   
     
     private static String          editedItem;
     private static Book            editedBook;
     private static Page            editedPage;
+    private static Book            selectedBook;
+    private static Page            selectedPage;
     
     private static ArrayList<Book> bookCollection;
     private static ArrayList<Page> pageCollection;
+    
+  
      
     //constractor with title;
     public MainMenuFrame(String t){
@@ -58,6 +68,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
         editedBook = null;
         initListener();
         initComponents();
+        enableListener();
     }
     //update Status Message;
    
@@ -68,6 +79,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
           
             @Override
             public void actionPerformed(ActionEvent e) {
+                addNewBook();
                 setStatus("add new books");
             }
         };
@@ -96,10 +108,21 @@ public class MainMenuFrame extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setStatus("search book");
-                searchbook();
+                viewBookList();
                 
             }
         };
+         
+          aboutMenuListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("about this program.... ");
+                aboutProgram();
+                
+            }
+        };
+          
          
          //Listener for BookListPanel;
          //Listener : double clicked book title in BookListPannel
@@ -109,9 +132,9 @@ public class MainMenuFrame extends javax.swing.JFrame {
                 if (event.getClickCount() == 2) { 
                     JList theList = (JList) event.getSource(); 
                     int index = theList.locationToIndex(event.getPoint()); 
-                    editedBook = (Book) theList.getModel().getElementAt(index); 
-                   setStatus("Double Click on: " + editedBook); 
-                   viewPageList(editedBook);
+                    selectedBook = (Book) theList.getModel().getElementAt(index); 
+                   setStatus("Double Click on: " + selectedBook); 
+                   viewPageList(selectedBook);
                 }  
                       
             }}; 
@@ -178,29 +201,64 @@ public class MainMenuFrame extends javax.swing.JFrame {
             pagelistPanel = new PageListPannel(doubleClickPageTitleListener,doubleClickBooktitleListener,bookCollection,pageCollection);;
         }
         initMainPanel(pagelistPanel);
-        }  
-
+        pagelistPanel.setBookList(bookCollection,b);
+        pagelistPanel.setPageList(pageCollection,selectedPage);
+        pagelistPanel.update();
+    }
+    
     // display page  
     private void viewPage(Page p){
         
         String path = "src/Resources/test.pdf";
         
         if(pageViewerPanel ==null){
-            pageViewerPanel = new PageViewer(doubleClickPageTitleListener,keyListstener);
+            pageViewerPanel = new PageViewer(doubleClickPageTitleListener,keyListstener,pageCollection);
         }
         initMainPanel(pageViewerPanel);
-        
+        pageViewerPanel.setPageList(pageCollection,p);
         pageViewerPanel.setTittle(p.getPageTitle());
         pageViewerPanel.openPage(path);
+        
+        pageViewerPanel.update();
+        
         
    
       
     }
     
-    private void  searchbook(){
-        //mainFrame.initMainPanel();
-       // mainFrame.getMainPanel().add(booklistPanel, java.awt.BorderLayout.CENTER);
-       
+    
+    //Action handle for double click book in BookPanelList;
+    private void viewBookList(){
+        if(booklistPanel ==null){
+            booklistPanel = new BookListPannel(bookCollection,doubleClickBookListListener,keyListstener);
+            }
+       initMainPanel(booklistPanel);
+        booklistPanel.setBookList(bookCollection, selectedBook);
+        booklistPanel.update();
+    }
+    
+    
+    //Action handle for About in Menu
+    private void aboutProgram(){
+        if(aboutDetailDialog ==null){
+            aboutDetailDialog = new aboutDialog(this,this,"about me",true);
+            aboutDetailDialog.setVisible(true);
+        }
+    }
+    
+    private void enableListener(){
+        this.About.addActionListener(aboutMenuListener);
+    }
+    
+    private void disableListsener(){
+        About.removeActionListener(aboutMenuListener);
+    }
+    
+    private void addNewBook(){
+        editedBook = new Book();
+        if(theBookInfoDialog == null) theBookInfoDialog = new BookInfoDialog(this,this,"add new Book",editedBook,dialogClient.operation.ADD,true);
+        theBookInfoDialog.setVisible(true);
+        
     }
     private void setStatus(String s){
     statusBar.setText("Status : "+s);
@@ -213,6 +271,7 @@ public class MainMenuFrame extends javax.swing.JFrame {
     public JPanel getMainPanel(){
       return mainPannel;
     }
+    
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -385,4 +444,34 @@ public class MainMenuFrame extends javax.swing.JFrame {
     private javax.swing.JLabel statusBar;
     private javax.swing.JMenuBar topMenuBar;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void bookDialogFinished(operation anOperation) {
+        if(anOperation == dialogClient.operation.UPDATE){
+            
+        }   
+        else if(anOperation == dialogClient.operation.UPDATE){
+            if(editedBook !=null) 
+            {
+             bookCollection.add(editedBook);
+             JOptionPane.showMessageDialog(this, editedItem);
+             setStatus("added new Book :" +editedBook.getBookName());
+            }
+        }
+        else if(anOperation == dialogClient.operation.DELETE){
+    
+        }
+        editedBook = null;
+        
+    }
+
+    @Override
+    public void pageDialogFinished(operation anOperation) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dialogCancelled() {
+       
+    }
 }

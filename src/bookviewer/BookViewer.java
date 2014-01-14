@@ -51,8 +51,7 @@ public class BookViewer {
         pageList.add(page4);
         pageList.add(page5);
         pageList.add(page6);
-        System.out.print(book4);
-        
+         
         mainFrame = new MainMenuFrame("Book Viewer",bookList,pageList);
         mainFrame.pack();
         mainFrame.setVisible(true);

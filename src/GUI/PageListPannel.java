@@ -68,14 +68,9 @@ public final class PageListPannel extends javax.swing.JPanel {
 		if (selectedPage != null)
 			getPageList().setSelectedValue(selectedPage, true);
     }
+
     
-    public Book getSelectedBook(){
-         return selectedBook;   
-    }
-    
-    public Page getSelectedPage(){
-        return selectedPage;
-    }
+
     
     public JList getBookList(){
         return BookList;
@@ -84,6 +79,27 @@ public final class PageListPannel extends javax.swing.JPanel {
     public JList getPageList(){
         return PageList;
     }
+    
+    public void setBookList(ArrayList<Book> books){
+        if(books!=null) bookCollection = books;
+       
+    }
+    public void setPageList(ArrayList<Page> pages){
+        if(pages!=null) pageCollection = pages;
+      
+    }
+    public void setBookList(ArrayList<Book> books,Book b){
+       if(books == null) bookCollection.removeAll(bookCollection);
+        selectedBook = b;
+       
+    }
+    public void setPageList(ArrayList<Page> pages, Page p){
+        if(pages == null)  pageCollection.removeAll(pageCollection);
+        selectedPage = p;
+       
+    }
+    
+   
     
     public void update(){
         updateList();
@@ -146,9 +162,9 @@ public final class PageListPannel extends javax.swing.JPanel {
                         .addComponent(seachButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -162,8 +178,8 @@ public final class PageListPannel extends javax.swing.JPanel {
                     .addComponent(Book))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

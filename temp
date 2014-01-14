@@ -1,0 +1,72 @@
+  boolean infoComplete =true;
+        if  (bookNameField.getText().length()<2)   {   nameStatus.setText("bookName is Invild !"); if(infoComplete) infoComplete =false;}
+       
+        if  (bookCodeField.getText().length()<2)   {   codeStatus.setText ("bookCode is Invild !");if(infoComplete) infoComplete =false;}
+        
+        if  (bookAuthorField.getText().length()<2) {   authorStatus.setText ("Author is Invild !");if(infoComplete) infoComplete =false;}
+        
+        if  (bookPathField.getText().length()<2)   {   pathStatus.setText ("book Path is Invild !");if(infoComplete) infoComplete =false;}
+        
+        if  (pageNumField.getText().length()<1)    {   pageNumStatus.setText("start page  is Invild !");if(infoComplete) infoComplete =false;}
+        
+       if(infoComplete){
+        int id = 0;
+        int pageNum=0;
+                
+                try{
+                    id = Integer.parseInt(bookIDField.getText());
+                    pageNum = Integer.parseInt(pageNumField.getText());
+                    
+                    
+                    JOptionPane.showMessageDialog(this,
+                        "bookaneme :" +bookNameField.getText()
+                        +"\n bookCode : "+bookCodeField.getText()
+                        +"\n bookAuthor :"+bookAuthorField.getText()
+                        +"\n bookPath :"+bookPathField.getText()
+                        +"\n pageNum :"+pageNumField.getText());
+                    
+                    
+                    if(theBook ==null) theBook = new Book(id,bookNameField.getText(),bookCodeField.getText(),bookAuthorField.getText(),bookPathField.getText(),pageNum);
+                    else
+                    {
+                        theBook.setBookName(bookNameField.getText());
+                        theBook.setBookCode(bookCodeField.getText());
+                        theBook.setAuthor(bookAuthorField.getText());
+                        theBook.setBookPath(bookPathField.getText());
+                        theBook.setPage(pageNum);
+                    }
+                    JOptionPane.showMessageDialog(this,theBook);
+                    
+                }catch(java.lang.NumberFormatException e){
+                   
+                    System.out.println(e.getMessage());
+                    
+                    pageNumStatus.setText("start page  is not interger !");
+                }
+        
+           int page = 0;
+           try{
+               page = Integer.parseInt(pageNumField.getText());
+           }catch(NullPointerException e){
+               System.out.println(e.getMessage());
+               
+               pageNumStatus.setText("invaild page number !");
+               throw new RuntimeException(e);
+           }   
+           
+        theBook.setBookName(bookNameField.getText());
+        theBook.setBookCode(bookCodeField.getText());
+        theBook.setAuthor(bookAuthorField.getText());
+        theBook.setBookPath(bookPathField.getText());
+        theBook.setPage(page);
+       
+        if(thedialogClient !=null ){
+            
+           if(mode!=null) thedialogClient.bookDialogFinished(mode);
+           dispose();
+           }
+          
+           
+        }
+        
+       

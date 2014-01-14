@@ -18,6 +18,9 @@ public class Book {
     private int initPageNum;  // first start page of Book
     
     
+    public  Book(){
+        
+    }
     //constructor with full paramater;
     public  Book(int id,String code,String name,  String path, String a , int page){
         bookId = id;
@@ -55,6 +58,9 @@ public class Book {
         initPageNum = 1;
     }
      
+     public int getBookID(){
+         return bookId;
+     }
      //get bookName;
      public String getBookName(){
          return bookName;
@@ -98,6 +104,10 @@ public class Book {
      //set start page;
      public void setPage(int page){
          initPageNum =page;
+     }
+     
+     public void setBookPath(String p){
+         bookPath = p;
      }
      
     @Override

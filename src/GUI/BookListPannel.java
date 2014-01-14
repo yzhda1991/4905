@@ -10,8 +10,10 @@
  */
 package GUI;
 
+import bookviewer.Book;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -24,30 +26,56 @@ public class BookListPannel extends javax.swing.JPanel {
     
     MouseListener doubleClickPageListListener;
     KeyListener     keyListstener;  
+    ArrayList<Book>  bookCollection;
+    Book             selectedBook;
     
     /** Creates new form BookListPannel */
-    public BookListPannel(MouseListener DoubleClicked,KeyListener key) {
+    public BookListPannel(ArrayList<Book> books,MouseListener DoubleClicked,KeyListener key) {
+        bookCollection = books;
         doubleClickPageListListener =DoubleClicked;
         keyListstener =key;
         initComponents();
         enableListener();
     }
-    public JList getBookList(){
-        return BookList;
-    }
+  
     public JTextField getSearchField(){
         return seachTextField;
     }
+    
     public JButton getSearchButton(){
         return seachButton;
     }
-    public final void enableListener(){
+    
+    public JList getBookList(){
+        return BookList;
+    }
+    
+    private void enableListener(){
         BookList.addMouseListener(doubleClickPageListListener);
         seachTextField.addKeyListener(this.keyListstener);
     }
-    public void disenableListener(){
+    private void disableListener(){
         BookList.removeMouseListener(doubleClickPageListListener);
         seachTextField.removeKeyListener(keyListstener);
+    }
+    
+    public void setBookList(ArrayList<Book> books, Book b){
+         if(books == null) bookCollection.removeAll(bookCollection);
+        selectedBook = b;
+    }
+    private void updateList(){
+         Book bookArray[] = new Book[1]; //just to establish array type
+	    getBookList().setListData(((Book []) bookCollection.toArray(bookArray)));
+             
+            if (selectedBook != null)
+			getBookList().setSelectedValue(selectedBook, true);
+	  }
+    
+    public void update(){
+        disableListener();
+        updateList();
+        enableListener();
+        
     }
     
 

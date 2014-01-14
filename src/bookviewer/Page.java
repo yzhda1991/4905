@@ -75,10 +75,13 @@ public class Page {
 		for(int i=0; i< max_key_digits-(" "+pageID).length(); i++ ) keyIndent = keyIndent + " ";
 		
 		String pageIndent = "";
-		int max_page_digits = 20;
+		int max_page_digits = 80;
 		for(int i=0; i< max_page_digits-(" "+pageTitle+" ("+bookCode+") ").length(); i++ ) pageIndent = pageIndent + " ";
 		
-                String numIndent ="*********************************************";
-                return "" + pageID + keyIndent + " "+pageTitle+" ("+bookCode+") " +pageIndent+numIndent+pageNum;
+                String numIndent ="";
+                int max_page_num = 8;
+		for(int i=0; i< max_page_num-(" "+pageNum).length(); i++ ) numIndent = numIndent + " ";
+		
+                return "" + pageID + keyIndent + " "+pageNum+numIndent+pageTitle+" ("+bookCode+") " ;
     }
 }

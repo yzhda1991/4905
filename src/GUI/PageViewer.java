@@ -10,8 +10,10 @@
  */
 package GUI;
 
+import bookviewer.Page;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -31,8 +33,11 @@ public class PageViewer extends javax.swing.JPanel {
     SwingController controller;
     SwingViewBuilder factory;
     
+    ArrayList<Page> pageCollection;
+    Page            selectedPage;
     /** Creates new form BookListPannel */
-    public PageViewer(MouseListener DoubleClicked,KeyListener key) {
+    public PageViewer(MouseListener DoubleClicked,KeyListener key,ArrayList<Page> pages) {
+        pageCollection = pages;
         doubleClickPageListListener =DoubleClicked;
         keyListstener =key;
         initComponents();
@@ -55,7 +60,7 @@ public class PageViewer extends javax.swing.JPanel {
         PageList.addMouseListener(doubleClickPageListListener);
         seachTextField.addKeyListener(this.keyListstener);
     }
-    public void disenableListener(){
+    public void disableListener(){
         PageList.removeMouseListener(doubleClickPageListListener);
         seachTextField.removeKeyListener(keyListstener);
     }
@@ -97,6 +102,28 @@ public class PageViewer extends javax.swing.JPanel {
                
     }
     
+    public void setPageList(ArrayList<Page> pages,Page p){
+ 
+         if(pages == null)  pageCollection.removeAll(pageCollection);
+        selectedPage = p;
+    }
+    
+    public void updateList(){
+        Page pageArray[] = new Page[1]; //just to establish array type
+	    getPageList().setListData(((Page []) pageCollection.toArray(pageArray)));
+            
+           
+		if (selectedPage != null)
+			getPageList().setSelectedValue(selectedPage, true);
+    }
+    
+    public void update(){
+        disableListener();
+        updateList();
+        enableListener();
+    }
+    
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -131,7 +158,7 @@ public class PageViewer extends javax.swing.JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 120;
+        gridBagConstraints.ipadx = 200;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 2.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
