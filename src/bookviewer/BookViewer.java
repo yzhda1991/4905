@@ -2,7 +2,13 @@
 package bookviewer;
 
 import GUI.MainMenuFrame;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
 
 /**
  *
@@ -17,45 +23,67 @@ public class BookViewer {
     
     private static ArrayList<Book> bookList;
     private static ArrayList<Page> pageList;
+    private static String          databaseName;
     
  
-    public static void main(String[] args) {
+    public static void main(String[] args){
         // TODO code application logic here
-          
-        bookList = new ArrayList<Book>();
+        mainFrame = null;
+        System.out.println("Book viewer appliction");
+        
+        try{
+            Class.forName("org.sqlite.JDBC");
+            databaseName = "jdbc:sqlite:src/data/db_books";
+            Connection database = DriverManager.getConnection(databaseName);
+            Statement stat =  database.createStatement();
+            
+            String sqlQueryString = "select * from bookcodes order by code asc;";
+            System.out.println("");
+            System.out.println(sqlQueryString);
+            
+            bookList = new ArrayList<Book>();
+            
+            ResultSet rs = stat.executeQuery(sqlQueryString);
+            while(rs.next()){
+                
+                
+                Book thebook = new Book(rs.getString("code"),rs.getString("title"),rs.getString("path"),rs.getString("author"),rs.getInt("startpage"));
+                bookList.add(thebook);
+            }
+            rs.close();
+            
+            sqlQueryString = "select * from pagelist;";
+            rs = stat.executeQuery(sqlQueryString);
+            System.out.println("");
+            System.out.println(sqlQueryString);
+            pageList = new ArrayList<Page>();
+            int DISPLAY_LIMIT = 100;
+            int count =0;
+            while(rs.next() && count<DISPLAY_LIMIT){
+                Page thePage = new Page(rs.getInt("id"),rs.getString("title"),rs.getString("bookcode"),rs.getInt("page"));
+                pageList.add(thePage);
+                count++;
+            }
+            rs.close();
+            
+             mainFrame = new MainMenuFrame("Book Viewer",database,stat,bookList,pageList);
+       
+ 
+        }catch(ClassNotFoundException e){
+            e.printStackTrace();;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            //Logger.getLogger(BookViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
         pageList = new ArrayList<Page>();
         
-        String path = "src/Resources/test.pdf";
-        String author = "UnKnown Author";
-        Book book1 = new Book(1,"SPC1","Spaces Vol1",path,author,1);
-        Book book2 = new Book(2,"SPC2","Spaces Vol2",path,author,1);
-        Book book3 = new Book(3,"SPC3","Spaces Vol3",path,author,1);
-        Book book4 = new Book(4,"1THS","1000 Songs",path,author,1);
         
-        bookList.add(book1);
-        bookList.add(book2);
-        bookList.add(book3);
-        bookList.add(book4);
-        
-      
-        Page page1 = new Page(1,"ALFIE","SPC4",198);
-        Page page2 = new Page(2,"ALICE IN WONDERLAND(FAIN/HILLARD)","SPC4",12);
-        Page page3 = new Page(3,"ALL AT ONCE ITS LOVE","SPC4",196);
-        Page page4 = new Page(4,"ALL MY TOMORROWS(CAHN/VAN HOUSEN)","SPC4",1);
-        Page page5 = new Page(5,"ALL THE JIVE IS GONE","SPC4",262);
-        Page page6 = new Page(6,"ALL THE THINGS YOU ARE(HAMMERSTEIN/KERN)","SPC4",2);
-
-        pageList.add(page1);
-        pageList.add(page2);
-        pageList.add(page3);
-        pageList.add(page4);
-        pageList.add(page5);
-        pageList.add(page6);
-         
-        mainFrame = new MainMenuFrame("Book Viewer",bookList,pageList);
         mainFrame.pack();
         mainFrame.setVisible(true);
           
+        
     }
     
     

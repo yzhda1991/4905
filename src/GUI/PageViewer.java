@@ -210,16 +210,16 @@ public class PageViewer extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(viewerPanel, gridBagConstraints);
 
+        BookName.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 24)); // NOI18N
         BookName.setText("Book :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipadx = 200;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(BookName, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 

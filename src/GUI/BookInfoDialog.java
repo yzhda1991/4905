@@ -64,7 +64,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         //otherwise build GUI with empty book info
        
         if(theBook== null){
-            bookIDField.setText(null);
+            
             bookCodeField.setText(null);
             bookNameField.setText(null);
             bookPathField.setText(null);
@@ -72,7 +72,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
             pageNumField.setText(null);
         }
         else {
-            bookIDField.setText(theBook.getBookID()+"");
+            
             bookCodeField.setText(theBook.getBookCode());
             bookNameField.setText(theBook.getBookName());
             bookPathField.setText(theBook.getBookPath());
@@ -130,8 +130,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
             public void focusGained(FocusEvent e) {
                  final JTextComponent c = (JTextComponent)e.getSource();
                  c.setForeground(new java.awt.Color(153, 204, 255));
-                 if (c.equals(bookIDField))   IDStatus.setText("number only");
-                 else if (c.equals(pageNumField))   pageNumStatus.setText("number only");
+                if (c.equals(pageNumField))   pageNumStatus.setText("number only");
                 }
 
             @Override
@@ -144,13 +143,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
                 
                 try{
                     num = Integer.parseInt(s);
-                    if (c.equals(bookIDField))   IDStatus.setText("vaild book id");
-                    else if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
+                     if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
                     if(errorfound)errorfound = false;
                
                 }catch(java.lang.NumberFormatException nfe){
-                    if (c.equals(bookIDField))   IDStatus.setText("book id is invaild");
-                     else if (c.equals(pageNumField))   pageNumStatus.setText("page number is invaild ");
+                     if (c.equals(pageNumField))   pageNumStatus.setText("page number is invaild ");
                      if(!errorfound)errorfound = true;
                 }
             }
@@ -173,16 +170,13 @@ public class BookInfoDialog extends javax.swing.JDialog {
         bookNameLabel = new javax.swing.JLabel();
         bookCodeLabel = new javax.swing.JLabel();
         bookAuthorLabel = new javax.swing.JLabel();
-        bookIDLabel = new javax.swing.JLabel();
         bookPathLabel = new javax.swing.JLabel();
-        bookIDField = new javax.swing.JTextField();
         bookNameField = new javax.swing.JTextField();
         bookCodeField = new javax.swing.JTextField();
         bookAuthorField = new javax.swing.JTextField();
         bookPathField = new javax.swing.JTextField();
         nameStatus = new javax.swing.JLabel();
         pathStatus = new javax.swing.JLabel();
-        IDStatus = new javax.swing.JLabel();
         authorStatus = new javax.swing.JLabel();
         codeStatus = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
@@ -196,7 +190,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36));
+        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36)); // NOI18N
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         titleLabel.setText("Book Info");
         titleLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -236,15 +230,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(bookAuthorLabel, gridBagConstraints);
 
-        bookIDLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        bookIDLabel.setLabelFor(bookIDField);
-        bookIDLabel.setText("Book ID : ");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(bookIDLabel, gridBagConstraints);
-
         bookPathLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         bookPathLabel.setLabelFor(bookPathField);
         bookPathLabel.setText("Book Path : ");
@@ -253,16 +238,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(bookPathLabel, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 100;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(bookIDField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -317,13 +292,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pathStatus, gridBagConstraints);
-
-        IDStatus.setText("* required");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(IDStatus, gridBagConstraints);
 
         authorStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -399,7 +367,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
     //add FoucusLost to all textFiled;
     private void enableFocusLost(){
         
-        bookIDField.addFocusListener(numberFieldListener);
         bookNameField.addFocusListener(textFieldListener);
         bookCodeField.addFocusListener(textFieldListener);
         bookPathField.addFocusListener(textFieldListener);
@@ -410,7 +377,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
     //remove FocusLost from all textField;
     private void disableForcusLost(){
         
-        bookIDField.removeFocusListener(numberFieldListener);
         bookNameField.removeFocusListener(textFieldListener);
         bookCodeField.removeFocusListener(textFieldListener);
         bookPathField.removeFocusListener(textFieldListener);
@@ -432,8 +398,8 @@ public class BookInfoDialog extends javax.swing.JDialog {
             //otherwise update theBook info cosponding the book info provide;
          
 
-                     theBook.setBookName(bookIDField.getText());
-                     theBook.setBookCode(bookNameField.getText());
+                     theBook.setBookName(bookNameField.getText());
+                     theBook.setBookCode(bookCodeField.getText());
                      theBook.setBookPath(bookPathField.getText());
                      theBook.setAuthor(bookAuthorField.getText());
                      theBook.setPage(Integer.parseInt(pageNumField.getText()));
@@ -449,8 +415,8 @@ public class BookInfoDialog extends javax.swing.JDialog {
             //otherwise update theBook info cosponding the book info provide;
          
 
-                     theBook.setBookName(bookIDField.getText());
-                     theBook.setBookCode(bookNameField.getText());
+                     theBook.setBookName(bookNameField.getText());
+                     theBook.setBookCode(bookCodeField.getText());
                      theBook.setBookPath(bookPathField.getText());
                      theBook.setAuthor(bookAuthorField.getText());
                      theBook.setPage(Integer.parseInt(pageNumField.getText()));
@@ -474,14 +440,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
 
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel IDStatus;
     private javax.swing.JLabel authorStatus;
     private javax.swing.JTextField bookAuthorField;
     private javax.swing.JLabel bookAuthorLabel;
     private javax.swing.JTextField bookCodeField;
     private javax.swing.JLabel bookCodeLabel;
-    private javax.swing.JTextField bookIDField;
-    private javax.swing.JLabel bookIDLabel;
     private javax.swing.JTextField bookNameField;
     private javax.swing.JLabel bookNameLabel;
     private javax.swing.JTextField bookPathField;

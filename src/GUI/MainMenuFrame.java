@@ -14,6 +14,9 @@ import bookviewer.Book;
 import bookviewer.Page;
 import java.awt.Component;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -54,6 +57,9 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     private static ArrayList<Book> bookCollection;
     private static ArrayList<Page> pageCollection;
     
+    private static Connection databaseConnection;
+    private static Statement stat;
+    
   
      
     //constractor with title;
@@ -67,10 +73,12 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     }
     
     //constractor with bookCollection , pageCollection;
-    public MainMenuFrame(String t, ArrayList<Book> books,ArrayList<Page> pages){
+    public MainMenuFrame(String t, Connection c, Statement s,ArrayList<Book> books,ArrayList<Page> pages){
          super(t);
         bookCollection =books;
         pageCollection = pages;
+        databaseConnection =c;
+        stat =s;
         editedPage = null;
         editedBook = null;
       
@@ -223,7 +231,21 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
                 
             };
             
-          
+          addWindowListener(
+                  new WindowAdapter(){
+                      public void WindowClosing(WindowEvent e){
+                          try{
+                              System.out.println("Closing DataBase Connection");
+                              databaseConnection.close();
+                            
+                          }catch(SQLException ex){
+                              ex.printStackTrace();
+                          }
+                          
+                          System.exit(0);
+                      }
+                  }
+                  );
  
     }
     //add all listener to frame;

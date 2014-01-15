@@ -19,7 +19,6 @@ public class Book {
     
     
     public  Book(){
-        bookId = 3;
         bookName = "";
         bookCode = "";
         bookPath = "";
@@ -27,8 +26,7 @@ public class Book {
         initPageNum = 1;
     }
     //constructor with full paramater;
-    public  Book(int id,String code,String name,  String path, String a , int page){
-        bookId = id;
+    public  Book(String code,String name,  String path, String a , int page){
         bookName = name;
         bookCode = code;
         bookPath = path;
@@ -63,9 +61,7 @@ public class Book {
         initPageNum = 1;
     }
      
-     public int getBookID(){
-         return bookId;
-     }
+    
      //get bookName;
      public String getBookName(){
          return bookName;
@@ -118,14 +114,12 @@ public class Book {
     @Override
      public String toString(){
          String keyIndent = "";
-		int max_key_digits = 5;
-		for(int i=0; i< max_key_digits-(" "+bookId).length(); i++ ) keyIndent = keyIndent + " ";
 		
 		String pageIndent = "";
 		int max_page_digits = 20;
 		for(int i=0; i< max_page_digits-(" "+bookName+" ("+bookCode+") ").length(); i++ ) pageIndent = pageIndent + " ";
 		
-                return "" + bookId + keyIndent + " "+bookName+" ("+bookCode+") " ;
+                return "" + keyIndent + " "+bookName+" ("+bookCode+") " ;
     
      }
     
