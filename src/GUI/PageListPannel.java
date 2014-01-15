@@ -53,7 +53,8 @@ public final class PageListPannel extends javax.swing.JPanel {
         this.PageList.addMouseListener(doubleClickPageListListener);
     }
     public void disableListener(){
-       // this.BookList.remove(Book);
+        this.BookList.removeMouseListener(doubleClickBookListListener);
+        this.PageList.removeMouseListener(doubleClickPageListListener);
     }
     
     
@@ -85,8 +86,8 @@ public final class PageListPannel extends javax.swing.JPanel {
        
     }
     public void setPageList(ArrayList<Page> pages){
-        if(pages!=null) pageCollection = pages;
-      
+       if(pages!=null) pageCollection = pages;
+       if(pages == null)  pageCollection.removeAll(pageCollection);
     }
     public void setBookList(ArrayList<Book> books,Book b){
        if(books == null) bookCollection.removeAll(bookCollection);
@@ -95,13 +96,13 @@ public final class PageListPannel extends javax.swing.JPanel {
     }
     public void setPageList(ArrayList<Page> pages, Page p){
         if(pages == null)  pageCollection.removeAll(pageCollection);
+        if(pages!=null) pageCollection = pages;
         selectedPage = p;
        
     }
-    
-   
-    
+ 
     public void update(){
+        disableListener();
         updateList();
         enableListener();
     }

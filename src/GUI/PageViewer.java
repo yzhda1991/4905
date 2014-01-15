@@ -41,7 +41,7 @@ public class PageViewer extends javax.swing.JPanel {
         doubleClickPageListListener =DoubleClicked;
         keyListstener =key;
         initComponents();
-        enableListener();
+        
     }
     
     public JList getPageList(){
@@ -100,14 +100,12 @@ public class PageViewer extends javax.swing.JPanel {
                 controller.openDocument(t);
                 controller.showPage(1);
                
-    }
-    
+    }    
     public void setPageList(ArrayList<Page> pages,Page p){
  
          if(pages == null)  pageCollection.removeAll(pageCollection);
         selectedPage = p;
-    }
-    
+    }  
     public void updateList(){
         Page pageArray[] = new Page[1]; //just to establish array type
 	    getPageList().setListData(((Page []) pageCollection.toArray(pageArray)));

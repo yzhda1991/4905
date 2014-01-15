@@ -15,9 +15,12 @@ import bookviewer.Page;
 import java.awt.Component;
 import java.awt.event.*;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -36,7 +39,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     private static ActionListener  addnewBookListener;
     private static ActionListener  editBookListener;
     private static ActionListener  removeBookListener;
-    private static ActionListener  searchBookListener;
+    private static ActionListener  viewBookListener;
     private static ActionListener  aboutMenuListener;
 
     private static MouseListener   doubleClickBookListListener;
@@ -148,7 +151,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         
          
          //Listener: clicked seach book in tool bar
-         searchBookListener =new ActionListener(){
+         viewBookListener =new ActionListener(){
           
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -192,7 +195,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
                     int index = theList.locationToIndex(event.getPoint()); 
                     editedBook = (Book) theList.getModel().getElementAt(index); 
                    setStatus("Double Click on Book : " + editedBook); 
-                  
+                   viewPageList(editedBook);
                 }  
                       
             }}; 
@@ -202,6 +205,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
             @Override
             public void mouseClicked(MouseEvent event) { 
                 if (event.getClickCount() == 2) { 
+                    
                     JList theList = (JList) event.getSource(); 
                     int index = theList.locationToIndex(event.getPoint()); 
                     editedPage = (Page) theList.getModel().getElementAt(index); 
@@ -255,6 +259,8 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         deleteBookMenuItem.addActionListener(removeBookListener);
         editBookMenuItem.addActionListener(editBookListener);
         removeBook.addActionListener(MainMenuFrame.removeBookListener);
+        ViewBookButton.addActionListener(this.viewBookListener);
+
         if(booklistPanel !=null) booklistPanel.getBookList().addListSelectionListener(bookListSelctionListener);
         if(pagelistPanel !=null){
             pagelistPanel.getBookList().addListSelectionListener(bookListSelctionListener);
@@ -267,6 +273,13 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     //remove all listener from frame;
     private void disableListsener(){
         About.removeActionListener(aboutMenuListener);
+        addBookMenuItem.removeActionListener(addnewBookListener);
+        deleteBookMenuItem.removeActionListener(removeBookListener);
+        editBookMenuItem.removeActionListener(editBookListener);
+        removeBook.removeActionListener(MainMenuFrame.removeBookListener);
+        ViewBookButton.removeActionListener(MainMenuFrame.viewBookListener);
+
+        
         
         if(booklistPanel !=null) booklistPanel.getBookList().removeListSelectionListener(bookListSelctionListener);
         if(pagelistPanel !=null){
@@ -329,47 +342,82 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         if(booklistPanel ==null){
             booklistPanel = new BookListPannel(bookCollection,doubleClickBookListListener,keyListstener);
             }
-        initMainPanel(booklistPanel);
         booklistPanel.setBookList(bookCollection, selectedBook);
         booklistPanel.update();
+        initMainPanel(booklistPanel);
+        
     } 
     //Action performs for viewing page list: display pagelist from t book;
     private void viewPageList(Book b){
         
+        disableListsener();
         
-        if(pagelistPanel ==null){
+        String searchBookTitle = b.getBookCode().trim();
+        String sqlQueryString = "select * from pagelist where bookcode like '%"+searchBookTitle +"%' order by title asc"+";";
+        System.out.println("");
+        System.out.println(sqlQueryString);
+            
+        try{
+            ResultSet rs = stat.executeQuery(sqlQueryString);
+            ArrayList<Page> pageSearchResults = new ArrayList<Page>();
+            int count = 0;
+            int GUI_DISPLAY_LIMIT =100;
+            while(rs.next() && count<GUI_DISPLAY_LIMIT){
+                Page thePage = new Page(rs.getInt("id"),rs.getString("title"),rs.getString("bookcode"),rs.getInt("page"));
+                pageSearchResults.add(thePage);
+                count++;
+            }
+            rs.close();
+            //Page PageArray[] = new Page[1];
+            pageCollection = pageSearchResults;
+            if(pagelistPanel ==null){
             pagelistPanel = new PageListPannel(doubleClickPageTitleListener,doubleClickBooktitleListener,bookCollection,pageCollection);;
         }
-        ArrayList<Page> temp = new ArrayList<Page>();
+            else{
+                pagelistPanel.setBookList(bookCollection,selectedBook);
+                pagelistPanel.setPageList(pageCollection);
+            }
+            
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            }
         
-        for(Page p:pageCollection){
-            if(p.getBookCode().equals(b.getBookCode()))
-                temp.add(p);
-        }
-        initMainPanel(pagelistPanel);
-        pagelistPanel.setBookList(bookCollection,b);
-        pagelistPanel.setPageList(temp,selectedPage);
         pagelistPanel.update();
-        
+        initMainPanel(pagelistPanel);
+       
     }
     //Action performs for viewing page;  
     private void viewPage(Page p){
+      
+        disableListsener();
         
         String path = "src/Resources/test.pdf";
         
+        Book temp = null;
+        for(Book b:bookCollection){
+            if(b.getBookCode() == null ? p.getBookCode() == null : b.getBookCode().equals(p.getBookCode())){
+                temp=b;
+            break;
+            }
+        }
+        if(temp !=null) path = temp.getBookPath();
         if(pageViewerPanel ==null){
             pageViewerPanel = new PageViewer(doubleClickPageTitleListener,keyListstener,pageCollection);
         }
-        initMainPanel(pageViewerPanel);
-        pageViewerPanel.setPageList(pageCollection,p);
+        
         pageViewerPanel.setTittle(p.getPageTitle());
         pageViewerPanel.openPage(path);
-        
+        pageViewerPanel.setPageList(pageCollection,p); 
         pageViewerPanel.update();
-
+        initMainPanel(pageViewerPanel);
+       
+        
     }
     //Action performs for About in Menu
     private void aboutProgram(){
+        disableListsener();
+        
         if(aboutDetailDialog ==null){
             aboutDetailDialog = new aboutDialog(this,this,"about me",true);
             aboutDetailDialog.setVisible(true);
@@ -377,11 +425,12 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     }
     //action performs for add new book;
     private void addNewBook(){
+        disableListsener();
+        
         editedBook = new Book();
         theBookInfoDialog = new BookInfoDialog(this,this,"add new Book",editedBook,dialogClient.operation.ADD,true);
-       
         theBookInfoDialog.setVisible(true);
-
+        
     }
     //action performs for editing book;
     private void editBook(){
@@ -416,7 +465,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     }
     private void update(){
         disableListsener();
-       updateList();
+        updateList();
         enableListener(); 
     }
     
@@ -466,6 +515,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
     @Override
     public void dialogCancelled() { 
        setStatus("Canceled");
+       update();
     }
     
 
@@ -476,7 +526,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         bookToolBar = new javax.swing.JToolBar();
         addnewBookButton = new javax.swing.JButton();
         removeBook = new javax.swing.JButton();
-        searchButton = new javax.swing.JButton();
+        ViewBookButton = new javax.swing.JButton();
         separator = new javax.swing.JToolBar.Separator();
         mainPannel = new javax.swing.JPanel();
         ProgressBar = new javax.swing.JProgressBar();
@@ -505,7 +555,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         bookToolBar.setForeground(new java.awt.Color(240, 240, 240));
         bookToolBar.setRollover(true);
 
-        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12));
+        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         addnewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/add.png"))); // NOI18N
         addnewBookButton.setToolTipText("Add New Book");
         addnewBookButton.setFocusable(false);
@@ -522,13 +572,12 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         removeBook.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bookToolBar.add(removeBook);
 
-        searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search.png"))); // NOI18N
-        searchButton.setFocusable(false);
-        searchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        searchButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
-        searchButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        bookToolBar.add(searchButton);
-        searchButton.addActionListener(this.searchBookListener);
+        ViewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search.png"))); // NOI18N
+        ViewBookButton.setFocusable(false);
+        ViewBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ViewBookButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
+        ViewBookButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bookToolBar.add(ViewBookButton);
         bookToolBar.add(separator);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -609,7 +658,7 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
 
         Edit.setText("Books");
         Edit.setAlignmentY(1.0F);
-        Edit.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Edit.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Edit.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         addBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
@@ -631,17 +680,12 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
 
         Pages.setText("Pages");
         Pages.setAlignmentY(1.0F);
-        Pages.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Pages.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Pages.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         addPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         addPageMenuItem.setText("AddPage");
         addPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        addPageMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addPageMenuItemActionPerformed(evt);
-            }
-        });
         Pages.add(addPageMenuItem);
 
         removePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
@@ -658,13 +702,13 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
 
         jMenu1.setText("Database");
         jMenu1.setAlignmentY(1.0F);
-        jMenu1.setFont(new java.awt.Font("Agency FB", 0, 16));
+        jMenu1.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         jMenu1.setMargin(new java.awt.Insets(3, 3, 3, 3));
         topMenuBar.add(jMenu1);
 
         Help.setText("Help");
         Help.setAlignmentY(1.0F);
-        Help.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Help.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Help.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         About.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
@@ -679,10 +723,6 @@ public class MainMenuFrame extends javax.swing.JFrame implements dialogClient {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-private void addPageMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPageMenuItemActionPerformed
-// TODO add your handling code here:
-}//GEN-LAST:event_addPageMenuItemActionPerformed
-
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
@@ -691,6 +731,7 @@ private void addPageMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JMenu Help;
     private javax.swing.JMenu Pages;
     private javax.swing.JProgressBar ProgressBar;
+    private javax.swing.JButton ViewBookButton;
     private javax.swing.JMenuItem addBookMenuItem;
     private javax.swing.JMenuItem addPageMenuItem;
     private javax.swing.JButton addnewBookButton;
@@ -706,7 +747,6 @@ private void addPageMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JButton removeBook;
     private javax.swing.JMenuItem removePageMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
-    private javax.swing.JButton searchButton;
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JLabel statusBar;
     private javax.swing.JMenuBar topMenuBar;
