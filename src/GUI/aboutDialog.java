@@ -38,17 +38,18 @@ public class aboutDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        TitleLabel.setFont(new java.awt.Font("Mistral", 0, 48)); // NOI18N
+        TitleLabel.setFont(new java.awt.Font("Mistral", 0, 48));
         TitleLabel.setText("BookViewer ");
 
-        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
+        jTextArea1.setEditable(false);
+        jTextArea1.setFont(new java.awt.Font("Agency FB", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
         jTextArea1.setText("Product Version: BookViewer v1.0\nDatabase name:\nDatabase type:\nIcePdf version: 5.0\n \n");
         jTextArea1.setEditable(false);
         jScrollPane1.setViewportView(jTextArea1);
 
-        versionLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        versionLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14));
         versionLabel.setText("Version 1.0");
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/about.png"))); // NOI18N
@@ -61,13 +62,13 @@ public class aboutDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(TitleLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 197, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(versionLabel)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .add(versionLabel))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -75,9 +76,9 @@ public class aboutDialog extends javax.swing.JDialog {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
                         .add(24, 24, 24)
-                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
-                        .add(0, 0, Short.MAX_VALUE)
+                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, versionLabel)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, TitleLabel))

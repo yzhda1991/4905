@@ -19,7 +19,12 @@ public class Book {
     
     
     public  Book(){
-        
+        bookId = 3;
+        bookName = "";
+        bookCode = "";
+        bookPath = "";
+        author   = "";
+        initPageNum = 1;
     }
     //constructor with full paramater;
     public  Book(int id,String code,String name,  String path, String a , int page){

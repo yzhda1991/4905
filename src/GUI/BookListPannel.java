@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -25,6 +26,7 @@ import javax.swing.JTextField;
 public class BookListPannel extends javax.swing.JPanel {
     
     MouseListener doubleClickPageListListener;
+    ListSelectionListener bookListSelctionListener;
     KeyListener     keyListstener;  
     ArrayList<Book>  bookCollection;
     Book             selectedBook;

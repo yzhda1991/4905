@@ -53,15 +53,14 @@ public class Page {
     }
     
     //set page id;
-    public void setPageID(int id){
-        pageID = id;
-    }
     
+    public void setPageTitle(String s){
+        pageTitle = s;
+    }
     //set bookCode of page;
     public void setBookCode(String code){
         bookCode = code;
     }
-    
     //set page number;
     public void setPageNum(int i){
         pageNum = i;

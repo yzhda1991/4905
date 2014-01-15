@@ -9,9 +9,6 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.lang.NullPointerException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import javax.swing.JOptionPane;
 import javax.swing.text.JTextComponent;
 
@@ -21,34 +18,152 @@ import javax.swing.text.JTextComponent;
  */
 public class BookInfoDialog extends javax.swing.JDialog {
 
-    /**
-     * Creates new form BookInforDialog
-     */
-    
-    dialogClient thedialogClient;
-    Book theBook;
-    dialogClient.operation mode;
-    Frame thisframe;
-    FocusListener textFieldListener;
-    FocusListener  numberFieldListener;
  
+    
+    dialogClient            thedialogClient;
+    Book                    theBook;
+    dialogClient.operation  mode;
+    Frame                   thisframe;
+    FocusListener           textFieldListener;
+    FocusListener           numberFieldListener;
+    boolean                 errorfound = false;
+  
+    //
     public BookInfoDialog(dialogClient client,Frame parent,String title, Book b, dialogClient.operation aoperation,boolean modal){
-        super(parent,title,modal);
+        super(parent,"Book info",modal);
         thisframe = parent;
         thedialogClient =client;
         mode =aoperation;
         theBook = b;
+        initEnvironment();
+        titleLabel.setText(title);
+    }
+    
+    @Override
+    public void setTitle(String t){
+        titleLabel.setText(t);
+    }
+    public void updateMode(dialogClient.operation amode){
+        mode =amode;
+    }
+    public void setBook(Book b){
+        theBook =b;
+    }
+    
+
+    //
+    private  void initEnvironment(){
+        
         initComponents();
-        buildbookInfo(theBook);
+        
+        //change the submit button text cosponding to the opertion;
         submitButton.setText(mode.toString());
-        initFocusLost();
+       
+        
+        //build GUI with book info if thebook is not Null;
+        //otherwise build GUI with empty book info
+       
+        if(theBook== null){
+            bookIDField.setText(null);
+            bookCodeField.setText(null);
+            bookNameField.setText(null);
+            bookPathField.setText(null);
+            bookAuthorField.setText(null);
+            pageNumField.setText(null);
+        }
+        else {
+            bookIDField.setText(theBook.getBookID()+"");
+            bookCodeField.setText(theBook.getBookCode());
+            bookNameField.setText(theBook.getBookName());
+            bookPathField.setText(theBook.getBookPath());
+            bookAuthorField.setText(theBook.getAuthor());
+            pageNumField.setText(theBook.getInitPage()+"");
+        }
+        
+        //define the FocusListener for textfiled and numberfiled;
+        textFieldListener = new FocusListener(){
+            
+            @Override
+            public void focusGained(FocusEvent e) {
+                final JTextComponent c = (JTextComponent)e.getSource(); 
+                 c.setForeground(new java.awt.Color(153, 204, 255));
+                if (c.equals(bookNameField))   nameStatus.setText("book code should be 3-20 charaters !");
+                else if (c.equals(bookCodeField))   codeStatus.setText("book code should be 4-10 characters  !");
+                else if (c.equals(bookPathField))    pathStatus.setText("please enter a full book path !");
+                else if (c.equals(bookAuthorField)) authorStatus.setText("book code should be 10-20characters !");
+                
+                  }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            if(!e.isTemporary()){
+                
+                final JTextComponent c = (JTextComponent) e.getSource();
+                String s = c.getText();
+                if(e.isTemporary()) return;
+                
+                else if (s.length()<2){
+                    c.setForeground(Color.red);
+                    
+                if (c.equals(bookNameField))   nameStatus.setText("book code is in vaild !");
+                else if (c.equals(bookCodeField))   codeStatus.setText("book code is invaild !");
+                else if (c.equals(bookPathField))    pathStatus.setText("book path is invaild !");
+                else if (c.equals(bookAuthorField)) authorStatus.setText("book author is invaild !");
+                     if(!errorfound)errorfound = true;
+                }
+                
+                else{
+                     if (c.equals(bookNameField))   nameStatus.setText("vaild book name!");
+                else if (c.equals(bookCodeField))   codeStatus.setText("vaild book code");
+                else if (c.equals(bookPathField))    pathStatus.setText("vaild book path");
+                else if (c.equals(bookAuthorField)) authorStatus.setText("vaild book author");
+                     if(errorfound)errorfound = false;
+                }
+            }
+        }
+            
+        };
+                
+        numberFieldListener =new FocusListener(){
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                 final JTextComponent c = (JTextComponent)e.getSource();
+                 c.setForeground(new java.awt.Color(153, 204, 255));
+                 if (c.equals(bookIDField))   IDStatus.setText("number only");
+                 else if (c.equals(pageNumField))   pageNumStatus.setText("number only");
+                }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                int num =0;
+                if(!e.isTemporary()){
+                final JTextComponent c = (JTextComponent) e.getSource();
+                String s = c.getText();
+                if(e.isTemporary()) return;
+                
+                try{
+                    num = Integer.parseInt(s);
+                    if (c.equals(bookIDField))   IDStatus.setText("vaild book id");
+                    else if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
+                    if(errorfound)errorfound = false;
+               
+                }catch(java.lang.NumberFormatException nfe){
+                    if (c.equals(bookIDField))   IDStatus.setText("book id is invaild");
+                     else if (c.equals(pageNumField))   pageNumStatus.setText("page number is invaild ");
+                     if(!errorfound)errorfound = true;
+                }
+            }
+            }
+            
+        };
+         
         enableFocusLost();
-        this.setSize(500,300);
+        
+        this.setSize(600,250);
         this.setResizable(false);
     }
 
-    
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -81,7 +196,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         titleLabel.setText("Book Info");
         titleLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -91,7 +206,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
-        gridBagConstraints.ipady = 20;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         getContentPane().add(titleLabel, gridBagConstraints);
 
@@ -102,7 +216,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(bookNameLabel, gridBagConstraints);
 
         bookCodeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -112,7 +225,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(bookCodeLabel, gridBagConstraints);
 
         bookAuthorLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -122,7 +234,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(bookAuthorLabel, gridBagConstraints);
 
         bookIDLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -132,7 +243,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(bookIDLabel, gridBagConstraints);
 
         bookPathLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -142,50 +252,58 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(bookPathLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(bookIDField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(bookNameField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(bookCodeField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(bookAuthorField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(bookPathField, gridBagConstraints);
 
-        nameStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         nameStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -193,7 +311,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(nameStatus, gridBagConstraints);
 
-        pathStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         pathStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -201,7 +318,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pathStatus, gridBagConstraints);
 
-        IDStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         IDStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -209,7 +325,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(IDStatus, gridBagConstraints);
 
-        authorStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         authorStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -217,7 +332,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(authorStatus, gridBagConstraints);
 
-        codeStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         codeStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -233,10 +347,10 @@ public class BookInfoDialog extends javax.swing.JDialog {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 13, 2, 27);
+        gridBagConstraints.insets = new java.awt.Insets(2, 20, 2, 100);
         getContentPane().add(submitButton, gridBagConstraints);
 
         cancelButton.setText("Cancel");
@@ -259,117 +373,106 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 25, 0, 0);
         getContentPane().add(pageNumLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 50;
-        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(pageNumField, gridBagConstraints);
 
-        pageNumStatus.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         pageNumStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pageNumStatus, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void initFocusLost(){
-        textFieldListener = new FocusListener(){
-            
-            @Override
-            public void focusGained(FocusEvent e) {
-                final JTextComponent c = (JTextComponent)e.getSource(); 
-                c.setForeground(Color.BLACK);
-                
-                  }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-            if(!e.isTemporary()){
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                else if (s.length()<2){
-                    c.setForeground(Color.red);
-                if (c.equals(bookNameField))   nameStatus.setText("input is too Short !");
-                else if (c.equals(bookCodeField))   codeStatus.setText("input is too Short !");
-                else if (c.equals(bookPathField))    pathStatus.setText("input is too Short !");
-                else if (c.equals(bookAuthorField)) authorStatus.setText("input is too Short !");
-                }
-          
-            }
-        }
-        };
-                
-        numberFieldListener =new FocusListener(){
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                 final JTextComponent c = (JTextComponent)e.getSource();
-                 c.setForeground(new java.awt.Color(153, 204, 255));
-                }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                int num =0;
-                NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                numberFormat.setParseIntegerOnly(true);
-                if(!e.isTemporary()){
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                
-                try{
-                    num = numberFormat.parse(s).intValue();
-                    
-                }catch(ParseException pe){
-                    pe.printStackTrace();
-                }
-            }
-            }
-            
-        };
-    }
+    //add FoucusLost to all textFiled;
     private void enableFocusLost(){
+        
         bookIDField.addFocusListener(numberFieldListener);
         bookNameField.addFocusListener(textFieldListener);
         bookCodeField.addFocusListener(textFieldListener);
+        bookPathField.addFocusListener(textFieldListener);
+        bookAuthorField.addFocusListener(textFieldListener);
+        pageNumField.addFocusListener(numberFieldListener);
     }
+    
+    //remove FocusLost from all textField;
+    private void disableForcusLost(){
+        
+        bookIDField.removeFocusListener(numberFieldListener);
+        bookNameField.removeFocusListener(textFieldListener);
+        bookCodeField.removeFocusListener(textFieldListener);
+        bookPathField.removeFocusListener(textFieldListener);
+        bookAuthorField.removeFocusListener(textFieldListener);
+        pageNumField.removeFocusListener(numberFieldListener);
+    }
+    
+    //Action performs when user clicked Submit button
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        // TODO add your handling code here:
-      
+          disableForcusLost();
+          if(errorfound){
+              JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
+              return;
+          }
+             else if(mode.equals(dialogClient.operation.ADD) ){
+          
+            //if there is no error found in the form, create book with book info;
+            //if thebook is empty object, create new Book with book info provided;
+            //otherwise update theBook info cosponding the book info provide;
+         
+
+                     theBook.setBookName(bookIDField.getText());
+                     theBook.setBookCode(bookNameField.getText());
+                     theBook.setBookPath(bookPathField.getText());
+                     theBook.setAuthor(bookAuthorField.getText());
+                     theBook.setPage(Integer.parseInt(pageNumField.getText()));
+                 
+          
+            }
+
+   
+            else if(mode.equals(dialogClient.operation.UPDATE) ){
+          
+            //if there is no error found in the form, create book with book info;
+            //if thebook is empty object, create new Book with book info provided;
+            //otherwise update theBook info cosponding the book info provide;
+         
+
+                     theBook.setBookName(bookIDField.getText());
+                     theBook.setBookCode(bookNameField.getText());
+                     theBook.setBookPath(bookPathField.getText());
+                     theBook.setAuthor(bookAuthorField.getText());
+                     theBook.setPage(Integer.parseInt(pageNumField.getText()));
+                 
+            
+            }
+            if(thedialogClient !=null)thedialogClient.bookDialogFinished(mode);      
+                dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
+    
+    //action perfoms when user clicked Cancel button;
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        // TODO add your handling code here:
+        
+        //finished the dialog with dialogCancelled massage;
+        //dispose dialog;
         if(thedialogClient !=null) thedialogClient.dialogCancelled();
         dispose();
+        
     }//GEN-LAST:event_CancelButtonActionPerformed
 
-    private void buildbookInfo(Book b){
-        if(b== null){
-            bookIDField.setText(null);
-            bookCodeField.setText(null);
-            bookNameField.setText(null);
-            bookPathField.setText(null);
-            bookAuthorField.setText(null);
-        }
-        else {
-            bookIDField.setText(b.getBookID()+"");
-            bookCodeField.setText(b.getBookCode());
-            bookNameField.setText(b.getBookName());
-            bookPathField.setText(b.getBookPath());
-            bookAuthorField.setText(b.getAuthor());
-        }
-    }
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel IDStatus;
     private javax.swing.JLabel authorStatus;
