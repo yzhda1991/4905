@@ -25,7 +25,7 @@ public class BookViewer {
     private static ArrayList<Page> pageList;
     private static String          databaseName;
     
- 
+ /*
     public static void main(String[] args){
         // TODO code application logic here
         mainFrame = null;
@@ -86,6 +86,7 @@ public class BookViewer {
         
     }
     
+    * */
     
     
 }

@@ -29,7 +29,7 @@ public class PageViewer extends javax.swing.JPanel {
     
     MouseListener doubleClickPageListListener;
     KeyListener     keyListstener;  
-    boolean       initViewer =false;
+   
     SwingController controller;
     SwingViewBuilder factory;
     
@@ -64,9 +64,9 @@ public class PageViewer extends javax.swing.JPanel {
         PageList.removeMouseListener(doubleClickPageListListener);
         seachTextField.removeKeyListener(keyListstener);
     }
-    public void openPage(String t){
-         
-        if(initViewer ==false){
+    
+    private  void initView(){
+
             java.awt.GridBagConstraints gridBagConstraints;
             this.remove(this.viewerPanel);
             //building a controller
@@ -95,12 +95,16 @@ public class PageViewer extends javax.swing.JPanel {
                 gridBagConstraints.weighty = 2.0;
                 gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
                 add(viewerPanel, gridBagConstraints);
-                 initViewer=true;
-          }               
-                controller.openDocument(t);
-                controller.showPage(1);
-               
-    }    
+           
+          
+        
+    }                               
+     
+    public SwingController getController(){
+        if(controller == null)initView();
+        return controller;  
+    }
+    
     public void setPageList(ArrayList<Page> pages,Page p){
  
          if(pages == null)  pageCollection.removeAll(pageCollection);

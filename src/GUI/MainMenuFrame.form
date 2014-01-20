@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
@@ -129,18 +129,18 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Agency FB" size="16" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="AddPage"/>
+                <Property name="text" type="java.lang.String" value="Add Page"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 2, 2, 2]"/>
                 </Property>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="removePageMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="editPageMenuItem">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Agency FB" size="16" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="RemovePage"/>
+                <Property name="text" type="java.lang.String" value="Edit Page"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 2, 2, 2]"/>
                 </Property>
@@ -151,7 +151,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Agency FB" size="16" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="DeletePage"/>
+                <Property name="text" type="java.lang.String" value="Delete Page"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[2, 2, 2, 2]"/>
                 </Property>
@@ -205,7 +205,6 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="topMenuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -253,9 +252,6 @@
             </Property>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="addnewBookButton.addActionListener(this.addnewBookListener);"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="removeBook">
           <Properties>
