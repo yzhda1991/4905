@@ -1,17 +1,346 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-package viewer;
-import javax.swing.JFrame;
+/*
+ * MainMenuFrame.java
+ *
+ * Created on Jan 7, 2014, 4:01:21 PM
+ */
+package model;
+import main.Book;
+import main.Page;
+
+import java.awt.event.*;
+import java.sql.Connection;
+
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.JLabel;
+
+import javax.swing.JPanel;
+
 
 //basic viewer for BookViewer;
-public class MainMenuFrame extends JFrame{
+public class MainMenuFrame extends javax.swing.JFrame  {
 
+
+    
+    
+    private static ActionListener  addnewBookListener;
+    private static ActionListener  editBookListener;
+    private static ActionListener  removeBookListener;
+    
+    private static ActionListener  addnewPageListener;
+    private static ActionListener  editPageListener;
+    private static ActionListener  removePageListener;
+    
+    private static ActionListener  viewBookListener;
+    private static ActionListener  aboutMenuListener;
+    
+  
+    private static Book            editedBook;
+    private static Page            editedPage;
+    private static Book            selectedBook;
+    private static Page            selectedPage;
+    
+  
      
     //constractor with title;
-    public MainMenuFrame(){
+    public MainMenuFrame(String t){
+        super(t);
+       
       
+        initListener();
         initComponents();
     }
     
+    
+    //constractor with bookCollection , pageCollection;
+    public MainMenuFrame(String t, Connection c, Statement s,ArrayList<Book> books,ArrayList<Page> pages){
+         super(t);
+       
+        editedPage = null;
+        editedBook = null;
+              
+        initListener();
+        initComponents();
+        enableListener();
+        updateButton();
+       
+    }
+    
+    //update Status Message;
+    public void setStatus(String s){
+    statusBar.setText("Status : "+s);
+    } 
+    
+    public void updateMainPanel(JPanel panel){
+    java.awt.GridBagConstraints gridBagConstraints;
+    getContentPane().remove(mainPannel);
+    mainPannel = new JPanel();
+    mainPannel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
+        mainPannel.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 200;
+        gridBagConstraints.ipady = 200;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 2.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        getContentPane().add(mainPannel, gridBagConstraints);
+        mainPannel.add(panel, java.awt.BorderLayout.CENTER);
+        
+        update();
+    }
+
+    //return status;
+    public JLabel getStatus(){
+      return statusBar;
+    }
+    
+    //return main panel;
+    public JPanel getMainPanel(){
+      return mainPannel;
+    }
+    
+    // set up and define all listener;
+    private void initListener(){
+        
+        //Listener: clicked add button in tool bar or select addbook opotion in edit menu 
+        addnewBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("add new book option cilcked");
+                addNewBook();
+               
+            }
+        };
+        editBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("edit Book option cilcked");
+                if(selectedBook ==null)
+                    setStatus("book not selected!");
+                else{
+                    editedBook = selectedBook;
+                    editBook();
+                }
+
+            }
+        };
+        removeBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("remove Book option cilcked");
+                if(selectedBook ==null)
+                    setStatus("book not selected!");
+                else{
+                    editedBook = selectedBook;
+                    removeBook();
+                }
+
+            }
+        };
+        
+        addnewPageListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("add new page option cilcked");
+                
+                addNewPage();
+               
+            }
+        };
+        editPageListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("edit Page option cilcked");
+               
+                if(selectedPage ==null)
+                    
+                    setStatus("page not selected!");
+                
+                else{
+                    
+                    editedPage = selectedPage;
+                    editPage();
+                }
+
+            }
+        };
+        removePageListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("remove page option cilcked");
+                
+                if(selectedPage ==null)
+                    setStatus("page not selected!");
+                
+                else{
+                    
+                    editedPage = selectedPage;
+                    removePage();
+                }
+
+            }
+        };
+        //Listener: clicked seach book in tool bar
+        viewBookListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("search book");
+                viewBookList();
+                
+            }
+        };
+        aboutMenuListener =new ActionListener(){
+          
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setStatus("about this program.... ");
+                aboutProgram();
+                
+            }
+        };
+
+         
+        
+       
+          addWindowListener(
+                  new WindowAdapter(){
+                      public void WindowClosing(WindowEvent e){
+                         
+                          System.exit(0);
+                      }
+                  }
+                  );
+ 
+    }
+    
+    //add all listener to frame;
+    private void enableListener(){
+        
+        addBookMenuItem.addActionListener(addnewBookListener);
+        editBookMenuItem.addActionListener(editBookListener);
+        deleteBookMenuItem.addActionListener(removeBookListener);
+        
+        
+        addPageMenuItem.addActionListener(addnewPageListener);
+        editPageMenuItem.addActionListener(editPageListener);
+        deletePageMenuItem.addActionListener(removePageListener);
+        
+        About.addActionListener(aboutMenuListener);
+          
+        addnewBookButton.addActionListener(addnewBookListener);
+        removeBook.addActionListener(removeBookListener);
+        ViewBookButton.addActionListener(viewBookListener);
+
+       
+    } 
+    //remove all listener from frame;
+    private void disableListsener(){
+        About.removeActionListener(aboutMenuListener);
+        addBookMenuItem.removeActionListener(addnewBookListener);
+        deleteBookMenuItem.removeActionListener(removeBookListener);
+        editBookMenuItem.removeActionListener(editBookListener);
+        removeBook.removeActionListener(MainMenuFrame.removeBookListener);
+        ViewBookButton.removeActionListener(MainMenuFrame.viewBookListener);
+
+      
+    }
+    
+    //rest Main Panel;
+   
+    
+     //Action performs for About in Menu
+    private void aboutProgram(){
+       
+        
+        
+    }
+    
+   
+    private void viewBookList(){
+      
+        
+    } 
+ 
+    //action performs for add new book;
+    private void addNewBook(){
+        
+        
+    }
+    //action performs for editing book;
+    private void editBook(){
+        
+    }
+    //action performs for remove book;
+    private void removeBook(){
+        
+       
+    }
+    
+    //action performs for add new page; 
+    private void addNewPage(){
+        
+        
+    }
+    //action performs for edit page;
+    private void editPage(){
+       
+    }
+   //action perfomrs for remove page; 
+    private void removePage(){
+       
+        
+    }
+    
+    
+  
+    private void updateButton(){
+       
+        if(selectedBook != null){
+            Pages.setEnabled(true);
+            editBookMenuItem.setEnabled(true);
+            deleteBookMenuItem.setEnabled(true);
+            removeBook.setEnabled(true);
+            
+        }else {
+            Pages.setEnabled(false);
+            Pages.setEnabled(false);
+            editBookMenuItem.setEnabled(false);
+            deleteBookMenuItem.setEnabled(false);
+            removeBook.setEnabled(false);
+        }
+        if(selectedPage !=null){
+            editPageMenuItem.setEnabled(true);
+            deletePageMenuItem.setEnabled(true);
+        } else{
+            editPageMenuItem.setEnabled(false);
+            deletePageMenuItem.setEnabled(false);
+        }
+    
+        
+    }
+    private void update(){
+        disableListsener();
+        enableListener(); 
+        updateButton();
+        
+    }
+
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -37,7 +366,7 @@ public class MainMenuFrame extends JFrame{
         deleteBookMenuItem = new javax.swing.JMenuItem();
         Pages = new javax.swing.JMenu();
         addPageMenuItem = new javax.swing.JMenuItem();
-        removePageMenuItem = new javax.swing.JMenuItem();
+        editPageMenuItem = new javax.swing.JMenuItem();
         deletePageMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
@@ -50,26 +379,22 @@ public class MainMenuFrame extends JFrame{
         bookToolBar.setRollover(true);
 
         addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        addnewBookButton.setText("Add Book");
+        addnewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/add.png"))); // NOI18N
         addnewBookButton.setToolTipText("Add New Book");
         addnewBookButton.setFocusable(false);
         addnewBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         addnewBookButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
-        addnewBookButton.setMaximumSize(new java.awt.Dimension(87, 24));
-        addnewBookButton.setMinimumSize(new java.awt.Dimension(87, 24));
-        addnewBookButton.setPreferredSize(new java.awt.Dimension(87, 24));
         addnewBookButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bookToolBar.add(addnewBookButton);
 
-        removeBook.setText("Remove Book");
-        removeBook.setToolTipText("Remove Book");
+        removeBook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/remove.png"))); // NOI18N
         removeBook.setFocusable(false);
         removeBook.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         removeBook.setMargin(new java.awt.Insets(3, 5, 3, 3));
         removeBook.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bookToolBar.add(removeBook);
 
-        ViewBookButton.setText("View Book");
+        ViewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search.png"))); // NOI18N
         ViewBookButton.setFocusable(false);
         ViewBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ViewBookButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
@@ -104,7 +429,7 @@ public class MainMenuFrame extends JFrame{
         ProgressBar.setMaximum(200);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 30;
         gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
@@ -117,7 +442,7 @@ public class MainMenuFrame extends JFrame{
         statusBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 80;
@@ -181,17 +506,17 @@ public class MainMenuFrame extends JFrame{
         Pages.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         addPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
-        addPageMenuItem.setText("AddPage");
+        addPageMenuItem.setText("Add Page");
         addPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(addPageMenuItem);
 
-        removePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
-        removePageMenuItem.setText("RemovePage");
-        removePageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        Pages.add(removePageMenuItem);
+        editPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
+        editPageMenuItem.setText("Edit Page");
+        editPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        Pages.add(editPageMenuItem);
 
         deletePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
-        deletePageMenuItem.setText("DeletePage");
+        deletePageMenuItem.setText("Delete Page");
         deletePageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(deletePageMenuItem);
 
@@ -236,13 +561,13 @@ public class MainMenuFrame extends JFrame{
     private javax.swing.JMenuItem deleteBookMenuItem;
     private javax.swing.JMenuItem deletePageMenuItem;
     private javax.swing.JMenuItem editBookMenuItem;
+    private javax.swing.JMenuItem editPageMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JPopupMenu.Separator fileMenuSeparator;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel mainPannel;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JButton removeBook;
-    private javax.swing.JMenuItem removePageMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JLabel statusBar;
