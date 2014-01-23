@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
+import main.Controller;
+import main.ViewBooksMain;
 import viewer.BookListPanel;
 
 public class BooklistFrame extends MainMenuFrame{
@@ -25,12 +27,21 @@ public class BooklistFrame extends MainMenuFrame{
     MouseListener           doubleClickedonbook;
     ListSelectionListener   listSelection;
     Connecter               theConnecter;
+    Controller              theController;
     ArrayList<Book>         bookCollection;
     
     /** Creates new form BookListFrame */
     public BooklistFrame() {
         super("book list");
         theConnecter = new Connecter();
+        initComponents();
+        
+    }
+    
+     public BooklistFrame(String title,ViewBooksMain view, Controller c,Connecter conn) {
+        super(title,c);
+        theConnecter = conn;
+        theController = c;
         initComponents();
         
     }
@@ -44,7 +55,7 @@ public class BooklistFrame extends MainMenuFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("reached");
+                
                 searchBook();
             }
         };
@@ -66,7 +77,7 @@ public class BooklistFrame extends MainMenuFrame{
         super.setStatus("searching book :");
         String searchContent = mainPanel.getSearchField().getText().trim();
         String mode  = (String)mainPanel.getSelectedType().getSelectedItem();
-        ArrayList<Book> searchBook = new ArrayList<Book>();
+        ArrayList<Book> searchBook = new ArrayList<>();
         
         if(searchContent.equals("*") ||searchContent.equals("%") ||searchContent.equals("") )
             searchBook = theConnecter.getBookList();

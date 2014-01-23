@@ -10,14 +10,56 @@ package main;
  */
 public interface Controller {
  
+    /**
+     *
+     */
     public static enum operation {ADD,UPDATE, DELETE};
 
-    public void openBookList();
-    public void openPageList(Book b);
-    public void openPage(Page p);
-    public void bookDialogFinished(operation anOperation);
-    public void pageDialogFinished (operation anOperation);
+    /**
+     *
+     * @return
+     */
+    public Page getSelectedPage();
+    /**
+     *
+     * @return
+     */
+    public Book getSelectedBook();
+    /**
+     *
+     */
+    public void OpenBookListFrame();
+    public void closeBookListFrame();
+    /**
+     *
+     * @param b
+     */
+    public void openPageListFrame(Book b);
+    public void closePageListFrame();
+    /**
+     *
+     * @param p
+     */
+    public void openPageViewer(Page p);
+    public void closePageViewer(Page p);
+    /**
+     *
+     * @param anOperation
+     */
+    public void openBookInfoDialog(Book b);
+    public void closeBookInfoDialog(operation anOperation);
+    /**
+     *
+     * @param anOperation
+     */
+    public void openPageInfoDialog ();
+    public void closePageInfoDialog(operation anOperation);
+    
+    /**
+     *
+     */
     public void exitProgram();
+    public void dialogCancelled();
     
     
 }

@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
+import main.Controller;
+import main.ViewBooksMain;
 import viewer.PageListPanel;
 
 /**
@@ -28,12 +30,14 @@ public class PageListFrame  extends MainMenuFrame{
     ListSelectionListener   booklistSelection;
     
     Connecter               theConnecter;
+    Controller              theController;
     
     ArrayList<Book>         bookCollection;
     ArrayList<Page>         pageCollection;
     
-    Book                    selectedBook;
-    Page                    selectedPage;
+    Book                    theBook;
+    
+
     
     public PageListFrame(){
         
@@ -42,12 +46,22 @@ public class PageListFrame  extends MainMenuFrame{
         initComponents();
     }
     
+    public PageListFrame(String title,ViewBooksMain viewer, Controller c, Connecter conn,Book initBook){
+        
+        super(title,c);
+        theConnecter = conn;
+        theController = c;
+        theBook = initBook;
+        initComponents();
+    }
+    
     private void initComponents(){
         
         mainPanel = new PageListPanel();
         super.updateMainPanel(mainPanel);
         bookCollection  = theConnecter.getBookList(); 
-        pageCollection = theConnecter.getPageList(); 
+        if(theBook==null)pageCollection = theConnecter.getPageList(); 
+        else pageCollection = theConnecter.searchPage(theBook.getBookCode(), "code");
         seachButtonListener = new ActionListener(){
 
             @Override

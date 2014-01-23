@@ -9,17 +9,14 @@
  * Created on Jan 7, 2014, 4:01:21 PM
  */
 package model;
-import main.Book;
-import main.Page;
+
 
 import java.awt.event.*;
-import java.sql.Connection;
 
-import java.sql.Statement;
-import java.util.ArrayList;
 import javax.swing.JLabel;
 
 import javax.swing.JPanel;
+import main.Controller;
 
 
 //basic viewer for BookViewer;
@@ -28,6 +25,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
 
     
     
+    private static Controller      theController;
     private static ActionListener  addnewBookListener;
     private static ActionListener  editBookListener;
     private static ActionListener  removeBookListener;
@@ -40,37 +38,42 @@ public class MainMenuFrame extends javax.swing.JFrame  {
     private static ActionListener  aboutMenuListener;
     
   
-    private static Book            editedBook;
-    private static Page            editedPage;
-    private static Book            selectedBook;
-    private static Page            selectedPage;
     
-  
-     
-    //constractor with title;
+
+    
+     //constractor with title;
+    /**
+     *
+     * @param t
+     */
     public MainMenuFrame(String t){
         super(t);
-       
-      
-        initListener();
-        initComponents();
-    }
-    
-    
-    //constractor with bookCollection , pageCollection;
-    public MainMenuFrame(String t, Connection c, Statement s,ArrayList<Book> books,ArrayList<Page> pages){
-         super(t);
-       
-        editedPage = null;
-        editedBook = null;
-              
         initListener();
         initComponents();
         enableListener();
         updateButton();
-       
     }
     
+    /**
+     *
+     * @param t
+     * @param c
+     */
+    public MainMenuFrame(String t,Controller c){
+        super(t);
+        theController = c;
+        
+        initListener();
+        initComponents();
+        enableListener();
+        updateButton();
+        
+    }
+    
+    
+    
+    
+   
     //update Status Message;
     public void setStatus(String s){
     statusBar.setText("Status : "+s);
@@ -117,8 +120,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setStatus("add new book option cilcked");
-                addNewBook();
-               
+                if(theController !=null)theController.openBookInfoDialog(null);
             }
         };
         editBookListener =new ActionListener(){
@@ -126,12 +128,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setStatus("edit Book option cilcked");
-                if(selectedBook ==null)
-                    setStatus("book not selected!");
-                else{
-                    editedBook = selectedBook;
-                    editBook();
-                }
+                
 
             }
         };
@@ -140,12 +137,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setStatus("remove Book option cilcked");
-                if(selectedBook ==null)
-                    setStatus("book not selected!");
-                else{
-                    editedBook = selectedBook;
-                    removeBook();
-                }
+                
 
             }
         };
@@ -166,15 +158,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             public void actionPerformed(ActionEvent e) {
                 setStatus("edit Page option cilcked");
                
-                if(selectedPage ==null)
-                    
-                    setStatus("page not selected!");
-                
-                else{
-                    
-                    editedPage = selectedPage;
-                    editPage();
-                }
+               
 
             }
         };
@@ -184,14 +168,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             public void actionPerformed(ActionEvent e) {
                 setStatus("remove page option cilcked");
                 
-                if(selectedPage ==null)
-                    setStatus("page not selected!");
-                
-                else{
-                    
-                    editedPage = selectedPage;
-                    removePage();
-                }
+               
 
             }
         };
@@ -311,7 +288,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
   
     private void updateButton(){
        
-        if(selectedBook != null){
+        if(theController.getSelectedBook() != null){
             Pages.setEnabled(true);
             editBookMenuItem.setEnabled(true);
             deleteBookMenuItem.setEnabled(true);
@@ -324,7 +301,7 @@ public class MainMenuFrame extends javax.swing.JFrame  {
             deleteBookMenuItem.setEnabled(false);
             removeBook.setEnabled(false);
         }
-        if(selectedPage !=null){
+        if(theController.getSelectedPage() !=null){
             editPageMenuItem.setEnabled(true);
             deletePageMenuItem.setEnabled(true);
         } else{

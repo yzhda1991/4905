@@ -9,6 +9,8 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import main.Controller;
+import main.ViewBooksMain;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -18,32 +20,47 @@ import viewer.PageViewer;
 public class PageViewerFrame extends MainMenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
-    private SwingController     theController; 
+    private SwingController     theSwingController; 
     private SwingViewBuilder    factory;
     private ArrayList<Page>     pageCollection;
-    private Page                selectedPage,viewPage;
+    private Page                selectedPage;
     private Connecter           theConnecter;
+    private Controller          theController;
     
     
     public PageViewerFrame(){
         super("view page");
         theConnecter   = new Connecter();
-        theController  = new SwingController();
-        factory        = new SwingViewBuilder(theController);
-        pageCollection = new ArrayList<Page>();
+        theSwingController  = new SwingController();
+        factory        = new SwingViewBuilder(theSwingController);
+        pageCollection = new ArrayList<>();
         selectedPage   = null;
-        viewPage       = null;
+       
         
         initComplent();
     }
     
     public PageViewerFrame(Page p){
         super("view page");
-        
-        theController  = new SwingController();
-        factory        = new SwingViewBuilder(theController);
+        theConnecter   = new Connecter();
+        theSwingController  = new SwingController();
+        factory        = new SwingViewBuilder(theSwingController);
         pageCollection = null;
         selectedPage   = p;
+      
+        
+        initComplent();
+    }
+    
+     public PageViewerFrame(String title,ViewBooksMain m,Controller c,Connecter con,Page p){
+        super(title,c);
+        theConnecter   = con;
+        theController  = c;
+        theSwingController  = new SwingController();
+        factory        = new SwingViewBuilder(theSwingController);
+        pageCollection = null;
+        selectedPage   = p;
+      
         
         initComplent();
     }
@@ -59,14 +76,15 @@ public class PageViewerFrame extends MainMenuFrame {
         
         JPanel newViewer = factory.buildViewerPanel();
         
-        ComponentKeyBinding.install(theController, newViewer);
-        theController.getDocumentViewController().setAnnotationCallback(
+        ComponentKeyBinding.install(theSwingController, newViewer);
+        theSwingController.getDocumentViewController().setAnnotationCallback(
                 new org.icepdf.ri.common.MyAnnotationCallback(
-                   theController.getDocumentViewController())
+                   theSwingController.getDocumentViewController())
                        );
         
         newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         theviewer.setMainPanel(newViewer);
+        if(selectedPage!=null)openPage(selectedPage);
         
         doubleClickedPage = new MouseListener(){
 
@@ -75,8 +93,7 @@ public class PageViewerFrame extends MainMenuFrame {
                 if(e.getClickCount()==2){
                     JList theList =  (JList) e.getSource();
                     int index = theList.locationToIndex(e.getPoint());
-                    viewPage  = (Page) theList.getModel().getElementAt(index);
-                    if(viewPage !=null)openPage(viewPage);
+                    openPage((Page) theList.getModel().getElementAt(index));
                 }
             }
 
@@ -107,12 +124,17 @@ public class PageViewerFrame extends MainMenuFrame {
        
     }
     private void openPage(Page p){
+        if(p == null) {
+            super.setStatus("Null page"); 
+            return;
+        }
+        
        super.setStatus("opening page :"+p.getPageTitle());
        
         ArrayList<Book> bookFound = theConnecter.searchBook(p.getBookCode(), "code");
         try{
        
-            if(bookFound.size()==1) theController.openDocument(bookFound.get(0).getBookPath());        
+            if(bookFound.size()==1) theSwingController.openDocument(bookFound.get(0).getBookPath());        
             else super.setStatus("more than one book found;");
             theviewer.setTittle(p.getPageTitle());
         }catch(Exception  e){
