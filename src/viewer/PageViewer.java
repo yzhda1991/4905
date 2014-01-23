@@ -98,7 +98,6 @@ public class PageViewer extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 150);
         add(seachTextField, gridBagConstraints);
 
-        seachButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search32.png"))); // NOI18N
         seachButton.setText("Search");
         seachButton.setToolTipText("Search Book");
         seachButton.setMinimumSize(new java.awt.Dimension(130, 41));
@@ -111,7 +110,6 @@ public class PageViewer extends javax.swing.JPanel {
         add(seachButton, gridBagConstraints);
 
         BookLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        BookLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

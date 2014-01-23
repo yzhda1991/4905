@@ -28,6 +28,9 @@ public interface Controller {
     /**
      *
      */
+    
+    public void setSelectedBook(Book b);
+    public void setSelectedPage(Page p);
     public void OpenBookListFrame();
     public void closeBookListFrame();
     /**
@@ -41,7 +44,7 @@ public interface Controller {
      * @param p
      */
     public void openPageViewer(Page p);
-    public void closePageViewer(Page p);
+    public void closePageViewer();
     /**
      *
      * @param anOperation
@@ -52,7 +55,7 @@ public interface Controller {
      *
      * @param anOperation
      */
-    public void openPageInfoDialog ();
+    public void openPageInfoDialog (Page p);
     public void closePageInfoDialog(operation anOperation);
     
     /**

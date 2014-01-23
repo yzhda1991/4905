@@ -10,6 +10,8 @@ import main.Page;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.event.ListSelectionListener;
 import main.Controller;
@@ -20,7 +22,7 @@ import viewer.PageListPanel;
  *
  * @author byang1
  */
-public class PageListFrame  extends MainMenuFrame{
+public class PageListFrame  extends MenuFrame{
     PageListPanel           mainPanel;
     
     ActionListener          seachButtonListener;
@@ -61,7 +63,7 @@ public class PageListFrame  extends MainMenuFrame{
         super.updateMainPanel(mainPanel);
         bookCollection  = theConnecter.getBookList(); 
         if(theBook==null)pageCollection = theConnecter.getPageList(); 
-        else pageCollection = theConnecter.searchPage(theBook.getBookCode(), "code");
+        else pageCollection = theConnecter.searchPage(theBook.getBookCode(), "bookcode");
         seachButtonListener = new ActionListener(){
 
             @Override
@@ -70,6 +72,14 @@ public class PageListFrame  extends MainMenuFrame{
                 searchPage();
             }
         };
+        
+        this.addWindowListener(new WindowAdapter(){
+              public void WindowClosing(WindowEvent e){
+                  if(theController !=null)theController.closePageListFrame();
+                  else System.exit(0);
+              }
+         });
+        
         update();
     }
     

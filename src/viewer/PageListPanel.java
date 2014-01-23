@@ -71,9 +71,7 @@ public final class PageListPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(BookList);
 
         Book.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Book.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
 
-        seachButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search32.png"))); // NOI18N
         seachButton.setText("Search Page");
         seachButton.setToolTipText("Search Page");
 
@@ -96,7 +94,7 @@ public final class PageListPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(49, 49, 49)
                         .addComponent(Book)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                         .addComponent(SeachTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TypeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)

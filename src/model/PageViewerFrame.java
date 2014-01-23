@@ -6,6 +6,8 @@ import main.Connecter;
 import main.Page;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -17,7 +19,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 import viewer.PageViewer;
 
 
-public class PageViewerFrame extends MainMenuFrame {
+public class PageViewerFrame extends MenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
     private SwingController     theSwingController; 
@@ -33,7 +35,7 @@ public class PageViewerFrame extends MainMenuFrame {
         theConnecter   = new Connecter();
         theSwingController  = new SwingController();
         factory        = new SwingViewBuilder(theSwingController);
-        pageCollection = new ArrayList<>();
+        pageCollection = new ArrayList<Page>();
         selectedPage   = null;
        
         
@@ -119,6 +121,12 @@ public class PageViewerFrame extends MainMenuFrame {
             
         };
         
+         this.addWindowListener(new WindowAdapter(){
+              public void WindowClosing(WindowEvent e){
+                  if(theController !=null)theController.closePageViewer();
+                  else System.exit(0);
+              }
+         });
         enableListener();
         update();
        

@@ -9,18 +9,22 @@ package model;
  * @author byang1
  */
 
+import java.awt.event.MouseEvent;
 import main.Book;
 import main.Connecter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import javax.swing.JList;
 import javax.swing.event.ListSelectionListener;
 import main.Controller;
 import main.ViewBooksMain;
 import viewer.BookListPanel;
 
-public class BooklistFrame extends MainMenuFrame{
+public class BooklistFrame extends MenuFrame{
     
     BookListPanel           mainPanel;
     ActionListener          seachButtonListener;
@@ -33,6 +37,7 @@ public class BooklistFrame extends MainMenuFrame{
     /** Creates new form BookListFrame */
     public BooklistFrame() {
         super("book list");
+       
         theConnecter = new Connecter();
         initComponents();
         
@@ -59,8 +64,58 @@ public class BooklistFrame extends MainMenuFrame{
                 searchBook();
             }
         };
+        doubleClickedonbook = new MouseListener(){
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount()==2){
+                    JList theList =(JList) e.getSource();
+                    int index =  theList.locationToIndex(e.getPoint());
+                    Book selectedBook = (Book)theList.getModel().getElementAt(index);
+                    doubleClickedBook(selectedBook);
+                  
+                   
+                    
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+               
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                
+            }
+            
+        };
+        this.addWindowListener(new WindowAdapter(){
+              public void WindowClosing(WindowEvent e){
+                  if(theController !=null)theController.closeBookListFrame();
+                  else System.exit(0);
+              }
+         });
         
         update();
+    }
+    
+    private void doubleClickedBook(Book b){
+          super.setStatus("opening book" +b.getBookName());
+                    if(theController !=null){
+                        theController.setSelectedBook(b);
+                        theController.openPageListFrame(b);
+                    }
     }
     
     private void enableListener(){
@@ -77,7 +132,7 @@ public class BooklistFrame extends MainMenuFrame{
         super.setStatus("searching book :");
         String searchContent = mainPanel.getSearchField().getText().trim();
         String mode  = (String)mainPanel.getSelectedType().getSelectedItem();
-        ArrayList<Book> searchBook = new ArrayList<>();
+        ArrayList<Book> searchBook = new ArrayList<Book>();
         
         if(searchContent.equals("*") ||searchContent.equals("%") ||searchContent.equals("") )
             searchBook = theConnecter.getBookList();

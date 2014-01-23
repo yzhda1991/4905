@@ -37,13 +37,17 @@ public class Connecter {
     private void createConnection(){
         try{
             Class.forName("org.sqlite.JDBC"); 
-            database = DriverManager.getConnection("jdbc:sqlite:src/data/db_books");
+            database = DriverManager.getConnection("jdbc:sqlite:src/database/db_books");
+            
                 stat = database.createStatement();
+             
             
                 
-        }catch(  ClassNotFoundException | SQLException e){
+        }catch(  ClassNotFoundException e){
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, e);
-        }
+        }catch (SQLException ex) {
+                Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
     
     public void changeDatabase(String path){
@@ -67,7 +71,7 @@ public class Connecter {
     //return book search result from databse 
     public ArrayList<Book> getBookList(){
         String sqlQueryString = "Select * from bookcodes order by code asc";
-        ArrayList<Book> searchResult = new ArrayList<>();
+        ArrayList<Book> searchResult = new ArrayList<Book>();
         try {
             rs = stat.executeQuery(sqlQueryString);
             
@@ -88,7 +92,7 @@ public class Connecter {
     //return page search result from database
     public ArrayList<Page> getPageList(){
         String sqlQueryString = "select * from pagelist;";
-        ArrayList<Page> searchResult = new ArrayList<>();
+        ArrayList<Page> searchResult = new ArrayList<Page>();
         
         try {
             rs = stat.executeQuery(sqlQueryString);
@@ -110,7 +114,7 @@ public class Connecter {
     //return search book result
     public ArrayList<Book> searchBook(String s,String type){
         String sqlQueryString = "select * from bookcodes where "+ type +" like '%" + s + "%' order by "+type+" asc" + ";";
-        ArrayList<Book> searchResult = new ArrayList<>();
+        ArrayList<Book> searchResult = new ArrayList<Book>();
         try {
             rs = stat.executeQuery(sqlQueryString);
             
@@ -130,7 +134,7 @@ public class Connecter {
     //return search result for page from database
     public ArrayList<Page> searchPage(String s,String type){
         String sqlQueryString = "select * from pagelist where "+ type +" like '%" + s + "%' order by "+type+" asc" + ";";
-        ArrayList<Page> searchResult = new ArrayList<>();
+        ArrayList<Page> searchResult = new ArrayList<Page>();
         
         try {
             rs = stat.executeQuery(sqlQueryString);

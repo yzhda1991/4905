@@ -89,7 +89,6 @@ public class BookListPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(seachTextField, gridBagConstraints);
 
-        seachButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search32.png"))); // NOI18N
         seachButton.setText("SearchBook");
         seachButton.setToolTipText("Search Book");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -102,7 +101,6 @@ public class BookListPanel extends javax.swing.JPanel {
         add(seachButton, gridBagConstraints);
 
         Book.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Book.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

@@ -57,9 +57,6 @@
     </Component>
     <Component class="javax.swing.JButton" name="seachButton">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/Resources/search32.png"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="SearchBook"/>
         <Property name="toolTipText" type="java.lang.String" value="Search Book"/>
       </Properties>
@@ -72,9 +69,6 @@
     <Component class="javax.swing.JLabel" name="Book">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/Resources/book.png"/>
-        </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
