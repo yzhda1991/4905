@@ -4,18 +4,18 @@
  */
 package model;
 
-import java.awt.event.ActionEvent;
 import main.Book;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
 import main.Controller;
+import main.ViewBooksMain;
 
 /**
  *
@@ -164,16 +164,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
             
         };
         
-        browerButtonListener = new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
-                File  file = fc.getSelectedFile();
-                
-            }
-            
-        };
+        
         enableFocusLost();
         
         this.setSize(600,250);
@@ -208,9 +199,10 @@ public class BookInfoDialog extends javax.swing.JDialog {
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36));
+        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36)); // NOI18N
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         titleLabel.setText("Book Info");
         titleLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -383,6 +375,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         getContentPane().add(pageNumStatus, gridBagConstraints);
 
         browserButton.setText("browser");
+        browserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browserButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
@@ -434,7 +431,9 @@ public class BookInfoDialog extends javax.swing.JDialog {
                      theBook.setAuthor(bookAuthorField.getText());
                      theBook.setPage(Integer.parseInt(pageNumField.getText()));
                  
-          throw new UnsupportedOperationException("Not supported yet.");
+          if(theController != null) theController.closeBookInfoDialog(mode,theBook);
+          this.setVisible(false);
+          dispose();
             }
 
    
@@ -451,23 +450,63 @@ public class BookInfoDialog extends javax.swing.JDialog {
                      theBook.setAuthor(bookAuthorField.getText());
                      theBook.setPage(Integer.parseInt(pageNumField.getText()));
                  
-            throw new UnsupportedOperationException("Not supported yet.");
+            if(theController != null ) theController.closeBookInfoDialog(mode, theBook);
+            this.setVisible(false);
+             dispose();
             }
                
-                dispose();
+              
     }//GEN-LAST:event_submitButtonActionPerformed
 
     
     //action perfoms when user clicked Cancel button;
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        throw new UnsupportedOperationException("Not supported yet.");
-        //finished the dialog with dialogCancelled massage;
-        //dispose dialog;
-       
+        
+        if(theController !=null) theController.dialogCancelled();
+        this.setVisible(false);
+        dispose();
         
     }//GEN-LAST:event_CancelButtonActionPerformed
 
-   
+    private void browserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browserButtonActionPerformed
+       
+         JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("pdf","PDF");
+                 chooser.setFileFilter(filter);
+                 int returnVal = chooser.showOpenDialog(thisframe);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+                            bookPathField.setText(chooser.getSelectedFile().getPath());
+                    }
+    }//GEN-LAST:event_browserButtonActionPerformed
+
+   public static void main(String args[]) {
+       
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BookInfoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BookInfoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BookInfoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BookInfoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                ViewBooksMain main = new ViewBooksMain();
+                MainFrame     m    = new MainFrame("viewer",main);
+                new BookInfoDialog("add new book",m,main,null,Controller.operation.ADD,true).setVisible(true);
+            }
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel authorStatus;
     private javax.swing.JTextField bookAuthorField;

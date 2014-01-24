@@ -72,7 +72,7 @@ public class BooklistFrame extends MenuFrame{
                     JList theList =(JList) e.getSource();
                     int index =  theList.locationToIndex(e.getPoint());
                     Book selectedBook = (Book)theList.getModel().getElementAt(index);
-                    doubleClickedBook(selectedBook);
+                    if(selectedBook!= null)doubleClickedBook(selectedBook);
                   
                    
                     

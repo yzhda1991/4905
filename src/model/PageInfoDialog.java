@@ -18,7 +18,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
 
   
     Controller            theController;
-    Page                    thePage;
+    Page                  thePage;
     Controller.operation  mode;
     FocusListener           textFieldListener;
     FocusListener           numberFieldListener;
@@ -37,18 +37,20 @@ public class PageInfoDialog extends javax.swing.JDialog {
         initEnvironment();
         titleLabel.setText(title);
     }
-    
-    public PageInfoDialog(Controller client, Frame parent, boolean modal){
-        super(parent, modal);
-        theController = client;
-        initEnvironment();
-    }
+  
     
     private void initEnvironment(){
         initComponents();
         
         //change the submit button text cosponding to the opertion;
         submitButton.setText(mode.toString());
+        pageIDField.setEditable(false);
+        
+        if(mode.equals(Controller.operation.DELETE)){
+            bookCodeField.setEditable(false);
+            pageTitleField.setEditable(false);
+            pageNumField.setEditable(false);
+        }
        
         
         //build GUI with book info if thePage is not Null;
@@ -91,7 +93,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
                 String s = c.getText();
                 if(e.isTemporary()) return;
                 
-                else if (s.length()<2){
+                if (s.length()<2){
                     c.setForeground(Color.red);
                     
                     if (c.equals(pageTitleField))   nameStatus.setText("Page Title is invaild !");
@@ -337,18 +339,18 @@ public class PageInfoDialog extends javax.swing.JDialog {
               JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
               return;
           }
-             else if(mode.equals(Controller.operation.ADD) ){
+             if(mode.equals(Controller.operation.ADD) ){
           
             //if there is no error found in the form, create book with book info;
             //if thePage is empty object, create new Book with book info provided;
             //otherwise update thePage info cosponding the book info provide;
          
+                    thePage = new Page(pageTitleField.getText().trim(),
+                            bookCodeField.getText().trim(),
+                            Integer.parseInt(pageNumField.getText()));
+                    if(theController !=null) theController.closePageInfoDialog(mode, thePage);
+                    
 
-                     thePage.setPageTitle(pageIDField.getText());
-                     thePage.setBookCode(pageTitleField.getText());
-                     thePage.setPageNum(Integer.parseInt(pageNumField.getText()));
-                 
-          
             }
 
    
@@ -363,11 +365,17 @@ public class PageInfoDialog extends javax.swing.JDialog {
                     thePage.setBookCode(pageTitleField.getText());
                     thePage.setPageNum(Integer.parseInt(pageNumField.getText()));
                  
+                    if(theController != null) theController.closePageInfoDialog(mode, thePage);
             
             }
+            else if(mode.equals(Controller.operation.DELETE)){
+                if(theController !=null) theController.closePageInfoDialog(mode, thePage);
+            }
+             
+             this.setVisible(false);
+                    dispose();
           
-          //  if(theController !=null)throw       
-                //dispose();
+          
     }//GEN-LAST:event_submitButtonActionPerformed
 
 private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed

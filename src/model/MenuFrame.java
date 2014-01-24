@@ -13,13 +13,11 @@ package model;
 
 import java.awt.event.*;
 
-import main.Book;
 import javax.swing.JLabel;
-
 import javax.swing.JOptionPane;
+
 import javax.swing.JPanel;
 import main.Controller;
-import main.Page;
 import main.ViewBooksMain;
 
 
@@ -30,20 +28,14 @@ public class MenuFrame extends javax.swing.JFrame  {
     
     
     private static Controller      theController;
-    private static MenuFrame   theFrame;
-    private static ActionListener  addnewBookListener;
-    private static ActionListener  editBookListener;
-    private static ActionListener  removeBookListener;
+    private static ActionListener  bookMenuListener;
+   
     
-    private static ActionListener  addnewPageListener;
-    private static ActionListener  editPageListener;
-    private static ActionListener  removePageListener;
-    
-    private static ActionListener  viewBookListener;
+    private static ActionListener  pageMenuListener;
+    private static ActionListener  toolMenuListener;
     private static ActionListener  aboutMenuListener;
     
-    private static Book            editedBook;
-    private static Page            editedPage;
+  
     
 
     
@@ -54,7 +46,6 @@ public class MenuFrame extends javax.swing.JFrame  {
      */
     public MenuFrame(String t){
         super(t);
-        theFrame = this;
         initListener();
         initComponents();
         enableListener();
@@ -69,7 +60,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     public MenuFrame(String t,Controller c){
         super(t);
         theController = c;
-        theFrame = this;
+        
         initListener();
         initComponents();
         enableListener();
@@ -122,142 +113,162 @@ public class MenuFrame extends javax.swing.JFrame  {
     private void initListener(){
         
         //Listener: clicked add button in tool bar or select addbook opotion in edit menu 
-        addnewBookListener =new ActionListener(){
+        bookMenuListener =new ActionListener(){
           
             @Override
             public void actionPerformed(ActionEvent e) {
-                setStatus("add new book option cilcked");
-                if(theController !=null)theController.openBookInfoDialog(null);
-            }
-        };
-        editBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setStatus("edit Book option cilcked");
-                if(editedBook == null) 
-                    JOptionPane.showMessageDialog(theFrame,"System did not found a seleced Book","Inane error",JOptionPane.ERROR_MESSAGE);
-                else{
-                    if(theController !=null) theController.openBookInfoDialog(editedBook);
+                bookActionMap(e);
                 }
-                
-
-            }
         };
-        removeBookListener =new ActionListener(){
+        
+        pageMenuListener =new ActionListener(){
           
             @Override
             public void actionPerformed(ActionEvent e) {
-                setStatus("remove Book option cilcked");
-                if(editedBook == null) JOptionPane.showMessageDialog(theFrame,"System did not found a seleced Book","Inane error",JOptionPane.ERROR_MESSAGE);
-                else{
-                    if(theController !=null) theController.openBookInfoDialog(editedBook);
-                }
-                
-
+                pageActionMap(e);
+                ;
+               
             }
         };
         
-        addnewPageListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setStatus("add new page option cilcked");
-                
-                if(theController != null) theController.openPageInfoDialog(null);
-               
-            }
-        };
-        editPageListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setStatus("edit Page option cilcked");
-                if(editedPage ==null) JOptionPane.showMessageDialog(theFrame,"System did not found a seleced Book","Inane error",JOptionPane.ERROR_MESSAGE);
-                else{
-                    if(theController !=null) theController.openPageInfoDialog(editedPage);
-                }
-               
+        toolMenuListener = new ActionListener(){
 
-            }
-        };
-        removePageListener =new ActionListener(){
-          
             @Override
             public void actionPerformed(ActionEvent e) {
-                setStatus("remove page option cilcked");
-                if(editedPage ==null) JOptionPane.showMessageDialog(theFrame,"System did not found a seleced Book","Inane error",JOptionPane.ERROR_MESSAGE);
-                else{
-                    if(theController !=null) theController.openPageInfoDialog(editedPage);
-                }
-               
-
-            }
+                toolActionMap(e);
+                        }
+            
         };
-        //Listener: clicked seach book in tool bar
-        viewBookListener =new ActionListener(){
-          
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setStatus("search book");
-                if(theController !=null) theController.OpenBookListFrame();
-                
-            }
-        };
+        
+        
         aboutMenuListener =new ActionListener(){
           
             @Override
             public void actionPerformed(ActionEvent e) {
-                setStatus("about this program.... ");
-               
+                aboutActionMap(e);
                 
             }
         };
 
-         
-        
-       
-      
- 
+
     }
     
     //add all listener to frame;
     private void enableListener(){
         
-        addBookMenuItem.addActionListener(addnewBookListener);
-        editBookMenuItem.addActionListener(editBookListener);
-        deleteBookMenuItem.addActionListener(removeBookListener);
+        addBookMenuItem.addActionListener(bookMenuListener);
+        editBookMenuItem.addActionListener(bookMenuListener);
+        deleteBookMenuItem.addActionListener(bookMenuListener);
         
         
-        addPageMenuItem.addActionListener(addnewPageListener);
-        editPageMenuItem.addActionListener(editPageListener);
-        deletePageMenuItem.addActionListener(removePageListener);
+        addPageMenuItem.addActionListener(pageMenuListener);
+        editPageMenuItem.addActionListener(pageMenuListener);
+        deletePageMenuItem.addActionListener(pageMenuListener);
         
         About.addActionListener(aboutMenuListener);
           
-        addnewBookButton.addActionListener(addnewBookListener);
-        removeBook.addActionListener(removeBookListener);
-        ViewBookButton.addActionListener(viewBookListener);
+        addnewBookButton.addActionListener(toolMenuListener);
+        removeBookButton.addActionListener(toolMenuListener);
+        ViewBookButton.addActionListener(toolMenuListener);
 
        
     } 
     //remove all listener from frame;
     private void disableListsener(){
         About.removeActionListener(aboutMenuListener);
-        addBookMenuItem.removeActionListener(addnewBookListener);
-        deleteBookMenuItem.removeActionListener(removeBookListener);
-        editBookMenuItem.removeActionListener(editBookListener);
-        removeBook.removeActionListener(MenuFrame.removeBookListener);
-        ViewBookButton.removeActionListener(MenuFrame.viewBookListener);
+        
+        addBookMenuItem.removeActionListener(bookMenuListener);
+        deleteBookMenuItem.removeActionListener(bookMenuListener);
+        editBookMenuItem.removeActionListener(bookMenuListener);
+        
+        addPageMenuItem.removeActionListener(pageMenuListener);
+        editPageMenuItem.removeActionListener(pageMenuListener);
+        deletePageMenuItem.removeActionListener(pageMenuListener);
+        
+        addnewBookButton.removeActionListener(toolMenuListener);
+        removeBookButton.removeActionListener(MenuFrame.toolMenuListener);
+        ViewBookButton.removeActionListener(MenuFrame.toolMenuListener);
 
       
     }
     
-    //rest Main Panel;
-   
+    private void bookActionMap(ActionEvent ae){    
+        if(ae.getSource().equals(addBookMenuItem)){
+            
+            if(theController !=null)theController.openBookInfoDialog(this,Controller.operation.ADD,null);  
+  
+        }
+        else {
+           
+            if(theController.getSelectedBook()==null){
+                JOptionPane.showMessageDialog(this," System did not found a selected Book information");
+                return;
+            }
+            
+            if(ae.getSource().equals(editBookMenuItem)){
+                if(theController !=null) theController.openBookInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedBook());
+            }
+             else if(ae.getSource().equals(deleteBookMenuItem)){
+               if(theController !=null) theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
+               theController.setSelectedBook(null);
+            }
+        }
+       
+    }
+            
+    private void pageActionMap(ActionEvent ae){
+         if(ae.getSource().equals(addPageMenuItem)){
+            
+            if(theController !=null)theController.openPageInfoDialog(this, Controller.operation.ADD, null);
+  
+        }
+         
+        else {
+           
+            if(theController.getSelectedPage()==null){
+                JOptionPane.showMessageDialog(this," System did not found a selected page information");
+                return;
+            }
+            
+            if(ae.getSource().equals(editPageMenuItem)){
+                if(theController !=null) theController.openPageInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedPage());
+            }
+            
+             else if(ae.getSource().equals(deletePageMenuItem)){
+               if(theController !=null) theController.openPageInfoDialog(this, Controller.operation.DELETE, theController.getSelectedPage());
+               theController.setSelectedPage(null);
+            }
+        }
+    }
     
-    
-    
+    private void toolActionMap(ActionEvent ae){
+       if(ae.getSource().equals(addnewBookButton)){
+            
+            if(theController !=null)theController.openBookInfoDialog(this,Controller.operation.ADD,null);  
+  
+        }
+        else {
+            if(ae.getSource().equals(removeBookButton)){
+                if(theController.getSelectedBook()==null){
+                JOptionPane.showMessageDialog(this," System did not found a selected Book information");
+                return;
+            }
+             if(theController !=null) 
+                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
+            }
+            
+             else if(ae.getSource().equals(ViewBookButton)){
+               if(theController !=null) 
+                   theController.OpenBookListFrame();
+            }
+        } 
+       
+    }
+    private void aboutActionMap(ActionEvent ae){
+        if(ae.getSource().equals(About)){
+            if(theController !=null) theController.openAboutDialog(this);
+        }
+    }
     
   
     private void updateButton(){
@@ -266,14 +277,14 @@ public class MenuFrame extends javax.swing.JFrame  {
             Pages.setEnabled(true);
             editBookMenuItem.setEnabled(true);
             deleteBookMenuItem.setEnabled(true);
-            removeBook.setEnabled(true);
+            removeBookButton.setEnabled(true);
             
         }else {
             Pages.setEnabled(false);
             Pages.setEnabled(false);
             editBookMenuItem.setEnabled(false);
             deleteBookMenuItem.setEnabled(false);
-            removeBook.setEnabled(false);
+            removeBookButton.setEnabled(false);
         }
         if(theController.getSelectedPage() !=null){
             editPageMenuItem.setEnabled(true);
@@ -291,8 +302,7 @@ public class MenuFrame extends javax.swing.JFrame  {
         updateButton();
         
     }
-    
-    public static void main(String args[])  {
+      public static void main(String args[])  {
        
         
         try {
@@ -319,7 +329,7 @@ public class MenuFrame extends javax.swing.JFrame  {
                 new MenuFrame("test",main).setVisible(true);
             }
         });
-    }
+      }
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -328,7 +338,7 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         bookToolBar = new javax.swing.JToolBar();
         addnewBookButton = new javax.swing.JButton();
-        removeBook = new javax.swing.JButton();
+        removeBookButton = new javax.swing.JButton();
         ViewBookButton = new javax.swing.JButton();
         separator = new javax.swing.JToolBar.Separator();
         mainPannel = new javax.swing.JPanel();
@@ -352,14 +362,14 @@ public class MenuFrame extends javax.swing.JFrame  {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         bookToolBar.setForeground(new java.awt.Color(240, 240, 240));
         bookToolBar.setRollover(true);
 
-        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12));
-        addnewBookButton.setText("Add New Book");
+        addnewBookButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        addnewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/add.png"))); // NOI18N
         addnewBookButton.setToolTipText("Add New Book");
         addnewBookButton.setFocusable(false);
         addnewBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -367,17 +377,14 @@ public class MenuFrame extends javax.swing.JFrame  {
         addnewBookButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bookToolBar.add(addnewBookButton);
 
-        removeBook.setFont(new java.awt.Font("Tahoma", 0, 12));
-        removeBook.setText("Edit Book");
-        removeBook.setToolTipText("Edited Selected Book");
-        removeBook.setFocusable(false);
-        removeBook.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        removeBook.setMargin(new java.awt.Insets(3, 5, 3, 3));
-        removeBook.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        bookToolBar.add(removeBook);
+        removeBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/remove.png"))); // NOI18N
+        removeBookButton.setFocusable(false);
+        removeBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        removeBookButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
+        removeBookButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bookToolBar.add(removeBookButton);
 
-        ViewBookButton.setText("View Book List");
-        ViewBookButton.setToolTipText("viewBookList");
+        ViewBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/search.png"))); // NOI18N
         ViewBookButton.setFocusable(false);
         ViewBookButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ViewBookButton.setMargin(new java.awt.Insets(3, 5, 3, 3));
@@ -420,7 +427,7 @@ public class MenuFrame extends javax.swing.JFrame  {
         gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 20);
         getContentPane().add(ProgressBar, gridBagConstraints);
 
-        statusBar.setFont(new java.awt.Font("Agency FB", 0, 18));
+        statusBar.setFont(new java.awt.Font("Agency FB", 0, 18)); // NOI18N
         statusBar.setText("Status:");
         statusBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -438,23 +445,23 @@ public class MenuFrame extends javax.swing.JFrame  {
         FileMenu.setText("File");
         FileMenu.setAlignmentY(1.0F);
         FileMenu.setFocusable(false);
-        FileMenu.setFont(new java.awt.Font("Agency FB", 0, 16));
+        FileMenu.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         FileMenu.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        openMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        openMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         openMenuItem.setText("Open");
         openMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         FileMenu.add(openMenuItem);
 
-        saveMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        saveMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         saveMenuItem.setText("Save");
         saveMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         FileMenu.add(saveMenuItem);
         FileMenu.add(fileMenuSeparator);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
-        exitMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        exitMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         exitMenuItem.setText("Exit");
         exitMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         FileMenu.add(exitMenuItem);
@@ -463,20 +470,20 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         Edit.setText("Books");
         Edit.setAlignmentY(1.0F);
-        Edit.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Edit.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Edit.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
-        addBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        addBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         addBookMenuItem.setText("AddBook");
         addBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(addBookMenuItem);
 
-        editBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        editBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         editBookMenuItem.setText("EditBook");
         editBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(editBookMenuItem);
 
-        deleteBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        deleteBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         deleteBookMenuItem.setText("DeleteBook");
         deleteBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(deleteBookMenuItem);
@@ -485,20 +492,20 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         Pages.setText("Pages");
         Pages.setAlignmentY(1.0F);
-        Pages.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Pages.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Pages.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
-        addPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        addPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         addPageMenuItem.setText("Add Page");
         addPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(addPageMenuItem);
 
-        editPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        editPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         editPageMenuItem.setText("Edit Page");
         editPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(editPageMenuItem);
 
-        deletePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16));
+        deletePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         deletePageMenuItem.setText("Delete Page");
         deletePageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(deletePageMenuItem);
@@ -507,16 +514,16 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         jMenu1.setText("Database");
         jMenu1.setAlignmentY(1.0F);
-        jMenu1.setFont(new java.awt.Font("Agency FB", 0, 16));
+        jMenu1.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         jMenu1.setMargin(new java.awt.Insets(3, 3, 3, 3));
         topMenuBar.add(jMenu1);
 
         Help.setText("Help");
         Help.setAlignmentY(1.0F);
-        Help.setFont(new java.awt.Font("Agency FB", 0, 16));
+        Help.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Help.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
-        About.setFont(new java.awt.Font("Agency FB", 0, 16));
+        About.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         About.setText("About");
         About.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Help.add(About);
@@ -550,7 +557,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel mainPannel;
     private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JButton removeBook;
+    private javax.swing.JButton removeBookButton;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JLabel statusBar;

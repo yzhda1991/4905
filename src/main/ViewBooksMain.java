@@ -4,10 +4,14 @@
  */
 package main;
 
+import javax.swing.JFrame;
+import model.BookInfoDialog;
 import model.BooklistFrame;
 import model.MainFrame;
+import model.PageInfoDialog;
 import model.PageListFrame;
 import model.PageViewerFrame;
+import model.AboutDialog;
 
 /**
  *
@@ -24,6 +28,9 @@ public class ViewBooksMain implements Controller {
     private PageListFrame   pageListviewer;
     private PageViewerFrame pageviewer;
     private MainFrame       mainFrame;
+    private BookInfoDialog  bookDialog;
+    private PageInfoDialog  pageDialog;
+    private AboutDialog     theaboutDialog;
     
     public ViewBooksMain(){
        theConnecter = new Connecter();
@@ -49,12 +56,19 @@ public class ViewBooksMain implements Controller {
     
     @Override
     public void setSelectedBook(Book b) {
-        selectedBook = b;
+        if(b==null) return;
+        if(b.getClass().equals(Book.class)) {
+            selectedBook = b;
+        } else {
+        }
     }
 
     @Override
     public void setSelectedPage(Page p) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(p == null) return;
+        if(p.getClass().equals(Page.class) )
+        selectedPage = p;
+        
     }
    
     @Override
@@ -116,18 +130,67 @@ public class ViewBooksMain implements Controller {
     }
     
     @Override
-    public void openBookInfoDialog(Book b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void openBookInfoDialog(JFrame parent,operation anOperation,Book b) {
+        //To change body of generated methods, choose Tools | Templates.
+        if(bookDialog ==null) {
+            String title = null;
+            if(b == null ) title = " New Book";
+            else title = anOperation.toString() +" Book: "+b.getBookName();
+            bookDialog = new BookInfoDialog(title,parent,this,b,anOperation,true);
+        }
+        if(!bookDialog.isVisible())bookDialog.setVisible(true);
+    }
+     @Override
+    public void openPageInfoDialog(JFrame parent,operation anOperation, Page p) {
+        if(pageDialog ==null) {
+            String title = null;
+            if(p == null ) title = " New Page";
+            else title = anOperation.toString() +" Page: "+p.getPageTitle();
+            pageDialog = new PageInfoDialog(parent,title,this,p,anOperation,true);
+           
+            if(!pageDialog.isVisible())pageDialog.setVisible(true);
+        }
+    }
+    
+
+    @Override
+    public void closeBookInfoDialog(operation anOperation,Book b) {
+        //To change body of generated methods, choose Tools | Templates.
+        boolean successed =false;
+        if(anOperation.equals(operation.ADD) && b !=null)         successed = theConnecter.addBook(b);
+        else if(anOperation.equals(operation.UPDATE)) successed = theConnecter.updateBook(b);
+        else if(anOperation.equals(operation.DELETE)) successed = theConnecter.deleteBook(b);
+        
+        if(successed)System.out.println("successed");
+        else System.out.println("failed");
+        
+        if(bookDialog.isVisible()){
+            bookDialog.setVisible(false);
+            bookDialog.dispose();
+        }
+        
     }
 
     @Override
-    public void closeBookInfoDialog(operation anOperation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void closePageInfoDialog(operation anOperation,Page p) {
+        boolean successed =false;
+        if(anOperation.equals(operation.ADD)&& p!=null)         successed = theConnecter.addPage(p);
+        else if(anOperation.equals(operation.UPDATE)) successed = theConnecter.updatePage(p);
+        else if(anOperation.equals(operation.DELETE)) successed = theConnecter.deletePage(p);
+        
+        if(successed)System.out.println("successed");
+        else System.out.println("failed");
+        
+        if(pageDialog.isVisible()){
+            pageDialog.setVisible(false);
+            pageDialog.dispose();
+        }
     }
-
+    
     @Override
-    public void closePageInfoDialog(operation anOperation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void openAboutDialog(JFrame parent) {
+        if(theaboutDialog ==null) theaboutDialog = new AboutDialog(parent,"about this program",true);
+        theaboutDialog.setVisible(true);
     }
 
     @Override
@@ -138,14 +201,10 @@ public class ViewBooksMain implements Controller {
 
     @Override
     public void dialogCancelled() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         
     }
 
-    @Override
-    public void openPageInfoDialog(Page p) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
+   
    public static void main(String args[]) {
        
         try {
@@ -171,6 +230,8 @@ public class ViewBooksMain implements Controller {
         
    
     }
+
+    
 
     
 }

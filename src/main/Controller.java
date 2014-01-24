@@ -4,6 +4,8 @@
  */
 package main;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author byang1
@@ -49,18 +51,19 @@ public interface Controller {
      *
      * @param anOperation
      */
-    public void openBookInfoDialog(Book b);
-    public void closeBookInfoDialog(operation anOperation);
+    public void openBookInfoDialog(JFrame parent,operation anOperation,Book b);
+    public void closeBookInfoDialog(operation anOperation,Book b);
     /**
      *
      * @param anOperation
      */
-    public void openPageInfoDialog (Page p);
-    public void closePageInfoDialog(operation anOperation);
+    public void openPageInfoDialog (JFrame parent,operation anOperation,Page p);
+    public void closePageInfoDialog(operation anOperation,Page p);
     
     /**
      *
      */
+    public void openAboutDialog(JFrame parent);
     public void exitProgram();
     public void dialogCancelled();
     

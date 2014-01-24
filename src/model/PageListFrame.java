@@ -73,12 +73,7 @@ public class PageListFrame  extends MenuFrame{
             }
         };
         
-        this.addWindowListener(new WindowAdapter(){
-              public void WindowClosing(WindowEvent e){
-                  if(theController !=null)theController.closePageListFrame();
-                  else System.exit(0);
-              }
-         });
+       
         
         update();
     }

@@ -24,10 +24,10 @@ public class Page {
     }
     
     //Page Constructor with pageID, 
-    public Page(int id, String code, int num){
-        pageID = id;
+    public Page(String title, String code, int num){
+        
         bookCode = code;
-        pageTitle = "unKnown Title";
+        pageTitle = title;
         pageNum = num;
     }
     
