@@ -12,11 +12,15 @@ package model;
 
 
 import java.awt.event.*;
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+import javax.swing.JFileChooser;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import main.Controller;
 import main.ViewBooksMain;
 
@@ -34,6 +38,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     private static ActionListener  pageMenuListener;
     private static ActionListener  toolMenuListener;
     private static ActionListener  aboutMenuListener;
+    private static ActionListener  fileMenuListener;
     
   
     
@@ -68,10 +73,6 @@ public class MenuFrame extends javax.swing.JFrame  {
         
     }
     
-    
-    
-    
-   
     //update Status Message;
     public void setStatus(String s){
     statusBar.setText("Status : "+s);
@@ -126,7 +127,7 @@ public class MenuFrame extends javax.swing.JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pageActionMap(e);
-                ;
+                
                
             }
         };
@@ -149,6 +150,15 @@ public class MenuFrame extends javax.swing.JFrame  {
                 
             }
         };
+        
+        fileMenuListener = new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileActionmap(e);
+                        }
+            
+        };
 
 
     }
@@ -160,12 +170,16 @@ public class MenuFrame extends javax.swing.JFrame  {
         editBookMenuItem.addActionListener(bookMenuListener);
         deleteBookMenuItem.addActionListener(bookMenuListener);
         
+        openMenuItem.addActionListener(fileMenuListener);
+        saveMenuItem.addActionListener(fileMenuListener);
+        exitMenuItem.addActionListener(fileMenuListener);
         
         addPageMenuItem.addActionListener(pageMenuListener);
         editPageMenuItem.addActionListener(pageMenuListener);
         deletePageMenuItem.addActionListener(pageMenuListener);
         
         About.addActionListener(aboutMenuListener);
+        
           
         addnewBookButton.addActionListener(toolMenuListener);
         removeBookButton.addActionListener(toolMenuListener);
@@ -176,6 +190,10 @@ public class MenuFrame extends javax.swing.JFrame  {
     //remove all listener from frame;
     private void disableListsener(){
         About.removeActionListener(aboutMenuListener);
+        
+        openMenuItem.removeActionListener(fileMenuListener);
+        saveMenuItem.removeActionListener(fileMenuListener);
+        exitMenuItem.removeActionListener(fileMenuListener);
         
         addBookMenuItem.removeActionListener(bookMenuListener);
         deleteBookMenuItem.removeActionListener(bookMenuListener);
@@ -190,6 +208,42 @@ public class MenuFrame extends javax.swing.JFrame  {
         ViewBookButton.removeActionListener(MenuFrame.toolMenuListener);
 
       
+    }
+    
+    private void fileActionmap(ActionEvent ae){
+        
+        if(ae.getSource().equals(exitMenuItem)){
+            if(theController !=null) theController.exitProgram();
+        }
+        else if(ae.getSource().equals(openMenuItem)){
+             JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("","db");
+                 chooser.setFileFilter(filter);
+                 
+                 int returnVal = chooser.showOpenDialog(null);
+                 
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+                        if(theController !=null)
+                        if(theController.openNewDataBase(chooser.getSelectedFile())){
+                            Enumeration<AbstractButton> elements = databaseRequired.getElements();
+                            
+                            while(elements.hasMoreElements()){
+                                elements.nextElement().getModel().setEnabled(true);
+                            }
+                        }
+                    }  
+        }
+        else if(ae.getSource().equals(saveMenuItem)){
+            JFileChooser chooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("xml","XML");
+                 chooser.setFileFilter(filter);
+                 
+                 int returnVal = chooser.showSaveDialog(null);
+                 
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+                           if(theController !=null) theController.SaveDatabaseAs(chooser.getSelectedFile());
+                    }
+        }
     }
     
     private void bookActionMap(ActionEvent ae){    
@@ -272,7 +326,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     
   
     private void updateButton(){
-       
+       if(theController==null) theController = new ViewBooksMain();
         if(theController.getSelectedBook() != null){
             Pages.setEnabled(true);
             editBookMenuItem.setEnabled(true);
@@ -296,10 +350,11 @@ public class MenuFrame extends javax.swing.JFrame  {
     
         
     }
-    private void update(){
+    
+    public void update(){
         disableListsener();
-        enableListener(); 
         updateButton();
+        enableListener(); 
         
     }
       public static void main(String args[])  {
@@ -336,6 +391,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        databaseRequired = new javax.swing.ButtonGroup();
         bookToolBar = new javax.swing.JToolBar();
         addnewBookButton = new javax.swing.JButton();
         removeBookButton = new javax.swing.JButton();
@@ -348,6 +404,7 @@ public class MenuFrame extends javax.swing.JFrame  {
         FileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
+        DatabaseCloseMenuItem = new javax.swing.JMenuItem();
         fileMenuSeparator = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         Edit = new javax.swing.JMenu();
@@ -358,7 +415,6 @@ public class MenuFrame extends javax.swing.JFrame  {
         addPageMenuItem = new javax.swing.JMenuItem();
         editPageMenuItem = new javax.swing.JMenuItem();
         deletePageMenuItem = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
@@ -444,6 +500,7 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         FileMenu.setText("File");
         FileMenu.setAlignmentY(1.0F);
+        databaseRequired.add(FileMenu);
         FileMenu.setFocusable(false);
         FileMenu.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         FileMenu.setMargin(new java.awt.Insets(3, 3, 3, 3));
@@ -456,8 +513,13 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         saveMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         saveMenuItem.setText("Save");
+        databaseRequired.add(saveMenuItem);
         saveMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         FileMenu.add(saveMenuItem);
+
+        DatabaseCloseMenuItem.setText("Close Database");
+        databaseRequired.add(DatabaseCloseMenuItem);
+        FileMenu.add(DatabaseCloseMenuItem);
         FileMenu.add(fileMenuSeparator);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
@@ -475,16 +537,19 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         addBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         addBookMenuItem.setText("AddBook");
+        databaseRequired.add(addBookMenuItem);
         addBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(addBookMenuItem);
 
         editBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         editBookMenuItem.setText("EditBook");
+        databaseRequired.add(editBookMenuItem);
         editBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(editBookMenuItem);
 
         deleteBookMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         deleteBookMenuItem.setText("DeleteBook");
+        databaseRequired.add(deleteBookMenuItem);
         deleteBookMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Edit.add(deleteBookMenuItem);
 
@@ -492,31 +557,29 @@ public class MenuFrame extends javax.swing.JFrame  {
 
         Pages.setText("Pages");
         Pages.setAlignmentY(1.0F);
+        databaseRequired.add(Pages);
         Pages.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         Pages.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         addPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         addPageMenuItem.setText("Add Page");
+        databaseRequired.add(addPageMenuItem);
         addPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(addPageMenuItem);
 
         editPageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         editPageMenuItem.setText("Edit Page");
+        databaseRequired.add(editPageMenuItem);
         editPageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(editPageMenuItem);
 
         deletePageMenuItem.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
         deletePageMenuItem.setText("Delete Page");
+        databaseRequired.add(deletePageMenuItem);
         deletePageMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         Pages.add(deletePageMenuItem);
 
         topMenuBar.add(Pages);
-
-        jMenu1.setText("Database");
-        jMenu1.setAlignmentY(1.0F);
-        jMenu1.setFont(new java.awt.Font("Agency FB", 0, 16)); // NOI18N
-        jMenu1.setMargin(new java.awt.Insets(3, 3, 3, 3));
-        topMenuBar.add(jMenu1);
 
         Help.setText("Help");
         Help.setAlignmentY(1.0F);
@@ -538,6 +601,7 @@ public class MenuFrame extends javax.swing.JFrame  {
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
+    private javax.swing.JMenuItem DatabaseCloseMenuItem;
     private javax.swing.JMenu Edit;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JMenu Help;
@@ -548,13 +612,13 @@ public class MenuFrame extends javax.swing.JFrame  {
     private javax.swing.JMenuItem addPageMenuItem;
     private javax.swing.JButton addnewBookButton;
     private javax.swing.JToolBar bookToolBar;
+    private javax.swing.ButtonGroup databaseRequired;
     private javax.swing.JMenuItem deleteBookMenuItem;
     private javax.swing.JMenuItem deletePageMenuItem;
     private javax.swing.JMenuItem editBookMenuItem;
     private javax.swing.JMenuItem editPageMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JPopupMenu.Separator fileMenuSeparator;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel mainPannel;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JButton removeBookButton;

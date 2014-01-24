@@ -16,14 +16,14 @@ import main.ViewBooksMain;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
+
 import viewer.PageViewer;
 
 
 public class PageViewerFrame extends MenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
-    private SwingController     theSwingController; 
-    private SwingViewBuilder    factory;
+    private SwingController theSwingController;
     private ArrayList<Page>     pageCollection;
     private Page                selectedPage;
     private Connecter           theConnecter;
@@ -33,20 +33,16 @@ public class PageViewerFrame extends MenuFrame {
     public PageViewerFrame(){
         super("view page");
         theConnecter   = new Connecter();
-        theSwingController  = new SwingController();
-        factory        = new SwingViewBuilder(theSwingController);
+        
+       
         pageCollection = new ArrayList<Page>();
         selectedPage   = null;
-       
-        
         initComplent();
     }
     
     public PageViewerFrame(Page p){
         super("view page");
         theConnecter   = new Connecter();
-        theSwingController  = new SwingController();
-        factory        = new SwingViewBuilder(theSwingController);
         pageCollection = null;
         selectedPage   = p;
       
@@ -58,8 +54,6 @@ public class PageViewerFrame extends MenuFrame {
         super(title,c);
         theConnecter   = con;
         theController  = c;
-        theSwingController  = new SwingController();
-        factory        = new SwingViewBuilder(theSwingController);
         pageCollection = null;
         selectedPage   = p;
       
@@ -71,11 +65,13 @@ public class PageViewerFrame extends MenuFrame {
         
         theviewer      = new PageViewer();
         
-        super.updateMainPanel(theviewer);
         
         if(selectedPage !=null)pageCollection = theConnecter.searchPage(selectedPage.getBookCode(), "bookcode");
         else pageCollection = theConnecter.getPageList();
         
+        theSwingController = new SwingController();
+        SwingViewBuilder factory = new SwingViewBuilder(theSwingController);
+
         JPanel newViewer = factory.buildViewerPanel();
         
         ComponentKeyBinding.install(theSwingController, newViewer);
@@ -128,6 +124,8 @@ public class PageViewerFrame extends MenuFrame {
               }
          });
         enableListener();
+        super.updateMainPanel(theviewer);
+        
         update();
        
     }
@@ -166,10 +164,12 @@ public class PageViewerFrame extends MenuFrame {
 		if (selectedPage != null)
 			 theviewer.getPageList().setSelectedValue(selectedPage, true);
     }
-    private void update(){
+    @Override
+    public void update(){
         disableListener();
         updateList();
         enableListener();
+        super.update();
     }
     
     public static void main(String args[])  {
@@ -195,7 +195,7 @@ public class PageViewerFrame extends MenuFrame {
 
             @Override
             public void run() {
-                
+                ViewBooksMain main = new ViewBooksMain();
                 new PageViewerFrame().setVisible(true);
             }
         });

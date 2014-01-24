@@ -4,6 +4,7 @@
  */
 package main;
 
+import java.io.File;
 import javax.swing.JFrame;
 import model.BookInfoDialog;
 import model.BooklistFrame;
@@ -12,25 +13,30 @@ import model.PageInfoDialog;
 import model.PageListFrame;
 import model.PageViewerFrame;
 import model.AboutDialog;
+import model.SearchBookDialog;
+import model.SearchPageDialog;
 
 /**
  *
  * @author brianyang
  */
 public class ViewBooksMain implements Controller {
-    protected Connecter theConnecter;
-    private Book      selectedBook;
-    private Book      editedBook;
-    private Page      selectedPage;
-    private Page      editedPage;
     
-    private BooklistFrame   bookListviewer;
-    private PageListFrame   pageListviewer;
-    private PageViewerFrame pageviewer;
-    private MainFrame       mainFrame;
-    private BookInfoDialog  bookDialog;
-    private PageInfoDialog  pageDialog;
-    private AboutDialog     theaboutDialog;
+    protected Connecter         theConnecter;
+    private Book                selectedBook;
+    private Book                editedBook;
+    private Page                selectedPage;
+    private Page                editedPage;
+    
+    private BooklistFrame       bookListviewer;
+    private PageListFrame       pageListviewer;
+    private PageViewerFrame     pageviewer;
+    private MainFrame           mainFrame;
+    private BookInfoDialog      bookDialog;
+    private PageInfoDialog      pageDialog;
+    private AboutDialog         theaboutDialog;
+    private SearchBookDialog    theBookSearchDialog;
+    private SearchPageDialog    thePageSearchDialog;
     
     public ViewBooksMain(){
        theConnecter = new Connecter();
@@ -131,12 +137,15 @@ public class ViewBooksMain implements Controller {
     
     @Override
     public void openBookInfoDialog(JFrame parent,operation anOperation,Book b) {
-        //To change body of generated methods, choose Tools | Templates.
         if(bookDialog ==null) {
             String title = null;
             if(b == null ) title = " New Book";
             else title = anOperation.toString() +" Book: "+b.getBookName();
             bookDialog = new BookInfoDialog(title,parent,this,b,anOperation,true);
+        }
+        else{
+            bookDialog.setBook(b);
+            
         }
         if(!bookDialog.isVisible())bookDialog.setVisible(true);
     }
@@ -155,7 +164,6 @@ public class ViewBooksMain implements Controller {
 
     @Override
     public void closeBookInfoDialog(operation anOperation,Book b) {
-        //To change body of generated methods, choose Tools | Templates.
         boolean successed =false;
         if(anOperation.equals(operation.ADD) && b !=null)         successed = theConnecter.addBook(b);
         else if(anOperation.equals(operation.UPDATE)) successed = theConnecter.updateBook(b);
@@ -203,6 +211,70 @@ public class ViewBooksMain implements Controller {
     public void dialogCancelled() {
          
     }
+    
+    @Override
+    public void openBookSearchDialog(JFrame parent) {
+      if(theBookSearchDialog ==null) theBookSearchDialog = new SearchBookDialog(parent,"Search Books",theConnecter,this,true);
+      if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.setVisible(false);
+      if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
+      if(pageviewer !=null && pageviewer.isVisible()) pageviewer.setVisible(false);
+      
+      theBookSearchDialog.setVisible(true);
+      
+              
+    }
+
+    @Override
+    public void closeBookSearchDialog() {
+        
+        if(theBookSearchDialog!=null && theBookSearchDialog.isVisible()){
+            theBookSearchDialog.setVisible(false);
+            theBookSearchDialog.dispose();
+            }
+        if(!mainFrame.isVisible())mainFrame.setVisible(true);
+        
+            }
+      @Override
+    public void OpenPageSearchDialog(JFrame parent) {
+      if(thePageSearchDialog ==null) thePageSearchDialog = new SearchPageDialog(parent,"Search Page",theConnecter,this,true);
+      if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.setVisible(false);
+      if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
+      if(pageviewer !=null && pageviewer.isVisible()) pageviewer.setVisible(false);
+      
+      thePageSearchDialog.setVisible(true);}
+
+    @Override
+    public void closePageSearchDialog() {
+        
+      if(theBookSearchDialog!=null && theBookSearchDialog.isVisible()){
+            theBookSearchDialog.setVisible(false);
+            theBookSearchDialog.dispose();
+            }
+        if(!mainFrame.isVisible())mainFrame.setVisible(true);
+        }
+    
+    
+    @Override
+    public void SaveDatabaseAs(File f) {
+       theConnecter.saveDatabase(f);
+    }
+
+    @Override
+    public boolean closeDatabase() {
+        return theConnecter.closeConnection();
+        
+    }
+
+    @Override
+    public boolean openNewDataBase(File f) {
+        return theConnecter.changeDatabase(f);
+    }
+
+    public void update(){
+        if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.update();
+        if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.update();
+        if(pageviewer !=null &&pageviewer.isVisible())pageviewer.update();
+    }
 
    
    public static void main(String args[]) {
@@ -230,6 +302,10 @@ public class ViewBooksMain implements Controller {
         
    
     }
+
+  
+
+    
 
     
 

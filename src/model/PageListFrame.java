@@ -9,10 +9,13 @@ import main.Connecter;
 import main.Page;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import main.Controller;
 import main.ViewBooksMain;
@@ -60,10 +63,10 @@ public class PageListFrame  extends MenuFrame{
     private void initComponents(){
         
         mainPanel = new PageListPanel();
-        super.updateMainPanel(mainPanel);
         bookCollection  = theConnecter.getBookList(); 
         if(theBook==null)pageCollection = theConnecter.getPageList(); 
         else pageCollection = theConnecter.searchPage(theBook.getBookCode(), "bookcode");
+        
         seachButtonListener = new ActionListener(){
 
             @Override
@@ -73,7 +76,89 @@ public class PageListFrame  extends MenuFrame{
             }
         };
         
-       
+        pagelistSelection = new ListSelectionListener(){
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+             theController.setSelectedPage((Page)mainPanel.getPageList().getSelectedValue());
+             update();
+            }
+            
+        };
+        
+        booklistSelection = new ListSelectionListener(){
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                theController.setSelectedBook((Book)mainPanel.getBookList().getSelectedValue());
+                update();
+            }
+            
+        };
+        
+        doubleClickedonBook = new MouseListener(){
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount()==2){
+                    JList theList =(JList) e.getSource();
+                    int index =  theList.locationToIndex(e.getPoint());
+                    Book findBook = (Book)theList.getModel().getElementAt(index);
+                    if(findBook!= null)searchPage(findBook);
+                }
+              }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+              }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+  
+        };
+        
+        doubleClickedonPage = new MouseListener(){
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 if(e.getClickCount()==2){
+                    JList theList =(JList) e.getSource();
+                    int index =  theList.locationToIndex(e.getPoint());
+                    Page findPage = (Page)theList.getModel().getElementAt(index);
+                    if(findPage!= null){
+                        if(theController !=null) theController.openPageViewer(findPage);
+                    }
+                 }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+             }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+             }
+            
+        };
+        
+        super.updateMainPanel(mainPanel);
         
         update();
     }
@@ -103,6 +188,13 @@ public class PageListFrame  extends MenuFrame{
          update();
     }
     
+    private void searchPage(Book b){
+         ArrayList<Page> searchPage = new ArrayList<Page>();
+         searchPage =theConnecter.searchPage(b.getBookCode(), "bookcode");
+         
+         pageCollection = searchPage;
+         update();
+    }
     
     private void enableListener(){
        
@@ -122,10 +214,12 @@ public class PageListFrame  extends MenuFrame{
         mainPanel.getPageList().removeListSelectionListener(pagelistSelection);
     }
     
-    private void update(){
+    @Override
+    public void update(){
         disableListener();
         updateList();
         enableListener();
+        super.update();
       
       
     }

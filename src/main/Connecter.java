@@ -4,14 +4,19 @@
  */
 package main;
 
+import java.io.File;
+
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.SavetoXML;
+
 
 /**
  *
@@ -37,12 +42,9 @@ public class Connecter {
     private void createConnection(){
         try{
             Class.forName("org.sqlite.JDBC"); 
-            database = DriverManager.getConnection("jdbc:sqlite:src/database/db_books");
-            
-                stat = database.createStatement();
-             
-            
-                
+            database = DriverManager.getConnection("jdbc:sqlite:src/database/db_books"); 
+            stat = database.createStatement();
+       
         }catch(  ClassNotFoundException e){
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, e);
         }catch (SQLException ex) {
@@ -50,22 +52,32 @@ public class Connecter {
             }
     }
     
-    public void changeDatabase(String path){
+    public boolean changeDatabase(File f){
         try{
-            database = DriverManager.getConnection(path);
-        }catch(SQLException e){
+            if(!database.isClosed()) database.close();
+            database = DriverManager.getConnection("jdbc:sqlite:"+f.getPath());
+            stat = database.createStatement();
+            return !database.isClosed();
             
+        }catch(Exception e){
+         
+            Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, e);
+            return false;
+        
         }
     }
     
-    public void closeConnection(){
+    public boolean closeConnection(){
          try{
-                              System.out.println("Closing DataBase Connection");
-                              database.close();
+             System.out.println("Closing DataBase Connection");
+             database.close();
+             return database.isClosed();
                             
-                          } catch (SQLException ex) {
+            } catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
+         
                           
     }
     //return book search result from databse 
@@ -134,7 +146,14 @@ public class Connecter {
     
     //return search result for page from database
     public ArrayList<Page> searchPage(String s,String type){
-        String sqlQueryString = "select * from pagelist where "+ type +" like '%" + s + "%' order by "+type+" asc" + ";";
+        
+        String sqlQueryString;
+        if(!"page".equals(type)){
+           sqlQueryString = "select * from pagelist where "+ type +" like '%" + s + "%' order by "+type+" asc" + ";";
+       
+        } else {
+            sqlQueryString = "select * from pagelist where "+ type +" like " + s + " order by "+type+" asc" + ";";
+        }
         ArrayList<Page> searchResult = new ArrayList<Page>();
         
         try {
@@ -156,12 +175,13 @@ public class Connecter {
    
     //add Book to database;
     public boolean addBook(Book b){
-        String sqlQueryString = "INSERT INTO bookcodes(code,title,path,author,startpage) "
+        String sqlQuery = "INSERT INTO bookcodes(code,title,path,author,startpage) "
                                 + "values('"+b.getBookCode()+"','"+b.getBookName()+"','"+b.getBookPath()+"','"+b.getAuthor()+"',"+b.getInitPage()+");";
         try{
-            rs =stat.executeQuery(sqlQueryString);
-            rs.close();
-            return true;
+            int executeUpdate = stat.executeUpdate(sqlQuery);
+            
+            if(executeUpdate==1) return true;
+            else return false;
             
         }catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,13 +195,14 @@ public class Connecter {
         	String sqlQuery ="update bookcodes set title = '" 
                         + b.getBookName() + "',path ='" + b.getBookPath() + "',author = '" 
                         + b.getAuthor()+"',startpage = " + b.getInitPage() 
-                        + "where code ='" + b.getBookCode()+"';";
+                        + " where code ='" + b.getBookCode()+"';";
                 try{
-            rs =stat.executeQuery(sqlQuery);
-            rs.close();
-            return true;
+                    System.out.println(sqlQuery);
+                    int executeUpdate = stat.executeUpdate(sqlQuery);
             
-        }catch (SQLException ex) {
+            if(executeUpdate==1) return true;
+            else return false;
+        }catch (SQLException  ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -190,10 +211,10 @@ public class Connecter {
     public boolean deleteBook(Book b){
         String sqlQuery = "delete from bookcodes where code = '"+b.getBookCode()+"';";
             try{
-            rs =stat.executeQuery(sqlQuery);
-            rs.close();
-            return true;
+           int executeUpdate = stat.executeUpdate(sqlQuery);
             
+            if(executeUpdate==1) return true;
+            else return false;
         }catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -203,12 +224,13 @@ public class Connecter {
     //add page to database;
     public boolean addPage(Page p){
         
-        String sqlQueryString = "INSERT INTO pagelist(title,bookcode,page) "
+        String sqlQuery = "INSERT INTO pagelist(title,bookcode,page) "
                                 + "values('"+p.getPageTitle()+"','"+p.getBookCode()+"');";
         try{
-            rs =stat.executeQuery(sqlQueryString);
-            rs.close();
-            return true;
+           int executeUpdate = stat.executeUpdate(sqlQuery);
+            
+            if(executeUpdate==1) return true;
+            else return false;
             
         }catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
@@ -223,9 +245,10 @@ public class Connecter {
                         + p.getPageTitle() + "',bookcode ='" + p.getBookCode() + "',page = " + p.getPageNum()
                         + "where id ='" + p.getPageID()+"';";
             try{
-            rs =stat.executeQuery(sqlQuery);
-            rs.close();
-            return true;
+           int executeUpdate = stat.executeUpdate(sqlQuery);
+            
+            if(executeUpdate==1) return true;
+            else return false;
             
         }catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
@@ -236,15 +259,24 @@ public class Connecter {
     public boolean deletePage(Page p){
         String sqlQuery = "delete from pagelist where id = "+p.getPageID()+";";
             try{
-            rs =stat.executeQuery(sqlQuery);
-            rs.close();
-            return true;
+            int executeUpdate = stat.executeUpdate(sqlQuery);
+            
+            if(executeUpdate==1) return true;
+            else return false;
             
         }catch (SQLException ex) {
             Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
-
-}
+    
+    public void saveDatabase(File f){
+      
+            SavetoXML save = new SavetoXML(getBookList(),getPageList(),f);
+            
+            
+        
+        
+    }
+    }
 

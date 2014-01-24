@@ -57,6 +57,16 @@ public class BookInfoDialog extends javax.swing.JDialog {
     
     public void setBook(Book b){
         theBook =b;
+        if(b!=null){
+            setTitle(theBook.getBookName());
+        
+        
+        bookCodeField.setText(theBook.getBookCode());
+            bookNameField.setText(theBook.getBookName());
+            bookPathField.setText(theBook.getBookPath());
+            bookAuthorField.setText(theBook.getAuthor());
+            pageNumField.setText(theBook.getInitPage()+"");
+        }
     }
     
 
@@ -413,7 +423,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
     
     //Action performs when user clicked Submit button
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-          disableForcusLost();
+         
           if(errorfound){
               JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
               return;
@@ -423,17 +433,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
             //if there is no error found in the form, create book with book info;
             //if thebook is empty object, create new Book with book info provided;
             //otherwise update theBook info cosponding the book info provide;
-         
 
-                     theBook.setBookName(bookNameField.getText());
-                     theBook.setBookCode(bookCodeField.getText());
-                     theBook.setBookPath(bookPathField.getText());
-                     theBook.setAuthor(bookAuthorField.getText());
-                     theBook.setPage(Integer.parseInt(pageNumField.getText()));
+                   theBook = new Book(bookCodeField.getText(),bookNameField.getText(),bookPathField.getText(),bookAuthorField.getText(),Integer.parseInt(pageNumField.getText()));
                  
           if(theController != null) theController.closeBookInfoDialog(mode,theBook);
-          this.setVisible(false);
-          dispose();
+          
             }
 
    
@@ -451,9 +455,15 @@ public class BookInfoDialog extends javax.swing.JDialog {
                      theBook.setPage(Integer.parseInt(pageNumField.getText()));
                  
             if(theController != null ) theController.closeBookInfoDialog(mode, theBook);
-            this.setVisible(false);
-             dispose();
+            
+            } else {   
+                 
+            if(theController != null ) theController.closeBookInfoDialog(mode, theBook);
+            
             }
+          
+          this.setVisible(false);
+          dispose();
                
               
     }//GEN-LAST:event_submitButtonActionPerformed

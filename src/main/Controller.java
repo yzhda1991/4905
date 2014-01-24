@@ -4,6 +4,7 @@
  */
 package main;
 
+import java.io.File;
 import javax.swing.JFrame;
 
 /**
@@ -16,6 +17,7 @@ public interface Controller {
      *
      */
     public static enum operation {ADD,UPDATE, DELETE};
+    public static enum type      {BOOK,PAGE};
 
     /**
      *
@@ -66,6 +68,16 @@ public interface Controller {
     public void openAboutDialog(JFrame parent);
     public void exitProgram();
     public void dialogCancelled();
+    
+    public void openBookSearchDialog(JFrame parent);
+    public void closeBookSearchDialog();
+    
+    public void OpenPageSearchDialog(JFrame parent);
+    public void closePageSearchDialog();
+    
+    public void SaveDatabaseAs(File f);
+    public boolean closeDatabase();
+    public boolean openNewDataBase(File f);
     
     
 }

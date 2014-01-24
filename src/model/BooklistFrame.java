@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import main.Controller;
 import main.ViewBooksMain;
@@ -53,7 +54,7 @@ public class BooklistFrame extends MenuFrame{
    
     private void initComponents(){
         mainPanel = new BookListPanel();
-        super.updateMainPanel(mainPanel);
+       
         bookCollection = theConnecter.getBookList(); 
 
         seachButtonListener = new ActionListener(){
@@ -100,14 +101,25 @@ public class BooklistFrame extends MenuFrame{
             }
             
         };
-        this.addWindowListener(new WindowAdapter(){
-              public void WindowClosing(WindowEvent e){
-                  if(theController !=null)theController.closeBookListFrame();
-                  else System.exit(0);
-              }
-         });
+        listSelection       = new ListSelectionListener(){
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                selectedBook();
+            }
         
+    };
+        
+        super.updateMainPanel(mainPanel);
+       
         update();
+    }
+    
+    private void selectedBook(){
+        theController.setSelectedBook((Book)mainPanel.getBookList().getSelectedValue());
+        super.setStatus("selected book:"+theController.getSelectedBook());
+            update();
+            
     }
     
     private void doubleClickedBook(Book b){
@@ -121,10 +133,13 @@ public class BooklistFrame extends MenuFrame{
     private void enableListener(){
         mainPanel.getSearchButton().addActionListener(seachButtonListener);
         mainPanel.getBookList().addMouseListener(doubleClickedonbook);
+        mainPanel.getBookList().addListSelectionListener(listSelection);
     }
+    
     private void disableListener(){
         mainPanel.getSearchButton().removeActionListener(seachButtonListener);
         mainPanel.getBookList().removeMouseListener(doubleClickedonbook);
+        mainPanel.getBookList().removeListSelectionListener(listSelection);
     }
     
     private void searchBook(){
@@ -156,13 +171,18 @@ public class BooklistFrame extends MenuFrame{
     
     private void updateList(){
         Book bookArray[] = new Book[1];
-        mainPanel.getBookList().setListData((Book [])bookCollection.toArray(bookArray));   
+        if(bookCollection !=null && !bookCollection.isEmpty())
+        mainPanel.getBookList().setListData((Book [])bookCollection.toArray(bookArray)); 
+        if(bookCollection ==null || bookCollection.isEmpty())
+            mainPanel.getBookList().setVisible(false);
     }
     
-    private void update(){
+    @Override
+    public void update(){
         disableListener();
         updateList();
         enableListener();
+        super.update();
     }
             
     public static void main(String args[]) {
