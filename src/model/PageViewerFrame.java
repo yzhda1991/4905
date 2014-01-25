@@ -1,6 +1,7 @@
 
 package model;
 
+import java.awt.event.MouseAdapter;
 import main.Book;
 import main.Page;
 import java.awt.event.MouseEvent;
@@ -81,7 +82,7 @@ public class PageViewerFrame extends MenuFrame {
         theviewer.setMainPanel(newViewer);
         if(selectedPage!=null)openPage(selectedPage);
         
-        doubleClickedPage = new MouseListener(){
+        doubleClickedPage = new MouseAdapter(){
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -92,26 +93,6 @@ public class PageViewerFrame extends MenuFrame {
                 }
             }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-               
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                
-            }
-            
         };
         
          this.addWindowListener(new WindowAdapter(){
@@ -126,6 +107,7 @@ public class PageViewerFrame extends MenuFrame {
         update();
        
     }
+    
     private void openPage(Page p){
         if(p == null) {
             super.setStatus("Null page"); 
