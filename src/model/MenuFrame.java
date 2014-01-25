@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -353,6 +354,13 @@ public class MenuFrame extends javax.swing.JFrame  {
         disableListsener();
         updateButton();
         enableListener(); 
+        
+    }
+    protected JToolBar getToolBar(){
+        return bookToolBar;
+    }
+    
+    protected void  addTools(JToolBar jtb){
         
     }
       public static void main(String args[])  {

@@ -16,12 +16,14 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
 /**
  *
  * @author byang1
  */
 public class PageViewer extends javax.swing.JPanel {
     private GridBagConstraints gridBagConstraints;
+    private JPanel             mPanel;
     
     /** Creates new form BookListPannel */
     public PageViewer() {
@@ -40,7 +42,13 @@ public class PageViewer extends javax.swing.JPanel {
     public void setTittle(String t){
         BookName.setText("Page : "+t);
     }
+    public void setSearch(JButton j){
+        seachButton =j;
+    }
     public void setMainPanel(JPanel p){
+       if(p==null) return;
+        if(mPanel==null) {
+             mPanel=p;
          gridBagConstraints = new java.awt.GridBagConstraints();
          gridBagConstraints.gridx = 2;
          gridBagConstraints.gridy = 2;
@@ -51,7 +59,11 @@ public class PageViewer extends javax.swing.JPanel {
          gridBagConstraints.weightx = 2.0;
          gridBagConstraints.weighty = 2.0;
          gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-         add(p, gridBagConstraints);
+         add(mPanel, gridBagConstraints);
+        } else {
+            this.remove(mPanel);
+        }
+        
     }
     
    

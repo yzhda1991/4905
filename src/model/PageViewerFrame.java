@@ -1,6 +1,9 @@
 
 package model;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import main.Book;
 import main.Page;
@@ -11,9 +14,15 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import org.icepdf.core.pobjects.Document;
+import org.icepdf.core.pobjects.graphics.text.WordText;
+import org.icepdf.core.search.DocumentSearchController;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
+import org.icepdf.ri.common.views.DocumentViewController;
+
 
 import viewer.PageViewer;
 
@@ -21,11 +30,14 @@ import viewer.PageViewer;
 public class PageViewerFrame extends MenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
-    private SwingController theSwingController;
+    private ActionListener      searchActionListener;
+    private SwingController     theSwingController;
     private ArrayList<Page>     pageCollection;
     private Page                selectedPage;
     private Connecter           theConnecter;
     private Controller          theController;
+    private SwingViewBuilder    factory;
+    private JPanel              newViewer;
     
     
     public PageViewerFrame(){
@@ -66,21 +78,9 @@ public class PageViewerFrame extends MenuFrame {
         
         if(selectedPage !=null)pageCollection = theConnecter.searchPage(selectedPage.getBookCode(), "bookcode");
         else pageCollection = theConnecter.getPageList();
-        
-        theSwingController = new SwingController();
-        SwingViewBuilder factory = new SwingViewBuilder(theSwingController);
 
-        JPanel newViewer = factory.buildViewerPanel();
-        
-        ComponentKeyBinding.install(theSwingController, newViewer);
-        theSwingController.getDocumentViewController().setAnnotationCallback(
-                new org.icepdf.ri.common.MyAnnotationCallback(
-                   theSwingController.getDocumentViewController())
-                       );
-        
-        newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        theviewer.setMainPanel(newViewer);
-        if(selectedPage!=null)openPage(selectedPage);
+        customized();
+         if(selectedPage!=null)openPage(selectedPage);
         
         doubleClickedPage = new MouseAdapter(){
 
@@ -95,19 +95,62 @@ public class PageViewerFrame extends MenuFrame {
 
         };
         
+        searchActionListener = new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String content = theviewer.getSearchField().getText().trim();
+                searchHandle(content);
+            }
+            
+        };
+                
          this.addWindowListener(new WindowAdapter(){
               public void WindowClosing(WindowEvent e){
                   if(theController !=null)theController.closeFrame();
                   else System.exit(0);
               }
          });
-        enableListener();
-        super.updateMainPanel(theviewer);
         
+        super.updateMainPanel(theviewer);
+        enableListener();
         update();
        
     }
+    private void customized(){
+        theSwingController = new SwingController();
+        factory = new SwingViewBuilder(theSwingController);
+        
+        newViewer = factory.buildViewerPanel();
+        
+        ComponentKeyBinding.install(theSwingController, newViewer);
+        theSwingController.getDocumentViewController().setAnnotationCallback(
+                new org.icepdf.ri.common.MyAnnotationCallback(
+                   theSwingController.getDocumentViewController())
+                       );
+        theSwingController.setToolBarVisible(false);
+        theSwingController.setPageFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH, true);
+        addTools(factory.buildUtilityToolBar(true));
+        addTools(factory.buildPageNavigationToolBar());
+        addTools(factory.buildRotateToolBar());
+        addTools(factory.buildToolToolBar());
+        addTools(factory.buildZoomToolBar());
+        
+        newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        theviewer.setMainPanel(newViewer);
+       
+        update();
+    }
     
+    @Override
+    protected void  addTools(JToolBar jtb){
+        if(jtb==null) return;
+        for(Component c:jtb.getComponents()){
+            c.setSize(64,64);
+            super.getToolBar().add(c);
+        }
+        
+    }
     private void openPage(Page p){
         if(p == null) {
             super.setStatus("Null page"); 
@@ -120,8 +163,12 @@ public class PageViewerFrame extends MenuFrame {
         try{
        
             if(bookFound.size()==1) 
-            {theSwingController.openDocument(bookFound.get(0).getBookPath()); 
-            theSwingController.showPage(p.getPageNum()-1+bookFound.get(0).getInitPage()-1);
+            {
+                theSwingController.openDocument(bookFound.get(0).getBookPath()); 
+                theSwingController.setToolBarVisible(false);
+                theSwingController.setPageFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH, true);
+                theSwingController.showPage(p.getPageNum()-1+bookFound.get(0).getInitPage()-1);
+                
               }
             else super.setStatus("more than one book found;");
             theviewer.setTittle(p.getPageTitle());
@@ -130,12 +177,18 @@ public class PageViewerFrame extends MenuFrame {
         }
     }
     
+    private void searchHandle(String s){
+        
+        
+        
+    }
     private void enableListener(){
         theviewer.getPageList().addMouseListener(doubleClickedPage);
-        
+        theviewer.getSearchButton().addActionListener(searchActionListener);
     }   
     private void disableListener(){
         theviewer.getPageList().removeMouseListener(doubleClickedPage);
+        theviewer.getSearchButton().removeActionListener(searchActionListener);
     }
     protected void updateInfo(Page p){
         if(p==null) {
