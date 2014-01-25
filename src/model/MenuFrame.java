@@ -21,8 +21,6 @@ import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import main.Controller;
-import main.ViewBooksMain;
 
 
 //basic viewer for BookViewer;
@@ -326,7 +324,7 @@ public class MenuFrame extends javax.swing.JFrame  {
     
   
     private void updateButton(){
-       if(theController==null) theController = new ViewBooksMain();
+       if(theController==null) theController = new Modeling();
         if(theController.getSelectedBook() != null){
             Pages.setEnabled(true);
             editBookMenuItem.setEnabled(true);
@@ -380,7 +378,7 @@ public class MenuFrame extends javax.swing.JFrame  {
 
             @Override
             public void run() {
-                ViewBooksMain  main = new ViewBooksMain();
+                Modeling  main = new Modeling();
                 new MenuFrame("test",main).setVisible(true);
             }
         });

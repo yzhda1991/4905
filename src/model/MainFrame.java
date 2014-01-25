@@ -1,11 +1,12 @@
 
 package model;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import main.Controller;
 
 /**
  *
@@ -13,7 +14,7 @@ import main.Controller;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    Controller theController;
+    protected Controller theController;
     public MainFrame() {
         initComponents();
     }
@@ -21,6 +22,22 @@ public class MainFrame extends javax.swing.JFrame {
         super(title);
         theController =c;
         initComponents();
+        
+        addWindowListener(
+                  new WindowAdapter(){
+                      public void WindowClosing(WindowEvent e){
+                          
+                          if(theController !=null){
+                             
+                              theController.exitProgram();
+                          } 
+                          else System.exit(0);
+                      }
+                  }
+                  );
+        this.setSize(700,500);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE); // Already there
+        
     }
     
 
@@ -41,13 +58,15 @@ public class MainFrame extends javax.swing.JFrame {
         Database_CloseButton = new javax.swing.JButton();
         database_newConnectButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
-        helpButton = new javax.swing.JButton();
         bookLabel = new javax.swing.JLabel();
         pageLabel = new javax.swing.JLabel();
         databaseLabel = new javax.swing.JLabel();
         titleLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setAutoRequestFocus(false);
+        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setForeground(new java.awt.Color(204, 204, 0));
         setName("main Frame"); // NOI18N
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -66,7 +85,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 2.0;
@@ -89,7 +108,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -113,13 +132,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.weighty = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 20);
         getContentPane().add(page_searchPageButton, gridBagConstraints);
 
         exitButton.setText("Exit");
@@ -141,6 +160,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 10);
         getContentPane().add(exitButton, gridBagConstraints);
 
         book_addBookButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
@@ -158,7 +178,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -182,7 +202,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -206,13 +226,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.weighty = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 20);
         getContentPane().add(book_searchButton, gridBagConstraints);
 
         database_viewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/book.png"))); // NOI18N
@@ -230,7 +250,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
@@ -254,7 +274,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
@@ -277,13 +297,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.weighty = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 20);
         getContentPane().add(database_newConnectButton, gridBagConstraints);
 
         aboutButton.setText("About");
@@ -298,33 +318,13 @@ public class MainFrame extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 0);
         getContentPane().add(aboutButton, gridBagConstraints);
-
-        helpButton.setText("Help");
-        helpButton.setMaximumSize(new java.awt.Dimension(128, 40));
-        helpButton.setMinimumSize(new java.awt.Dimension(10, 10));
-        helpButton.setPreferredSize(new java.awt.Dimension(128, 40));
-        helpButton.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        helpButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 5);
-        getContentPane().add(helpButton, gridBagConstraints);
 
         bookLabel.setFont(new java.awt.Font("OCR A Std", 1, 18)); // NOI18N
         bookLabel.setText("Book");
@@ -336,7 +336,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 5);
         getContentPane().add(bookLabel, gridBagConstraints);
 
         pageLabel.setFont(new java.awt.Font("OCR A Std", 1, 18)); // NOI18N
@@ -349,7 +349,7 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 5);
         getContentPane().add(pageLabel, gridBagConstraints);
 
         databaseLabel.setFont(new java.awt.Font("OCR A Std", 1, 18)); // NOI18N
@@ -362,30 +362,26 @@ public class MainFrame extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 5);
         getContentPane().add(databaseLabel, gridBagConstraints);
 
         titleLabel.setFont(new java.awt.Font("OCR A Std", 2, 18)); // NOI18N
+        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleLabel.setText("View Book Application");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.ipady = 20;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(26, 18, 10, 5);
+        gridBagConstraints.insets = new java.awt.Insets(10, 18, 10, 15);
         getContentPane().add(titleLabel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
-        // TODO add your handling code here:
-        throw new UnsupportedOperationException("not Supported yet!");
-    }//GEN-LAST:event_helpButtonActionPerformed
 
     private void book_addBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_book_addBookButtonActionPerformed
         // TODO add your handling code here:
@@ -528,7 +524,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton database_newConnectButton;
     private javax.swing.JButton database_viewButton;
     private javax.swing.JButton exitButton;
-    private javax.swing.JButton helpButton;
     private javax.swing.JLabel pageLabel;
     private javax.swing.JButton page_addPageButton;
     private javax.swing.JButton page_searchPageButton;

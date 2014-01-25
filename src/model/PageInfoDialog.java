@@ -8,7 +8,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JOptionPane;
 import javax.swing.text.JTextComponent;
-import main.Controller;
 
 /**
  *
@@ -18,7 +17,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
 
   
     Controller            theController;
-    Page                  thePage;
+    Page                  editedPage;
     Controller.operation  mode;
     FocusListener           textFieldListener;
     FocusListener           numberFieldListener;
@@ -32,7 +31,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
     public PageInfoDialog(java.awt.Frame parent, String title,Controller theclient, Page p,Controller.operation aopertion ,boolean modal) {
         super(parent,"page info", modal);
         theController = theclient;
-        thePage = p;
+        editedPage = p;
         mode = aopertion;
         initEnvironment();
         titleLabel.setText(title);
@@ -47,26 +46,26 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageIDField.setEditable(false);
         
         if(mode.equals(Controller.operation.DELETE)){
-            bookCodeField.setEditable(false);
-            pageTitleField.setEditable(false);
-            pageNumField.setEditable(false);
+            bookCodeField.setEnabled(false);
+            pageTitleField.setEnabled(false);
+            pageNumField.setEnabled(false);
         }
        
         
         //build GUI with book info if thePage is not Null;
         //otherwise build GUI with empty book info
        
-        if(thePage== null){
+        if(editedPage== null){
             pageIDField.setText(null);
             bookCodeField.setText(null);
             pageTitleField.setText(null);
             pageNumField.setText(null);
         }
         else {
-            pageIDField.setText(thePage.getPageID()+"");
-            bookCodeField.setText(thePage.getBookCode());
-            pageTitleField.setText(thePage.getPageTitle());
-            pageNumField.setText(thePage.getPageNum()+"");
+            pageIDField.setText(editedPage.getPageID()+"");
+            bookCodeField.setText(editedPage.getBookCode());
+            pageTitleField.setText(editedPage.getPageTitle());
+            pageNumField.setText(editedPage.getPageNum()+"");
         }
         
         this.setSize(600,250);
@@ -345,10 +344,10 @@ public class PageInfoDialog extends javax.swing.JDialog {
             //if thePage is empty object, create new Book with book info provided;
             //otherwise update thePage info cosponding the book info provide;
          
-                    thePage = new Page(pageTitleField.getText().trim(),
+                    editedPage = new Page(pageTitleField.getText().trim(),
                             bookCodeField.getText().trim(),
                             Integer.parseInt(pageNumField.getText()));
-                    if(theController !=null) theController.closePageInfoDialog(mode, thePage);
+                    if(theController !=null) theController.closePageInfoDialog(mode, editedPage);
                     
 
             }
@@ -361,15 +360,15 @@ public class PageInfoDialog extends javax.swing.JDialog {
             //otherwise update thePage info cosponding the book info provide;
          
 
-                    thePage.setPageTitle(pageIDField.getText());
-                    thePage.setBookCode(pageTitleField.getText());
-                    thePage.setPageNum(Integer.parseInt(pageNumField.getText()));
+                    editedPage.setPageTitle(pageIDField.getText());
+                    editedPage.setBookCode(pageTitleField.getText());
+                    editedPage.setPageNum(Integer.parseInt(pageNumField.getText()));
                  
-                    if(theController != null) theController.closePageInfoDialog(mode, thePage);
+                    if(theController != null) theController.closePageInfoDialog(mode, editedPage);
             
             }
             else if(mode.equals(Controller.operation.DELETE)){
-                if(theController !=null) theController.closePageInfoDialog(mode, thePage);
+                if(theController !=null) theController.closePageInfoDialog(mode, editedPage);
             }
              
              this.setVisible(false);
@@ -384,6 +383,31 @@ private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         dispose();
 }//GEN-LAST:event_CancelButtonActionPerformed
 
+protected void updateInfo(Page p,Controller.operation aopertion){
+    if(!mode.equals(aopertion)){
+        
+        mode = aopertion;
+        submitButton.setText(mode.toString());
+    }
+    
+    editedPage = p;
+    if(editedPage ==null){
+        
+            titleLabel.setText(" ");
+            pageIDField.setText(null);
+            bookCodeField.setText(null);
+            pageTitleField.setText(null);
+            pageNumField.setText(null);
+            
+    }
+    else{   
+            titleLabel.setText(mode.toString()+": "+editedPage.toString());
+            pageIDField.setText(editedPage.getPageID()+"");
+            bookCodeField.setText(editedPage.getBookCode());
+            pageTitleField.setText(editedPage.getPageTitle());
+            pageNumField.setText(editedPage.getPageNum()+"");
+    }
+}
    
 
  

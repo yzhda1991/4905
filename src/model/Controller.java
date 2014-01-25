@@ -2,10 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package model;
 
 import java.io.File;
 import javax.swing.JFrame;
+import main.Book;
+import main.Page;
 
 /**
  *
@@ -36,19 +38,19 @@ public interface Controller {
     public void setSelectedBook(Book b);
     public void setSelectedPage(Page p);
     public void OpenBookListFrame();
-    public void closeBookListFrame();
+   
     /**
      *
      * @param b
      */
     public void openPageListFrame(Book b);
-    public void closePageListFrame();
     /**
      *
      * @param p
      */
     public void openPageViewer(Page p);
-    public void closePageViewer();
+    
+     public void closeFrame();
     /**
      *
      * @param anOperation

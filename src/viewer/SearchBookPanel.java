@@ -53,6 +53,7 @@ public class SearchBookPanel extends javax.swing.JPanel {
         add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, -1, -1));
 
         typeButtonGroup.add(titleRadioButton);
+        titleRadioButton.setSelected(true);
         titleRadioButton.setText("Book Title");
         add(titleRadioButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
 

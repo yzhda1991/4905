@@ -15,8 +15,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import main.Connecter;
-import main.Controller;
 import main.Page;
 import viewer.SearchPagePanel;
 
@@ -181,7 +179,7 @@ public class SearchPageDialog extends JDialog{
     
     private void updateButton(){
         
-        if(mainPanel.getSearchContentField().getText().toString().trim().length()<=2) mainPanel.getSubmitButton().setEnabled(false);
+        if(mainPanel.getSearchContentField().getText().toString().trim().length()<1) mainPanel.getSubmitButton().setEnabled(false);
         else mainPanel.getSubmitButton().setEnabled(true);
         
         if(resultCollection ==null || resultCollection.isEmpty()) {

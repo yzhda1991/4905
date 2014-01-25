@@ -4,21 +4,19 @@
  */
 package model;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.Toolkit;
 import main.Book;
-import main.Connecter;
 import main.Page;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import main.Controller;
-import main.ViewBooksMain;
 import viewer.PageListPanel;
 
 /**
@@ -40,7 +38,7 @@ public class PageListFrame  extends MenuFrame{
     ArrayList<Book>         bookCollection;
     ArrayList<Page>         pageCollection;
     
-    Book                    theBook;
+    Book                    editedBook;
     
 
     
@@ -51,21 +49,22 @@ public class PageListFrame  extends MenuFrame{
         initComponents();
     }
     
-    public PageListFrame(String title,ViewBooksMain viewer, Controller c, Connecter conn,Book initBook){
+    public PageListFrame(String title,Modeling viewer, Controller c, Connecter conn,Book initBook){
         
         super(title,c);
         theConnecter = conn;
         theController = c;
-        theBook = initBook;
+        editedBook = initBook;
         initComponents();
     }
     
     private void initComponents(){
-        
+         
+    
         mainPanel = new PageListPanel();
         bookCollection  = theConnecter.getBookList(); 
-        if(theBook==null)pageCollection = theConnecter.getPageList(); 
-        else pageCollection = theConnecter.searchPage(theBook.getBookCode(), "bookcode");
+        if(editedBook==null)pageCollection = new ArrayList<Page>(); 
+        else pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
         
         seachButtonListener = new ActionListener(){
 
@@ -96,7 +95,7 @@ public class PageListFrame  extends MenuFrame{
             
         };
         
-        doubleClickedonBook = new MouseListener(){
+        doubleClickedonBook = new MouseAdapter(){
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -108,25 +107,10 @@ public class PageListFrame  extends MenuFrame{
                 }
               }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-              }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
   
         };
         
-        doubleClickedonPage = new MouseListener(){
+        doubleClickedonPage = new MouseAdapter(){
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -139,28 +123,12 @@ public class PageListFrame  extends MenuFrame{
                     }
                  }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-             }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-             }
             
         };
         
         super.updateMainPanel(mainPanel);
-        
-        update();
+        this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+      update();
     }
     
     private void searchPage(){
@@ -214,6 +182,34 @@ public class PageListFrame  extends MenuFrame{
         mainPanel.getPageList().removeListSelectionListener(pagelistSelection);
     }
     
+    private void updateList(){
+        
+        if(pageCollection !=null && !pageCollection.isEmpty()){
+        Book bookArray[] =new Book[1];
+        mainPanel.getBookList().setListData((Book []) bookCollection.toArray(bookArray));
+        Page pageArray[]  = new Page[1];
+        mainPanel.getPageList().setListData(pageCollection.toArray(pageArray));
+        }
+        else{
+            String[] empty = {};
+            mainPanel.getPageList().setListData(empty);
+        }
+        
+    }
+    
+    protected void updateinfo(Book b){
+        
+        editedBook = b;
+        
+        if(b==null){
+            pageCollection = new ArrayList<Page>();
+        }
+        else{
+            pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
+        
+        }
+        update();
+    }
     @Override
     public void update(){
         disableListener();
@@ -222,14 +218,6 @@ public class PageListFrame  extends MenuFrame{
         super.update();
       
       
-    }
-    private void updateList(){
-        
-        Book bookArray[] =new Book[1];
-        mainPanel.getBookList().setListData((Book []) bookCollection.toArray(bookArray));
-        Page pageArray[]  = new Page[1];
-        mainPanel.getPageList().setListData(pageCollection.toArray(pageArray));
-        
     }
     
     public static void main(String args[]) {

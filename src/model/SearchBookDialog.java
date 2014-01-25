@@ -15,8 +15,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import main.Book;
-import main.Connecter;
-import main.Controller;
 import viewer.SearchBookPanel;
 
 /**

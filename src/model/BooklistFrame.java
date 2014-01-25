@@ -9,20 +9,18 @@ package model;
  * @author byang1
  */
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import main.Book;
-import main.Connecter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import main.Controller;
-import main.ViewBooksMain;
 import viewer.BookListPanel;
 
 public class BooklistFrame extends MenuFrame{
@@ -44,11 +42,13 @@ public class BooklistFrame extends MenuFrame{
         
     }
     
-     public BooklistFrame(String title,ViewBooksMain view, Controller c,Connecter conn) {
+     public BooklistFrame(String title,Modeling view, Controller c,Connecter conn) {
         super(title,c);
         theConnecter = conn;
         theController = c;
         initComponents();
+        
+        
         
     }
    
@@ -65,8 +65,7 @@ public class BooklistFrame extends MenuFrame{
                 searchBook();
             }
         };
-        doubleClickedonbook = new MouseListener(){
-
+        doubleClickedonbook = new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount()==2){
@@ -74,31 +73,10 @@ public class BooklistFrame extends MenuFrame{
                     int index =  theList.locationToIndex(e.getPoint());
                     Book selectedBook = (Book)theList.getModel().getElementAt(index);
                     if(selectedBook!= null)doubleClickedBook(selectedBook);
-                  
-                   
-                    
                 }
             }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-               
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                
-            }
+            
             
         };
         listSelection       = new ListSelectionListener(){
@@ -111,7 +89,8 @@ public class BooklistFrame extends MenuFrame{
     };
         
         super.updateMainPanel(mainPanel);
-       
+      
+       this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         update();
     }
     

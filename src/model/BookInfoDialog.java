@@ -14,8 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
-import main.Controller;
-import main.ViewBooksMain;
 
 /**
  *
@@ -51,25 +49,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         titleLabel.setText(t);
     }
     
-    public void updateMode(Controller.operation amode){
-        mode =amode;
-    }
-    
-    public void setBook(Book b){
-        theBook =b;
-        if(b!=null){
-            setTitle(theBook.getBookName());
-        
-        
-        bookCodeField.setText(theBook.getBookCode());
-            bookNameField.setText(theBook.getBookName());
-            bookPathField.setText(theBook.getBookPath());
-            bookAuthorField.setText(theBook.getAuthor());
-            pageNumField.setText(theBook.getInitPage()+"");
-        }
-    }
-    
-
+  
     //
     private  void initEnvironment(){
         
@@ -467,8 +447,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
                
               
     }//GEN-LAST:event_submitButtonActionPerformed
-
-    
+  
     //action perfoms when user clicked Cancel button;
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
         
@@ -489,6 +468,32 @@ public class BookInfoDialog extends javax.swing.JDialog {
                     }
     }//GEN-LAST:event_browserButtonActionPerformed
 
+    protected void updateInfo(Book b ,Controller.operation anOperation ){
+        theBook =b;
+        if(theBook!=null){
+            setTitle(theBook.getBookName());
+        
+        
+            bookCodeField.setText(theBook.getBookCode());
+            bookNameField.setText(theBook.getBookName());
+            bookPathField.setText(theBook.getBookPath());
+            bookAuthorField.setText(theBook.getAuthor());
+            pageNumField.setText(theBook.getInitPage()+"");
+        }
+        else{
+            setTitle(anOperation.toString());
+            bookCodeField.setText(null);
+            bookNameField.setText(null);
+            bookPathField.setText(null);
+            bookAuthorField.setText(null);
+            pageNumField.setText(null);
+        }
+        if(!anOperation.equals(mode)){
+            submitButton.setText(mode.toString());
+       
+        }
+        
+    }
    public static void main(String args[]) {
        
         try {
@@ -511,7 +516,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
 
             @Override
             public void run() {
-                ViewBooksMain main = new ViewBooksMain();
+                Modeling main = new Modeling();
                 MainFrame     m    = new MainFrame("viewer",main);
                 new BookInfoDialog("add new book",m,main,null,Controller.operation.ADD,true).setVisible(true);
             }

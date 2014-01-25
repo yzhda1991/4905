@@ -2,25 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package model;
 
 import java.io.File;
 import javax.swing.JFrame;
-import model.BookInfoDialog;
-import model.BooklistFrame;
-import model.MainFrame;
-import model.PageInfoDialog;
-import model.PageListFrame;
-import model.PageViewerFrame;
-import model.AboutDialog;
-import model.SearchBookDialog;
-import model.SearchPageDialog;
+import main.Book;
+import main.Page;
 
 /**
  *
  * @author brianyang
  */
-public class ViewBooksMain implements Controller {
+public class Modeling implements Controller {
     
     protected Connecter         theConnecter;
     private Book                selectedBook;
@@ -38,7 +31,8 @@ public class ViewBooksMain implements Controller {
     private SearchBookDialog    theBookSearchDialog;
     private SearchPageDialog    thePageSearchDialog;
     
-    public ViewBooksMain(){
+    public Modeling(){
+        
        theConnecter = new Connecter();
        mainFrame = new MainFrame("Book viewer",this);
        selectedBook = null;
@@ -48,6 +42,14 @@ public class ViewBooksMain implements Controller {
        
        
     }
+    public void initFrame(){
+        
+        if(bookListviewer == null) bookListviewer = new BooklistFrame("view book list",this,this,theConnecter);
+        if(pageListviewer == null)pageListviewer = new PageListFrame("view page list",this,this,theConnecter,null);
+        if(pageviewer == null)pageviewer = new PageViewerFrame("view page",this,this,theConnecter,null);
+    
+    }
+    
     public void startProgram(){
         mainFrame.setVisible(true);
     }
@@ -91,88 +93,122 @@ public class ViewBooksMain implements Controller {
     public void OpenBookListFrame() {
         
         if(bookListviewer == null) bookListviewer = new BooklistFrame("view book list",this,this,theConnecter);
-        if(pageListviewer!= null && pageListviewer.isVisible())pageListviewer.setVisible(false);
-        if(pageviewer != null &&pageviewer.isVisible())pageviewer.setVisible(false);
+        
         if(!bookListviewer.isVisible())bookListviewer.setVisible(true);
+        
+        if(pageListviewer!= null && pageListviewer.isVisible()){
+            pageListviewer.setVisible(false);
+            pageListviewer.dispose();
+        }
+        if(pageviewer != null &&pageviewer.isVisible()){
+            pageviewer.setVisible(false);
+            pageListviewer.dispose();
+        }
             }
 
     @Override
-    public void closeBookListFrame() {
+    public void closeFrame() {
        
-        bookListviewer.setVisible(false);
-        if(mainFrame.isVisible())mainFrame.setVisible(true);
+      if(mainFrame.isVisible())mainFrame.setVisible(true);
+      if(pageListviewer !=null && pageListviewer.isVisible()){
+            pageListviewer.setVisible(false);
+            pageListviewer.dispose();
+        }
+      if(bookListviewer !=null && bookListviewer.isVisible()){
+            bookListviewer.setVisible(false);
+            bookListviewer.dispose();
+        }
+      if(pageviewer !=null && pageviewer.isVisible()) {
+          pageviewer.setVisible(false);
+          pageviewer.dispose();
+      }
     }
 
     @Override
     public void openPageListFrame(Book b) {
       
       if(pageListviewer == null)pageListviewer = new PageListFrame("view page list",this,this,theConnecter,b);
-      if(bookListviewer!=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
-      if(pageviewer !=null && pageviewer.isVisible()) pageviewer.setVisible(false);
+      else pageListviewer.updateinfo(b);
+      
       if(!pageListviewer.isVisible()) pageListviewer.setVisible(true);
+      if(bookListviewer!=null && bookListviewer.isVisible()){
+          bookListviewer.setVisible(false);
+          bookListviewer.dispose();
+      }
+      if(pageviewer !=null && pageviewer.isVisible()) {
+          pageviewer.setVisible(false);
+          pageviewer.dispose();
+      }
         
     }
 
-    @Override
-    public void closePageListFrame() {
-        pageListviewer.setVisible(false);
-        if(mainFrame.isVisible())mainFrame.setVisible(true);
-    }
-
+    
     @Override
     public void openPageViewer(Page p) {
         
         if(pageviewer == null)pageviewer = new PageViewerFrame("view page",this,this,theConnecter,p);
-        if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.setVisible(false);
-        if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
+        else pageviewer.updateInfo(p);
+        
         if(!pageviewer.isVisible())pageviewer.setVisible(true);
+        
+        if(pageListviewer !=null && pageListviewer.isVisible()){
+            pageListviewer.setVisible(false);
+            pageListviewer.dispose();
+        }
+        if(bookListviewer !=null && bookListviewer.isVisible()){
+            bookListviewer.setVisible(false);
+            bookListviewer.dispose();
+        }
+       
    
     }
 
     @Override
-    public void closePageViewer() {
-        pageviewer.setVisible(false);
-        if(mainFrame.isVisible())mainFrame.setVisible(true);
-    }
-    
-    @Override
     public void openBookInfoDialog(JFrame parent,operation anOperation,Book b) {
         if(bookDialog ==null) {
-            String title = null;
-            if(b == null ) title = " New Book";
+            String title = "";
+            if(b == null ) title =anOperation.toString() + " New Book";
             else title = anOperation.toString() +" Book: "+b.getBookName();
             bookDialog = new BookInfoDialog(title,parent,this,b,anOperation,true);
         }
+        
         else{
-            bookDialog.setBook(b);
-            
+            bookDialog.updateInfo(b, anOperation); 
         }
+        
         if(!bookDialog.isVisible())bookDialog.setVisible(true);
+        update();
     }
+    
      @Override
     public void openPageInfoDialog(JFrame parent,operation anOperation, Page p) {
         if(pageDialog ==null) {
-            String title = null;
+            String title = "";
             if(p == null ) title = " New Page";
             else title = anOperation.toString() +" Page: "+p.getPageTitle();
             pageDialog = new PageInfoDialog(parent,title,this,p,anOperation,true);
-           
-            if(!pageDialog.isVisible())pageDialog.setVisible(true);
         }
-    }
-    
+        
+        else{
+            pageDialog.updateInfo(p, anOperation);
+        } 
+        
+            if(!pageDialog.isVisible())pageDialog.setVisible(true);
+        
+    } 
 
     @Override
     public void closeBookInfoDialog(operation anOperation,Book b) {
         boolean successed =false;
         if(anOperation.equals(operation.ADD) && b !=null)         successed = theConnecter.addBook(b);
-        else if(anOperation.equals(operation.UPDATE)) successed = theConnecter.updateBook(b);
-        else if(anOperation.equals(operation.DELETE)) successed = theConnecter.deleteBook(b);
+        else if(anOperation.equals(operation.UPDATE))             successed = theConnecter.updateBook(b);
+        else if(anOperation.equals(operation.DELETE))             successed = theConnecter.deleteBook(b);
         
         if(successed)System.out.println("successed");
         else System.out.println("failed");
         
         if(bookDialog.isVisible()){
+            
             bookDialog.setVisible(false);
             bookDialog.dispose();
         }
@@ -190,6 +226,7 @@ public class ViewBooksMain implements Controller {
         else System.out.println("failed");
         
         if(pageDialog.isVisible()){
+            
             pageDialog.setVisible(false);
             pageDialog.dispose();
         }
@@ -219,7 +256,7 @@ public class ViewBooksMain implements Controller {
       if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
       if(pageviewer !=null && pageviewer.isVisible()) pageviewer.setVisible(false);
       
-      theBookSearchDialog.setVisible(true);
+      if(!theBookSearchDialog.isVisible())theBookSearchDialog.setVisible(true);
       
               
     }
@@ -237,11 +274,12 @@ public class ViewBooksMain implements Controller {
       @Override
     public void OpenPageSearchDialog(JFrame parent) {
       if(thePageSearchDialog ==null) thePageSearchDialog = new SearchPageDialog(parent,"Search Page",theConnecter,this,true);
+      
       if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.setVisible(false);
       if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.setVisible(false);
       if(pageviewer !=null && pageviewer.isVisible()) pageviewer.setVisible(false);
       
-      thePageSearchDialog.setVisible(true);}
+      if(!thePageSearchDialog.isVisible())thePageSearchDialog.setVisible(true);}
 
     @Override
     public void closePageSearchDialog() {
@@ -296,7 +334,7 @@ public class ViewBooksMain implements Controller {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        ViewBooksMain main = new ViewBooksMain();
+        Modeling main = new Modeling();
         main.startProgram();
 
         

@@ -2,7 +2,6 @@
 package model;
 
 import main.Book;
-import main.Connecter;
 import main.Page;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -11,8 +10,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import main.Controller;
-import main.ViewBooksMain;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
@@ -50,7 +47,7 @@ public class PageViewerFrame extends MenuFrame {
         initComplent();
     }
     
-     public PageViewerFrame(String title,ViewBooksMain m,Controller c,Connecter con,Page p){
+     public PageViewerFrame(String title,Modeling m,Controller c,Connecter con,Page p){
         super(title,c);
         theConnecter   = con;
         theController  = c;
@@ -119,7 +116,7 @@ public class PageViewerFrame extends MenuFrame {
         
          this.addWindowListener(new WindowAdapter(){
               public void WindowClosing(WindowEvent e){
-                  if(theController !=null)theController.closePageViewer();
+                  if(theController !=null)theController.closeFrame();
                   else System.exit(0);
               }
          });
@@ -140,7 +137,10 @@ public class PageViewerFrame extends MenuFrame {
         ArrayList<Book> bookFound = theConnecter.searchBook(p.getBookCode(), "code");
         try{
        
-            if(bookFound.size()==1) theSwingController.openDocument(bookFound.get(0).getBookPath());        
+            if(bookFound.size()==1) 
+            {theSwingController.openDocument(bookFound.get(0).getBookPath()); 
+            theSwingController.showPage(p.getPageNum()-1+bookFound.get(0).getInitPage()-1);
+              }
             else super.setStatus("more than one book found;");
             theviewer.setTittle(p.getPageTitle());
         }catch(Exception  e){
@@ -154,6 +154,17 @@ public class PageViewerFrame extends MenuFrame {
     }   
     private void disableListener(){
         theviewer.getPageList().removeMouseListener(doubleClickedPage);
+    }
+    protected void updateInfo(Page p){
+        if(p==null) {
+            selectedPage = p;
+            return;
+        }
+        if(selectedPage ==null || !p.getBookCode().equals(selectedPage.getBookCode())){
+            selectedPage = p;
+            pageCollection = theConnecter.searchPage(selectedPage.getBookCode(), "bookcode");
+            if(selectedPage !=null)openPage(selectedPage);
+        }
     }
     
     private void updateList(){
@@ -195,7 +206,7 @@ public class PageViewerFrame extends MenuFrame {
 
             @Override
             public void run() {
-                ViewBooksMain main = new ViewBooksMain();
+                Modeling main = new Modeling();
                 new PageViewerFrame().setVisible(true);
             }
         });
