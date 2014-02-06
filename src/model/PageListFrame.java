@@ -4,7 +4,7 @@
  */
 package model;
 
-import static java.awt.Frame.MAXIMIZED_BOTH;
+
 import java.awt.Toolkit;
 import main.Book;
 import main.Page;

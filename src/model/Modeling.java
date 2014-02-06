@@ -44,13 +44,14 @@ public class Modeling implements Controller {
     }
     public void initFrame(){
         
-        if(bookListviewer == null) bookListviewer = new BooklistFrame("view book list",this,this,theConnecter);
-        if(pageListviewer == null)pageListviewer = new PageListFrame("view page list",this,this,theConnecter,null);
-        if(pageviewer == null)pageviewer = new PageViewerFrame("view page",this,this,theConnecter,null);
+        //if(bookListviewer == null) bookListviewer = new BooklistFrame("view book list",this,this,theConnecter);
+       // if(pageListviewer == null)pageListviewer = new PageListFrame("view page list",this,this,theConnecter,null);
+       // if(pageviewer == null)pageviewer = new PageViewerFrame("view page",this,this,theConnecter,null);
     
     }
     
     public void startProgram(){
+        update();
         mainFrame.setVisible(true);
     }
     
@@ -67,8 +68,9 @@ public class Modeling implements Controller {
         if(b==null) return;
         if(b.getClass().equals(Book.class)) {
             selectedBook = b;
-        } else {
-        }
+        } 
+        
+        update();
     }
 
     @Override
@@ -212,6 +214,7 @@ public class Modeling implements Controller {
             bookDialog.setVisible(false);
             bookDialog.dispose();
         }
+        bookDialog = null;
         
     }
 
@@ -230,6 +233,8 @@ public class Modeling implements Controller {
             pageDialog.setVisible(false);
             pageDialog.dispose();
         }
+        
+        pageDialog =null;
     }
     
     @Override
@@ -309,6 +314,7 @@ public class Modeling implements Controller {
     }
 
     public void update(){
+        mainFrame.update();
         if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.update();
         if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.update();
         if(pageviewer !=null &&pageviewer.isVisible())pageviewer.update();

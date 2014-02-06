@@ -157,6 +157,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         
         enableFocusLost();
         
+        
         this.setSize(600,250);
         this.setResizable(false);
     }
@@ -451,7 +452,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
     //action perfoms when user clicked Cancel button;
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
         
-        if(theController !=null) theController.dialogCancelled();
+        //if(theController !=null) theController.dialogCancelled();
         this.setVisible(false);
         dispose();
         
@@ -462,7 +463,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
          JFileChooser chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("pdf","PDF");
                  chooser.setFileFilter(filter);
-                 int returnVal = chooser.showOpenDialog(thisframe);
+                 int returnVal = chooser.showOpenDialog(null);
                     if(returnVal == JFileChooser.APPROVE_OPTION) {
                             bookPathField.setText(chooser.getSelectedFile().getPath());
                     }
@@ -481,17 +482,16 @@ public class BookInfoDialog extends javax.swing.JDialog {
             pageNumField.setText(theBook.getInitPage()+"");
         }
         else{
-            setTitle(anOperation.toString());
+            setTitle(anOperation.toString()+" ");
             bookCodeField.setText(null);
             bookNameField.setText(null);
             bookPathField.setText(null);
             bookAuthorField.setText(null);
             pageNumField.setText(null);
         }
-        if(!anOperation.equals(mode)){
             submitButton.setText(mode.toString());
        
-        }
+        
         
     }
    public static void main(String args[]) {

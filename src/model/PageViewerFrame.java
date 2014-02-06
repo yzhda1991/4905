@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -99,8 +100,7 @@ public class PageViewerFrame extends MenuFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String content = theviewer.getSearchField().getText().trim();
-                searchHandle(content);
+                searchHandle(e);
             }
             
         };
@@ -113,6 +113,7 @@ public class PageViewerFrame extends MenuFrame {
          });
         
         super.updateMainPanel(theviewer);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         enableListener();
         update();
        
@@ -138,6 +139,7 @@ public class PageViewerFrame extends MenuFrame {
         
         newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         theviewer.setMainPanel(newViewer);
+        theviewer.getPageView().setEnabled(false);
        
         update();
     }
@@ -177,18 +179,71 @@ public class PageViewerFrame extends MenuFrame {
         }
     }
     
-    private void searchHandle(String s){
+    private void searchHandle(ActionEvent e){
+       
+        if(e.getSource().equals(theviewer.getSearchButton())){
+            if(theviewer.getSearchButton().isEnabled()){
+                System.out.print("ott");
+            theviewer.getPageList().setEnabled(false);
+            newViewer = factory.buildSearchPanel();
+       
+            ComponentKeyBinding.install(theSwingController, newViewer);
+            theSwingController.getDocumentViewController().setAnnotationCallback(
+                new org.icepdf.ri.common.MyAnnotationCallback(
+                   theSwingController.getDocumentViewController())
+                       );
+            
+            newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            theviewer.setMainPanel(newViewer);
         
+            theviewer.getSearchButton().setEnabled(false);
+            theviewer.getPageView().setEnabled(true);
+            }
+            else{
+                
+            }
+        }
+        else if(e.getSource().equals(theviewer.getPageView())){
+        if(theviewer.getPageView().isEnabled()){
+            newViewer = factory.buildViewerPanel();
+        
+         ComponentKeyBinding.install(theSwingController, newViewer);
+        
+         theSwingController.getDocumentViewController().setAnnotationCallback(
+                new org.icepdf.ri.common.MyAnnotationCallback(
+                   theSwingController.getDocumentViewController())
+                       );
+         
+        theSwingController.setToolBarVisible(false);
+        theSwingController.setPageFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH, true);
+        
+        newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        theviewer.setMainPanel(newViewer);
+        
+        theviewer.getPageList().setEnabled(true);
+        theviewer.getSearchButton().setEnabled(true);
+        theviewer.getPageView().setEnabled(false);
+            
+        
+        }
+        else{
+            
+        }
+    }
+       
         
         
     }
     private void enableListener(){
         theviewer.getPageList().addMouseListener(doubleClickedPage);
         theviewer.getSearchButton().addActionListener(searchActionListener);
+        theviewer.getPageView().addActionListener(searchActionListener);
     }   
     private void disableListener(){
         theviewer.getPageList().removeMouseListener(doubleClickedPage);
         theviewer.getSearchButton().removeActionListener(searchActionListener);
+        theviewer.getPageView().removeActionListener(searchActionListener);
+    
     }
     protected void updateInfo(Page p){
         if(p==null) {

@@ -9,7 +9,6 @@ package model;
  * @author byang1
  */
 
-import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import main.Book;
@@ -18,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -91,6 +91,7 @@ public class BooklistFrame extends MenuFrame{
         super.updateMainPanel(mainPanel);
       
        this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+           this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         update();
     }
     
@@ -150,6 +151,7 @@ public class BooklistFrame extends MenuFrame{
     
     private void updateList(){
         Book bookArray[] = new Book[1];
+        bookCollection = theConnecter.getBookList(); 
         if(bookCollection !=null && !bookCollection.isEmpty())
         mainPanel.getBookList().setListData((Book [])bookCollection.toArray(bookArray)); 
         if(bookCollection ==null || bookCollection.isEmpty())
