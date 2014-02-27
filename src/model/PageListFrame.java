@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import viewer.PageListPanel;
@@ -63,7 +64,12 @@ public class PageListFrame  extends MenuFrame{
     
         mainPanel = new PageListPanel();
         bookCollection  = theConnecter.getBookList(); 
-        if(editedBook==null)pageCollection = new ArrayList<Page>(); 
+        pageCollection = new ArrayList<Page>();
+        if(editedBook==null|| theConnecter.searchPage(editedBook.getBookCode(), "bookcode").isEmpty()){
+            this.dispose();
+            JOptionPane.showMessageDialog(this, "can not find page list from selected Book!","innae error",JOptionPane.ERROR_MESSAGE);
+            
+        } 
         else pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
         
         seachButtonListener = new ActionListener(){
