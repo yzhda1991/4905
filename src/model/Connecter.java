@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.Book;
 import main.Page;
-import model.SavetoXML;
 
 
 /**
@@ -53,13 +52,22 @@ public class Connecter {
                 Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
             }
     }
+    public boolean isDatabaseActive(){
+        try {
+            return !database.isClosed();
+        } catch (SQLException ex) {
+            Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
     
-    public boolean changeDatabase(File f){
+    public boolean changeDatabase(File f) {
         try{
-            if(!database.isClosed()) database.close();
+            if(isDatabaseActive()) database.close();
             database = DriverManager.getConnection("jdbc:sqlite:"+f.getPath());
             stat = database.createStatement();
-            return !database.isClosed();
+            return isDatabaseActive();
+            
             
         }catch(Exception e){
          

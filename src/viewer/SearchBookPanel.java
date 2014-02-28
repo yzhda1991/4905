@@ -42,8 +42,6 @@ public class SearchBookPanel extends javax.swing.JPanel {
 
         searchLabel.setText("Search book: ");
         add(searchLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
-
-        searchContentField.setText("jTextField1");
         add(searchContentField, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, 273, 40));
 
         submitButton.setText("Search");

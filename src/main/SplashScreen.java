@@ -4,32 +4,27 @@
  */
 package main;
 
-import java.awt.Toolkit;
-import java.net.MalformedURLException;
 import java.util.List;
-
-
 import javax.swing.SwingWorker;
 import model.MainFrame;
 import model.Modeling;
+import model.PathSelectionDialog;
 import viewer.SplashScreenPanel;
 
 /**
  *
  * @author brianyang
  */
-public class SplashScreen extends javax.swing.JDialog{
+public class SplashScreen extends javax.swing.JDialog {
 
     SplashScreenPanel splashPanel;
-    MainFrame         theMain;
-    Modeling     theController;
-    
-    
-    
-    protected void initUI()  {
+    MainFrame theMain;
+    Modeling theController;
+    PathSelectionDialog psd;
+
+    protected void initUI() {
         showSplashScreen();
         SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
-
             @Override
             protected Void doInBackground() throws Exception {
                 splashPanel.getMessage().setText("Welcome to Book View Pdf reader Appication;");
@@ -42,9 +37,15 @@ public class SplashScreen extends javax.swing.JDialog{
                 publish(40);
                 splashPanel.getMessage().setText("initializing  program Viewers......");
                 theController.initFrame();
-                
+
                 publish(60);
                 splashPanel.getMessage().setText("connect to database......");
+                psd = new PathSelectionDialog(new javax.swing.JFrame(),theController,true);
+                psd.setVisible(true);
+                psd.setLocationRelativeTo(null);
+                while(!psd.getdialogstatus()){
+                    Thread.sleep(1);
+                }
                 Thread.sleep(20);
                 publish(80);
                 splashPanel.getMessage().setText("finished building. start program...");
@@ -52,10 +53,9 @@ public class SplashScreen extends javax.swing.JDialog{
                 publish(100);
 
                 return null;
-                   
+
             }
- 
-        
+
             @Override
             protected void process(List<Integer> chunks) {
                 splashPanel.getProgress().setValue(chunks.get(chunks.size() - 1));
@@ -65,14 +65,13 @@ public class SplashScreen extends javax.swing.JDialog{
             protected void done() {
                 showFrame();
                 hideSplashScreen();
-               }
-
+            }
         };
         worker.execute();
     }
-    
+
     protected void showSplashScreen() {
-       
+
         this.setModal(false);
         this.setUndecorated(true);
         splashPanel = new SplashScreenPanel();
@@ -80,20 +79,26 @@ public class SplashScreen extends javax.swing.JDialog{
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-   
+
     }
-      protected void hideSplashScreen() {
-        
+
+    protected void hideSplashScreen() {
+
         this.setVisible(false);
         this.dispose();
     }
-      protected void showFrame() {
-         
-          if(theController == null) theController = new Modeling();
-          if(theMain ==null)  theMain = new MainFrame("View Book Appilcaition",theController);
-          
-          theMain.pack();
-          this.setLocationRelativeTo(null);
-          theMain.setVisible(true);
-      }
+
+    protected void showFrame() {
+
+        if (theController == null) {
+            theController = new Modeling();
+        }
+        if (theMain == null) {
+            theMain = new MainFrame("View Book Appilcaition", theController);
+        }
+
+        theMain.pack();
+        this.setLocationRelativeTo(null);
+        theMain.setVisible(true);
+    }
 }

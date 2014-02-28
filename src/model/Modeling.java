@@ -314,7 +314,7 @@ public class Modeling implements Controller {
     }
 
     public void update(){
-        mainFrame.update();
+        //mainFrame.update();
         if(pageListviewer !=null && pageListviewer.isVisible()) pageListviewer.update();
         if(bookListviewer !=null && bookListviewer.isVisible()) bookListviewer.update();
         if(pageviewer !=null &&pageviewer.isVisible())pageviewer.update();

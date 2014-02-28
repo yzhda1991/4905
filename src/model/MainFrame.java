@@ -35,7 +35,6 @@ public class MainFrame extends javax.swing.JFrame {
                       }
                   }
                   );
-        update();
         this.setSize(700,500);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE); // Already there
         
@@ -477,15 +476,7 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         theController.openAboutDialog(this);
     }//GEN-LAST:event_aboutButtonActionPerformed
-    protected void update(){
-        if(theController==null) theController = new Modeling();
-        if(theController.getSelectedBook()!=null){
-            this.page_viewListButton.setEnabled(true);
-        }
-        else{
-            this.page_viewListButton.setEnabled(false);
-        }
-    }
+
     /**
      * @param args the command line arguments
      */

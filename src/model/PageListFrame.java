@@ -4,7 +4,6 @@
  */
 package model;
 
-
 import java.awt.Toolkit;
 import main.Book;
 import main.Page;
@@ -15,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import viewer.PageListPanel;
@@ -24,233 +22,215 @@ import viewer.PageListPanel;
  *
  * @author byang1
  */
-public class PageListFrame  extends MenuFrame{
-    PageListPanel           mainPanel;
-    
-    ActionListener          seachButtonListener;
-    MouseListener           doubleClickedonBook;
-    MouseListener           doubleClickedonPage;
-    ListSelectionListener   pagelistSelection;
-    ListSelectionListener   booklistSelection;
-    
-    Connecter               theConnecter;
-    Controller              theController;
-    
-    ArrayList<Book>         bookCollection;
-    ArrayList<Page>         pageCollection;
-    
-    Book                    editedBook;
-    
+public class PageListFrame extends MenuFrame {
 
-    
-    public PageListFrame(){
-        
+    PageListPanel mainPanel;
+    private ActionListener seachButtonListener;
+    private MouseListener doubleClickedonBook;
+    private MouseListener doubleClickedonPage;
+    private ListSelectionListener pagelistSelection;
+    private ListSelectionListener booklistSelection;
+    Connecter theConnecter;
+    Controller theController;
+    ArrayList<Book> bookCollection;
+    ArrayList<Page> pageCollection;
+    Book editedBook;
+
+    public PageListFrame() {
+
         super("Page List");
         theConnecter = new Connecter();
         initComponents();
     }
-    
-    public PageListFrame(String title,Modeling viewer, Controller c, Connecter conn,Book initBook){
-        
-        super(title,c);
+
+    public PageListFrame(String title, Modeling viewer, Controller c, Connecter conn, Book initBook) {
+
+        super(title, c);
         theConnecter = conn;
         theController = c;
         editedBook = initBook;
         initComponents();
     }
-    
-    private void initComponents(){
-         
-    
-        mainPanel = new PageListPanel();
-        bookCollection  = theConnecter.getBookList(); 
-        pageCollection = new ArrayList<Page>();
-        if(editedBook==null|| theConnecter.searchPage(editedBook.getBookCode(), "bookcode").isEmpty()){
-            this.dispose();
-            JOptionPane.showMessageDialog(this, "can not find page list from selected Book!","innae error",JOptionPane.ERROR_MESSAGE);
-            
-        } 
-        else pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
-        
-        seachButtonListener = new ActionListener(){
 
+    private void initComponents() {
+
+
+        mainPanel = new PageListPanel();
+        bookCollection = theConnecter.getBookList();
+        pageCollection = new ArrayList<Page>();
+        if (editedBook != null) {
+            pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
+        }
+
+        seachButtonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               
+
                 searchPage();
             }
         };
-        
-        pagelistSelection = new ListSelectionListener(){
 
+        pagelistSelection = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-             theController.setSelectedPage((Page)mainPanel.getPageList().getSelectedValue());
-             update();
-            }
-            
-        };
-        
-        booklistSelection = new ListSelectionListener(){
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                theController.setSelectedBook((Book)mainPanel.getBookList().getSelectedValue());
+                theController.setSelectedPage((Page) mainPanel.getPageList().getSelectedValue());
                 update();
             }
-            
         };
-        
-        doubleClickedonBook = new MouseAdapter(){
 
+        booklistSelection = new ListSelectionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount()==2){
-                    JList theList =(JList) e.getSource();
-                    int index =  theList.locationToIndex(e.getPoint());
-                    Book findBook = (Book)theList.getModel().getElementAt(index);
-                    if(findBook!= null)searchPage(findBook);
-                }
-              }
-
-  
-        };
-        
-        doubleClickedonPage = new MouseAdapter(){
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                 if(e.getClickCount()==2){
-                    JList theList =(JList) e.getSource();
-                    int index =  theList.locationToIndex(e.getPoint());
-                    Page findPage = (Page)theList.getModel().getElementAt(index);
-                    if(findPage!= null){
-                        if(theController !=null) theController.openPageViewer(findPage);
-                    }
-                 }
+            public void valueChanged(ListSelectionEvent e) {
+                theController.setSelectedBook((Book) mainPanel.getBookList().getSelectedValue());
+                update();
             }
-            
         };
-        
+
+        doubleClickedonBook = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JList theList = (JList) e.getSource();
+                    int index = theList.locationToIndex(e.getPoint());
+                    Book findBook = (Book) theList.getModel().getElementAt(index);
+                    if (findBook != null) {
+                        searchPage(findBook);
+                    }
+                }
+            }
+        };
+
+        doubleClickedonPage = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JList theList = (JList) e.getSource();
+                    int index = theList.locationToIndex(e.getPoint());
+                    Page findPage = (Page) theList.getModel().getElementAt(index);
+                    if (findPage != null) {
+                        if (theController != null) {
+                            theController.openPageViewer(findPage);
+                        }
+                    }
+                }
+            }
+        };
+
         super.updateMainPanel(mainPanel);
         this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-      update();
+        update();
     }
-    
-    private void searchPage(){
+
+    private void searchPage() {
         super.setStatus("searching page ....");
         String searchContent = mainPanel.getSearchField().getText().trim();
-        String mode  = (String)mainPanel.getTypeBox().getSelectedItem();
+        String mode = (String) mainPanel.getTypeBox().getSelectedItem();
         ArrayList<Page> searchPage = new ArrayList<Page>();
-        
-        if(searchContent.equals("*") ||searchContent.equals("%") ||searchContent.equals("") )
+
+        if (searchContent.equals("*") || searchContent.equals("%") || searchContent.equals("")) {
             searchPage = theConnecter.getPageList();
-    
-        else if(mode.equals("Page ID")){
-             searchPage = theConnecter.searchPage(searchContent, "id");
+        } else if (mode.equals("Page ID")) {
+            searchPage = theConnecter.searchPage(searchContent, "id");
+        } else if (mode.equals("Book Code")) {
+            searchPage = theConnecter.searchPage(searchContent, "bookcode");
+        } else if (mode.equals("Page Title")) {
+            searchPage = theConnecter.searchPage(searchContent, "title");
         }
-       
-        else if(mode.equals("Book Code")){
-            searchPage =theConnecter.searchPage(searchContent, "bookcode");
-        }
-       
-        else if(mode.equals("Page Title")){
-             searchPage =theConnecter.searchPage(searchContent, "title");
-        }
-        
-         pageCollection = searchPage;
-         update();
+
+        pageCollection = searchPage;
+        update();
     }
-    
-    private void searchPage(Book b){
-         ArrayList<Page> searchPage = new ArrayList<Page>();
-         searchPage =theConnecter.searchPage(b.getBookCode(), "bookcode");
-         
-         pageCollection = searchPage;
-         update();
+
+    private void searchPage(Book b) {
+        ArrayList<Page> searchPage = new ArrayList<Page>();
+        searchPage = theConnecter.searchPage(b.getBookCode(), "bookcode");
+
+        pageCollection = searchPage;
+        update();
     }
-    
-    private void enableListener(){
-       
+
+    private void enableListener() {
+
         mainPanel.getSearchButton().addActionListener(seachButtonListener);
         mainPanel.getBookList().addMouseListener(doubleClickedonBook);
         mainPanel.getPageList().addMouseListener(doubleClickedonPage);
         mainPanel.getBookList().addListSelectionListener(booklistSelection);
         mainPanel.getPageList().addListSelectionListener(pagelistSelection);
-        
+
     }
-    private void disableListener(){
-       
+
+    private void disableListener() {
+
         mainPanel.getSearchButton().removeActionListener(seachButtonListener);
         mainPanel.getBookList().removeMouseListener(doubleClickedonBook);
         mainPanel.getPageList().removeMouseListener(doubleClickedonPage);
         mainPanel.getBookList().removeListSelectionListener(booklistSelection);
         mainPanel.getPageList().removeListSelectionListener(pagelistSelection);
     }
-    
-    private void updateList(){
-        
-        if(pageCollection !=null && !pageCollection.isEmpty()){
-        Book bookArray[] =new Book[1];
-        mainPanel.getBookList().setListData((Book []) bookCollection.toArray(bookArray));
-        Page pageArray[]  = new Page[1];
-        mainPanel.getPageList().setListData(pageCollection.toArray(pageArray));
+
+    private void updateList() {
+        if (bookCollection != null && !bookCollection.isEmpty()) {
+            Book bookArray[] = new Book[1];
+            mainPanel.getBookList().setListData((Book[]) bookCollection.toArray(bookArray));
+        } else {
+            String[] empty = {};
+            mainPanel.getBookList().setListData(empty);
         }
-        else{
+        if (pageCollection != null && !pageCollection.isEmpty()) {
+            Page pageArray[] = new Page[1];
+            mainPanel.getPageList().setListData(pageCollection.toArray(pageArray));
+        } else {
             String[] empty = {};
             mainPanel.getPageList().setListData(empty);
         }
-        
+
     }
-    
-    protected void updateinfo(Book b){
-        
+
+    protected void updateinfo(Book b) {
+
         editedBook = b;
-        
-        if(b==null){
+
+        if (b == null) {
             pageCollection = new ArrayList<Page>();
-        }
-        else{
+        } else {
             pageCollection = theConnecter.searchPage(editedBook.getBookCode(), "bookcode");
-        
+
         }
         update();
     }
+
     @Override
-    public void update(){
+    public void update() {
         disableListener();
         updateList();
         enableListener();
         super.update();
-      
-      
-    }
-    
-    public static void main(String args[]) {
-       
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        java.awt.EventQueue.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                new PageListFrame().setVisible(true);
-            }
-        });
+
     }
+//    public static void main(String args[]) {
+//
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PageListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                new PageListFrame().setVisible(true);
+//            }
+//        });
+//    }
 }
-
