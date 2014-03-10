@@ -11,7 +11,6 @@
 package viewer;
 
 import java.awt.GridBagConstraints;
-import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
@@ -32,18 +31,11 @@ public class PageViewer extends javax.swing.JPanel {
     public JList getPageList(){
         return PageList;
     }
-    public JButton getPageView(){
-        return pageButton;
-    }
-    public JButton getSearchButton(){
-        return pageButton;
-    }
+   
     public void setTittle(String t){
         BookName.setText("Page : "+t);
     }
-    public void setSearch(JButton j){
-        pageButton =j;
-    }
+ 
     public void setMainPanel(JPanel p){
          remove(mainPanel);
          mainPanel = p;
@@ -70,11 +62,9 @@ public class PageViewer extends javax.swing.JPanel {
 
         BookListScroll = new javax.swing.JScrollPane();
         PageList = new javax.swing.JList();
-        pageButton = new javax.swing.JButton();
         BookLabel = new javax.swing.JLabel();
         BookName = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
-        seachButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -96,17 +86,6 @@ public class PageViewer extends javax.swing.JPanel {
         gridBagConstraints.weighty = 2.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(BookListScroll, gridBagConstraints);
-
-        pageButton.setText("PageViewer");
-        pageButton.setToolTipText("Search Book");
-        pageButton.setMinimumSize(new java.awt.Dimension(130, 41));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        add(pageButton, gridBagConstraints);
 
         BookLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -140,17 +119,6 @@ public class PageViewer extends javax.swing.JPanel {
         gridBagConstraints.weighty = 2.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(mainPanel, gridBagConstraints);
-
-        seachButton.setText("SearchViewer");
-        seachButton.setToolTipText("Search Book");
-        seachButton.setMinimumSize(new java.awt.Dimension(130, 41));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        add(seachButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -159,8 +127,6 @@ public class PageViewer extends javax.swing.JPanel {
     private javax.swing.JLabel BookName;
     private javax.swing.JList PageList;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JButton pageButton;
-    private javax.swing.JButton seachButton;
     // End of variables declaration//GEN-END:variables
 
 }

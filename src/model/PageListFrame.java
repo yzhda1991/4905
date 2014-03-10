@@ -4,7 +4,6 @@
  */
 package model;
 
-import java.awt.Toolkit;
 import main.Book;
 import main.Page;
 import java.awt.event.ActionEvent;
@@ -117,7 +116,7 @@ public class PageListFrame extends MenuFrame {
         };
 
         super.updateMainPanel(mainPanel);
-        this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        //this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         update();
     }
 

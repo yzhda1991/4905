@@ -1,4 +1,3 @@
-
 package model;
 
 import java.awt.event.WindowAdapter;
@@ -15,33 +14,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class MainFrame extends javax.swing.JFrame {
 
     protected Controller theController;
+
     public MainFrame() {
         initComponents();
     }
-    public MainFrame(String title,Controller c){
-        super(title);
-        theController =c;
-        initComponents();
-        
-        addWindowListener(
-                  new WindowAdapter(){
-                      public void WindowClosing(WindowEvent e){
-                          
-                          if(theController !=null){
-                             
-                              theController.exitProgram();
-                          } 
-                          else System.exit(0);
-                      }
-                  }
-                  );
-        this.setSize(700,500);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE); // Already there
-        
-    }
-    
 
-    
+    public MainFrame(String title, Controller c) {
+        super(title);
+        theController = c;
+        initComponents();
+
+        addWindowListener(
+                new WindowAdapter() {
+                    public void WindowClosing(WindowEvent e) {
+
+                        if (theController != null) {
+
+                            theController.exitProgram();
+                        } else {
+                            System.exit(0);
+                        }
+                    }
+                }
+        );
+        this.setSize(700, 500);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE); // Already there
+
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -385,7 +386,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void book_addBookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_book_addBookButtonActionPerformed
         // TODO add your handling code here:
-        theController.openBookInfoDialog(this,Controller.operation.ADD,null);
+        theController.openBookInfoDialog(this, Controller.operation.ADD, null);
     }//GEN-LAST:event_book_addBookButtonActionPerformed
 
     private void book_viewListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_book_viewListButtonActionPerformed
@@ -395,76 +396,74 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void book_searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_book_searchButtonActionPerformed
         // TODO add your handling code here:
-       theController.openBookSearchDialog(this);
+        theController.openBookSearchDialog(this);
     }//GEN-LAST:event_book_searchButtonActionPerformed
 
     private void page_addPageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_page_addPageButtonActionPerformed
         // TODO add your handling code here:
-        theController.openPageInfoDialog(this,Controller.operation.ADD,null);
+        theController.openPageInfoDialog(this, Controller.operation.ADD, null);
     }//GEN-LAST:event_page_addPageButtonActionPerformed
 
     private void page_viewListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_page_viewListButtonActionPerformed
         // TODO add your handling code here:
-         theController.openPageListFrame(null);
-        
+        theController.openPageListFrame(null);
+
     }//GEN-LAST:event_page_viewListButtonActionPerformed
 
     private void page_searchPageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_page_searchPageButtonActionPerformed
         // TODO add your handling code here:
-         theController.OpenPageSearchDialog(this);
-    
+        theController.OpenPageSearchDialog(this);
+
     }//GEN-LAST:event_page_searchPageButtonActionPerformed
 
     private void database_saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_database_saveButtonActionPerformed
         // TODO add your handling code here:
-         JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("xml","XML");
-                 chooser.setFileFilter(filter);
-                 
-                 int returnVal = chooser.showSaveDialog(null);
-                 
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                            theController.SaveDatabaseAs(chooser.getSelectedFile());
-                    }
-    
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "XML");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showSaveDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            theController.SaveDatabaseAs(chooser.getSelectedFile());
+        }
+
     }//GEN-LAST:event_database_saveButtonActionPerformed
 
     private void Database_CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Database_CloseButtonActionPerformed
         // TODO add your handling code here:
-        if(theController.closeDatabase()){
-        Enumeration<AbstractButton> elements = databaseRequired.getElements();
-        
-            while(elements.hasMoreElements()){
-                
-                    elements.nextElement().getModel().setEnabled(false);
+        if (theController.closeDatabase()) {
+            Enumeration<AbstractButton> elements = databaseRequired.getElements();
+
+            while (elements.hasMoreElements()) {
+                elements.nextElement().getModel().setEnabled(false);
             }
         }
 
     }//GEN-LAST:event_Database_CloseButtonActionPerformed
 
+
     private void database_newConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_database_newConnectButtonActionPerformed
         // TODO add your handling code here:
-           JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("","db");
-                 chooser.setFileFilter(filter);
-                 
-                 int returnVal = chooser.showOpenDialog(null);
-                 
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                        
-                        if(theController.openNewDataBase(chooser.getSelectedFile())){
-                            Enumeration<AbstractButton> elements = databaseRequired.getElements();
-                            
-                            while(elements.hasMoreElements()){
-                               
-                                
-                                elements.nextElement().getModel().setEnabled(true);
-                            }
-                        }
-                    }
-                    
-                   
-    
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("", "db");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(null);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+            if (theController.openNewDataBase(chooser.getSelectedFile())) {
+                Enumeration<AbstractButton> elements = databaseRequired.getElements();
+
+                while (elements.hasMoreElements()) {
+
+                    elements.nextElement().getModel().setEnabled(true);
+                }
+            }
+        }
+
+
     }//GEN-LAST:event_database_newConnectButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
@@ -476,6 +475,22 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         theController.openAboutDialog(this);
     }//GEN-LAST:event_aboutButtonActionPerformed
+    public void update(boolean a) {
+       if(a){
+           Enumeration<AbstractButton> elements = databaseRequired.getElements();
+
+            while (elements.hasMoreElements()) {
+                elements.nextElement().getModel().setEnabled(true);
+       }
+       }
+       else{
+           Enumeration<AbstractButton> elements = databaseRequired.getElements();
+
+            while (elements.hasMoreElements()) {
+                elements.nextElement().getModel().setEnabled(false);
+            }
+       }
+    }
 
     /**
      * @param args the command line arguments

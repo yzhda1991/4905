@@ -14,6 +14,8 @@ import main.Page;
  * @author byang1
  */
 public interface Controller {
+
+   
  
     /**
      *
@@ -35,6 +37,10 @@ public interface Controller {
      *
      */
     
+    /**
+     *
+     * @param b
+     */
     public void setSelectedBook(Book b);
     public void setSelectedPage(Page p);
     public void OpenBookListFrame();
@@ -53,12 +59,14 @@ public interface Controller {
      public void closeFrame();
     /**
      *
+     * @param parent
      * @param anOperation
      */
     public void openBookInfoDialog(JFrame parent,operation anOperation,Book b);
     public void closeBookInfoDialog(operation anOperation,Book b);
     /**
      *
+     * @param parent
      * @param anOperation
      */
     public void openPageInfoDialog (JFrame parent,operation anOperation,Page p);
@@ -66,6 +74,7 @@ public interface Controller {
     
     /**
      *
+     * @param parent
      */
     public void openAboutDialog(JFrame parent);
     public void exitProgram();
@@ -77,6 +86,7 @@ public interface Controller {
     public void OpenPageSearchDialog(JFrame parent);
     public void closePageSearchDialog();
     
+     public String[] getbookCode();
     public void SaveDatabaseAs(File f);
     public boolean closeDatabase();
     public boolean openNewDataBase(File f);

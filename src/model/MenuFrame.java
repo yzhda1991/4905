@@ -10,78 +10,69 @@
  */
 package model;
 
-
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.JFileChooser;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import main.Book;
+import main.Page;
 
 //basic viewer for BookViewer;
-public class MenuFrame extends javax.swing.JFrame  {
+public class MenuFrame extends javax.swing.JFrame {
 
+    private static Controller theController;
+    private static ActionListener bookMenuListener;
 
-    
-    
-    private static Controller      theController;
-    private static ActionListener  bookMenuListener;
-   
-    
-    private static ActionListener  pageMenuListener;
-    private static ActionListener  toolMenuListener;
-    private static ActionListener  aboutMenuListener;
-    private static ActionListener  fileMenuListener;
-    
-  
-    
+    private static ActionListener pageMenuListener;
+    private static ActionListener toolMenuListener;
+    private static ActionListener aboutMenuListener;
+    private static ActionListener fileMenuListener;
 
-    
-     //constractor with title;
+    //constractor with title ;
     /**
      *
      * @param t
      */
-    public MenuFrame(String t){
+    public MenuFrame(String t) {
         super(t);
         initListener();
         initComponents();
         enableListener();
         updateButton();
     }
-    
+
     /**
      *
      * @param t
      * @param c
      */
-    public MenuFrame(String t,Controller c){
+    public MenuFrame(String t, Controller c) {
         super(t);
         theController = c;
-        
+
         initListener();
         initComponents();
         enableListener();
         updateButton();
-        
+
     }
-    
+
     //update Status Message;
-    public void setStatus(String s){
-    statusBar.setText("Status : "+s);
-    } 
-    
-    public void updateMainPanel(JPanel panel){
-    java.awt.GridBagConstraints gridBagConstraints;
-    getContentPane().remove(mainPannel);
-    mainPannel = new JPanel();
-    mainPannel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
+    public void setStatus(String s) {
+        statusBar.setText("Status : " + s);
+    }
+
+    public void updateMainPanel(JPanel panel) {
+        java.awt.GridBagConstraints gridBagConstraints;
+        getContentPane().remove(mainPannel);
+        mainPannel = new JPanel();
+        mainPannel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
         mainPannel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -95,277 +86,345 @@ public class MenuFrame extends javax.swing.JFrame  {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         getContentPane().add(mainPannel, gridBagConstraints);
         mainPannel.add(panel, java.awt.BorderLayout.CENTER);
-        
+
         update();
     }
 
     //return status;
-    public JLabel getStatus(){
-      return statusBar;
+    public JLabel getStatus() {
+        return statusBar;
     }
-    
+
     //return main panel;
-    public JPanel getMainPanel(){
-      return mainPannel;
+    public JPanel getMainPanel() {
+        return mainPannel;
     }
-    
+
     // set up and define all listener;
-    private void initListener(){
-        
+    private void initListener() {
+
         //Listener: clicked add button in tool bar or select addbook opotion in edit menu 
-        bookMenuListener =new ActionListener(){
-          
+        bookMenuListener = new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 bookActionMap(e);
-                }
+            }
         };
-        
-        pageMenuListener =new ActionListener(){
-          
+
+        pageMenuListener = new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 pageActionMap(e);
-                
-               
+
             }
         };
-        
-        toolMenuListener = new ActionListener(){
+
+        toolMenuListener = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 toolActionMap(e);
-                        }
-            
+            }
+
         };
-        
-        
-        aboutMenuListener =new ActionListener(){
-          
+
+        aboutMenuListener = new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 aboutActionMap(e);
-                
+
             }
         };
-        
-        fileMenuListener = new ActionListener(){
+
+        fileMenuListener = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 fileActionmap(e);
-                        }
-            
+            }
+
         };
 
-
     }
-    
+
     //add all listener to frame;
-    private void enableListener(){
-        
+    private void enableListener() {
+
         addBookMenuItem.addActionListener(bookMenuListener);
         editBookMenuItem.addActionListener(bookMenuListener);
         deleteBookMenuItem.addActionListener(bookMenuListener);
-        
+
         openMenuItem.addActionListener(fileMenuListener);
         saveMenuItem.addActionListener(fileMenuListener);
+        DatabaseCloseMenuItem.addActionListener(fileMenuListener);
         exitMenuItem.addActionListener(fileMenuListener);
-        
+
         addPageMenuItem.addActionListener(pageMenuListener);
         editPageMenuItem.addActionListener(pageMenuListener);
         deletePageMenuItem.addActionListener(pageMenuListener);
-        
+
         About.addActionListener(aboutMenuListener);
-        
-          
+
         addnewBookButton.addActionListener(toolMenuListener);
         removeBookButton.addActionListener(toolMenuListener);
         ViewBookButton.addActionListener(toolMenuListener);
 
-       
-    } 
+    }
+
     //remove all listener from frame;
-    private void disableListsener(){
+    private void disableListsener() {
         About.removeActionListener(aboutMenuListener);
-        
+
         openMenuItem.removeActionListener(fileMenuListener);
         saveMenuItem.removeActionListener(fileMenuListener);
+        DatabaseCloseMenuItem.removeActionListener(fileMenuListener);
+       
         exitMenuItem.removeActionListener(fileMenuListener);
-        
+
         addBookMenuItem.removeActionListener(bookMenuListener);
         deleteBookMenuItem.removeActionListener(bookMenuListener);
         editBookMenuItem.removeActionListener(bookMenuListener);
-        
+
         addPageMenuItem.removeActionListener(pageMenuListener);
         editPageMenuItem.removeActionListener(pageMenuListener);
         deletePageMenuItem.removeActionListener(pageMenuListener);
-        
+
         addnewBookButton.removeActionListener(toolMenuListener);
         removeBookButton.removeActionListener(MenuFrame.toolMenuListener);
         ViewBookButton.removeActionListener(MenuFrame.toolMenuListener);
 
-      
     }
-    
-    private void fileActionmap(ActionEvent ae){
-        
-        if(ae.getSource().equals(exitMenuItem)){
-            if(theController !=null) theController.exitProgram();
-        }
-        else if(ae.getSource().equals(openMenuItem)){
-             JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("","db");
-                 chooser.setFileFilter(filter);
-                 
-                 int returnVal = chooser.showOpenDialog(null);
-                 
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                        if(theController !=null)
-                        if(theController.openNewDataBase(chooser.getSelectedFile())){
-                            Enumeration<AbstractButton> elements = databaseRequired.getElements();
-                            
-                            while(elements.hasMoreElements()){
-                                elements.nextElement().getModel().setEnabled(true);
-                            }
-                        }
-                    }  
-        }
-        else if(ae.getSource().equals(saveMenuItem)){
+
+    private void fileActionmap(ActionEvent ae) {
+
+        if (ae.getSource().equals(exitMenuItem)) {
+            if (theController != null) {
+                theController.exitProgram();
+            }
+        } else if (ae.getSource().equals(openMenuItem)) {
+            setStatus("opening file.....");
             JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("xml","XML");
-                 chooser.setFileFilter(filter);
-                 
-                 int returnVal = chooser.showSaveDialog(null);
-                 
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                           if(theController !=null) theController.SaveDatabaseAs(chooser.getSelectedFile());
+            int returnVal = chooser.showOpenDialog(null);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                setStatus("opening file: " + chooser.getSelectedFile().getPath());
+
+                if (theController != null) {
+                    if (theController.openNewDataBase(chooser.getSelectedFile())) {
+                        Enumeration<AbstractButton> elements = databaseRequired.getElements();
+
+                        while (elements.hasMoreElements()) {
+                            elements.nextElement().getModel().setEnabled(true);
+                        }
                     }
+                }
+            }
+
+        } else if (ae.getSource().equals(saveMenuItem)) {
+            setStatus("save system data info");
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "XML");
+            chooser.setFileFilter(filter);
+
+            int returnVal = chooser.showSaveDialog(null);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                if (theController != null) {
+                    theController.SaveDatabaseAs(chooser.getSelectedFile());
+                }
+                setStatus("save file: " + chooser.getSelectedFile().getPath());
+            }
+        }else if (ae.getSource().equals(DatabaseCloseMenuItem)){
+            if(theController !=null){
+                if(theController.closeDatabase()){
+                     JOptionPane.showMessageDialog(this, " database Closed");
+               
+                }
+            }
         }
     }
-    
-    private void bookActionMap(ActionEvent ae){    
-        if(ae.getSource().equals(addBookMenuItem)){
-            
-            if(theController !=null)theController.openBookInfoDialog(this,Controller.operation.ADD,null);  
-  
-        }
-        else {
-           
-            if(theController.getSelectedBook()==null){
-                JOptionPane.showMessageDialog(this," System did not found a selected Book information");
+
+    private void bookActionMap(ActionEvent ae) {
+        if (ae.getSource().equals(addBookMenuItem)) {
+
+            if (theController != null) {
+                theController.openBookInfoDialog(this, Controller.operation.ADD, null);
+                setStatus("add new book");
+            }
+
+        } else {
+
+            if (theController.getSelectedBook() == null) {
+                JOptionPane.showMessageDialog(this, " System did not found a selected Book information");
                 return;
             }
-            
-            if(ae.getSource().equals(editBookMenuItem)){
-                if(theController !=null) theController.openBookInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedBook());
-            }
-             else if(ae.getSource().equals(deleteBookMenuItem)){
-               if(theController !=null) theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
-               theController.setSelectedBook(null);
+
+            if (ae.getSource().equals(editBookMenuItem)) {
+                if (theController != null) {
+                    setStatus("Update book info: " + theController.getSelectedBook().getBookName());
+                    theController.openBookInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedBook());
+                }
+            } else if (ae.getSource().equals(deleteBookMenuItem)) {
+                setStatus("delete book : " + theController.getSelectedBook().getBookName());
+
+                Book temp;
+
+                temp = theController.getSelectedBook();
+                if (temp == null) {
+                    JOptionPane.showMessageDialog(this, " System did not found a selected Book information");
+
+                } else if (theController != null) {
+//                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
+
+                    int dialogButton = JOptionPane.YES_NO_OPTION;
+                    int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book"
+                            + temp.getBookName() + " ?", "Delete Book: " + temp.getBookName(), dialogButton);
+                    if (dialogResult == 1) {
+                        setStatus("Operation Cancelled");
+                    } else {
+                        theController.closeBookInfoDialog(Controller.operation.DELETE, temp);
+                        setStatus(theController.getSelectedBook().getBookName() + "deleted! ");
+
+                    }
+                }
             }
         }
+
+    }
+
+    private void pageActionMap(ActionEvent ae) {
+        if (theController == null) {
+            return;
+        }
+        Page editedPage = theController.getSelectedPage();
+
+        if (ae.getSource().equals(addPageMenuItem)) {
+            setStatus("add new page: ");
+            theController.openPageInfoDialog(this, Controller.operation.ADD, null);
+            
        
-    }
-            
-    private void pageActionMap(ActionEvent ae){
-         if(ae.getSource().equals(addPageMenuItem)){
-            
-            if(theController !=null)theController.openPageInfoDialog(this, Controller.operation.ADD, null);
-  
+        } else if (editedPage == null) {
+            JOptionPane.showMessageDialog(this, " System did not found a selected page information");
+            return;
         }
-         
-        else {
+
+        if (ae.getSource().equals(editPageMenuItem)) {
+            setStatus("Update page info: " + theController.getSelectedPage().getPageTitle());
+                   
+            theController.openPageInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedPage());
+        } else if (ae.getSource().equals(deletePageMenuItem)) {
+            setStatus("delete page : " + theController.getSelectedPage().getPageTitle());
            
-            if(theController.getSelectedPage()==null){
-                JOptionPane.showMessageDialog(this," System did not found a selected page information");
-                return;
+            //theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
+            int dialogButton = JOptionPane.YES_NO_OPTION;
+            int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete Page"
+                    + editedPage.getPageTitle() + " ?", "Delete Book: " + editedPage.getPageTitle(), dialogButton);
+            if (dialogResult == 1) {
+                setStatus("Operation Cancelled");
+            } else {
+                theController.closePageInfoDialog(Controller.operation.DELETE, editedPage);
+                 setStatus(theController.getSelectedPage().getPageTitle()+"has deleted! ");
+           
             }
-            
-            if(ae.getSource().equals(editPageMenuItem)){
-                if(theController !=null) theController.openPageInfoDialog(this, Controller.operation.UPDATE, theController.getSelectedPage());
+        }
+
+    }
+
+    private void toolActionMap(ActionEvent ae) {
+
+        if (ae.getSource().equals(addnewBookButton)) {
+
+            if (theController != null) {
+                 setStatus("add new book");
+                theController.openBookInfoDialog(this, Controller.operation.ADD, null);
+                
             }
+
+        } else if (ae.getSource().equals(removeBookButton)) {
+            setStatus("delete book : " + theController.getSelectedBook().getBookName());
+            Book temp;
             
-             else if(ae.getSource().equals(deletePageMenuItem)){
-               if(theController !=null) theController.openPageInfoDialog(this, Controller.operation.DELETE, theController.getSelectedPage());
-               theController.setSelectedPage(null);
+            temp = theController.getSelectedBook();
+            if (temp == null) {
+                JOptionPane.showMessageDialog(this, " System did not found a selected Book information");
+
+            } else if (theController != null) {
+//                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
+
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book"
+                        + temp.getBookName() + " ?", "Delete Book: " + temp.getBookName(), dialogButton);
+                if (dialogResult == 1) {
+                    setStatus("Operation Cancelled");
+                } else {
+                    theController.closeBookInfoDialog(Controller.operation.DELETE, temp);
+                    setStatus(theController.getSelectedBook().getBookName() + "deleted! ");
+                }
+            }
+        } else if (ae.getSource().equals(ViewBookButton)) {
+            setStatus("view  colletion list ");
+            if (theController != null) {
+                theController.OpenBookListFrame();
+            }
+        }
+
+    }
+
+    private void aboutActionMap(ActionEvent ae) {
+        if (ae.getSource().equals(About)) {
+            if (theController != null) {
+                theController.openAboutDialog(this);
             }
         }
     }
-    
-    private void toolActionMap(ActionEvent ae){
-       if(ae.getSource().equals(addnewBookButton)){
-            
-            if(theController !=null)theController.openBookInfoDialog(this,Controller.operation.ADD,null);  
-  
+
+    private void updateButton() {
+        if (theController == null) {
+            theController = new Modeling();
         }
-        else {
-            if(ae.getSource().equals(removeBookButton)){
-                if(theController.getSelectedBook()==null){
-                JOptionPane.showMessageDialog(this," System did not found a selected Book information");
-                return;
-            }
-             if(theController !=null) 
-                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
-            }
-            
-             else if(ae.getSource().equals(ViewBookButton)){
-               if(theController !=null) 
-                   theController.OpenBookListFrame();
-            }
-        } 
-       
-    }
-    private void aboutActionMap(ActionEvent ae){
-        if(ae.getSource().equals(About)){
-            if(theController !=null) theController.openAboutDialog(this);
-        }
-    }
-    
-  
-    private void updateButton(){
-       if(theController==null) theController = new Modeling();
-        if(theController.getSelectedBook() != null){
+        if (theController.getSelectedBook() != null) {
             Pages.setEnabled(true);
             editBookMenuItem.setEnabled(true);
             deleteBookMenuItem.setEnabled(true);
             removeBookButton.setEnabled(true);
-            
-        }else {
+
+        } else {
             Pages.setEnabled(false);
             Pages.setEnabled(false);
             editBookMenuItem.setEnabled(false);
             deleteBookMenuItem.setEnabled(false);
             removeBookButton.setEnabled(false);
         }
-        if(theController.getSelectedPage() !=null){
+        if (theController.getSelectedPage() != null) {
             editPageMenuItem.setEnabled(true);
             deletePageMenuItem.setEnabled(true);
-        } else{
+        } else {
             editPageMenuItem.setEnabled(false);
             deletePageMenuItem.setEnabled(false);
         }
-    
-        
+
     }
-    
-    public void update(){
+
+    public void update() {
         disableListsener();
         updateButton();
-        enableListener(); 
-        
+        enableListener();
+
     }
-    protected JToolBar getToolBar(){
+
+    protected JToolBar getToolBar() {
         return bookToolBar;
     }
-    
-    protected void  addTools(JToolBar jtb){
-        
+
+    protected void addTools(JToolBar jtb) {
+
     }
-      public static void main(String args[])  {
-       
-        
+
+    public static void main(String args[]) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -386,11 +445,11 @@ public class MenuFrame extends javax.swing.JFrame  {
 
             @Override
             public void run() {
-                Modeling  main = new Modeling();
-                new MenuFrame("test",main).setVisible(true);
+                Modeling main = new Modeling();
+                new MenuFrame("test", main).setVisible(true);
             }
         });
-      }
+    }
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -404,7 +463,6 @@ public class MenuFrame extends javax.swing.JFrame  {
         ViewBookButton = new javax.swing.JButton();
         separator = new javax.swing.JToolBar.Separator();
         mainPannel = new javax.swing.JPanel();
-        ProgressBar = new javax.swing.JProgressBar();
         statusBar = new javax.swing.JLabel();
         topMenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
@@ -424,7 +482,9 @@ public class MenuFrame extends javax.swing.JFrame  {
         Help = new javax.swing.JMenu();
         About = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setName("MenuFrame"); // NOI18N
+        setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         bookToolBar.setForeground(new java.awt.Color(240, 240, 240));
@@ -478,17 +538,6 @@ public class MenuFrame extends javax.swing.JFrame  {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         getContentPane().add(mainPannel, gridBagConstraints);
 
-        ProgressBar.setMaximum(200);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipadx = 30;
-        gridBagConstraints.ipady = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 20);
-        getContentPane().add(ProgressBar, gridBagConstraints);
-
         statusBar.setFont(new java.awt.Font("Agency FB", 0, 18)); // NOI18N
         statusBar.setText("Status:");
         statusBar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -523,6 +572,7 @@ public class MenuFrame extends javax.swing.JFrame  {
         saveMenuItem.setMargin(new java.awt.Insets(2, 2, 2, 2));
         FileMenu.add(saveMenuItem);
 
+        DatabaseCloseMenuItem.setFont(getFont());
         DatabaseCloseMenuItem.setText("Close Database");
         databaseRequired.add(DatabaseCloseMenuItem);
         FileMenu.add(DatabaseCloseMenuItem);
@@ -604,7 +654,7 @@ public class MenuFrame extends javax.swing.JFrame  {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-  
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem About;
     private javax.swing.JMenuItem DatabaseCloseMenuItem;
@@ -612,7 +662,6 @@ public class MenuFrame extends javax.swing.JFrame  {
     private javax.swing.JMenu FileMenu;
     private javax.swing.JMenu Help;
     private javax.swing.JMenu Pages;
-    private javax.swing.JProgressBar ProgressBar;
     private javax.swing.JButton ViewBookButton;
     private javax.swing.JMenuItem addBookMenuItem;
     private javax.swing.JMenuItem addPageMenuItem;

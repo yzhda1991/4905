@@ -13,7 +13,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author brianyang
  */
-public class PageInfoDialog extends javax.swing.JDialog {
+public class PageInfoDialog2 extends javax.swing.JDialog {
 
   
     Controller            theController;
@@ -23,12 +23,12 @@ public class PageInfoDialog extends javax.swing.JDialog {
     FocusListener           numberFieldListener;
     Frame                   thisframe;
     boolean                 errorfound = false;
-    public PageInfoDialog(java.awt.Frame parent, boolean modal) {
+    public PageInfoDialog2 (java.awt.Frame parent, boolean modal) {
         super(parent,"page info", modal);
         initEnvironment();
     }
     
-    public PageInfoDialog(java.awt.Frame parent, String title,Controller theclient, Page p,Controller.operation aopertion ,boolean modal) {
+    public PageInfoDialog2 (java.awt.Frame parent, String title,Controller theclient, Page p,Controller.operation aopertion ,boolean modal) {
         super(parent,"page info", modal);
         theController = theclient;
         editedPage = p;
@@ -46,7 +46,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageIDField.setEditable(false);
         
         if(mode.equals(Controller.operation.DELETE)){
-            //bookCodeField.setEnabled(false);
+            bookCodeField.setEnabled(false);
             pageTitleField.setEnabled(false);
             pageNumField.setEnabled(false);
         }
@@ -57,13 +57,13 @@ public class PageInfoDialog extends javax.swing.JDialog {
        
         if(editedPage== null){
             pageIDField.setText(null);
-            bookCodeField.setSelectedItem(null);
+            bookCodeField.setText(null);
             pageTitleField.setText(null);
             pageNumField.setText(null);
         }
         else {
             pageIDField.setText(editedPage.getPageID()+"");
-            bookCodeField.setSelectedItem(editedPage.getBookCode());
+            bookCodeField.setText(editedPage.getBookCode());
             pageTitleField.setText(editedPage.getPageTitle());
             pageNumField.setText(editedPage.getPageNum()+"");
         }
@@ -80,6 +80,8 @@ public class PageInfoDialog extends javax.swing.JDialog {
                 final JTextComponent c = (JTextComponent)e.getSource(); 
                  c.setForeground(new java.awt.Color(153, 204, 255));
                 if (c.equals(pageTitleField))       nameStatus.setText("page Title should be 3-20 charaters !");
+                else if (c.equals(bookCodeField))   codeStatus.setText("book code should be 4-10 characters  !");
+                
                   }
 
             @Override
@@ -94,11 +96,13 @@ public class PageInfoDialog extends javax.swing.JDialog {
                     c.setForeground(Color.red);
                     
                     if (c.equals(pageTitleField))   nameStatus.setText("Page Title is invaild !");
+                else if (c.equals(bookCodeField))   codeStatus.setText("book code is invaild !");
                      if(!errorfound)errorfound = true;
                 }
                 
                 else{
                      if (c.equals(pageTitleField))  nameStatus.setText("vaild PageTitle!");
+                else if (c.equals(bookCodeField))   codeStatus.setText("vaild book code");
                      if(errorfound)errorfound = false;
                 }
             }
@@ -112,7 +116,8 @@ public class PageInfoDialog extends javax.swing.JDialog {
             public void focusGained(FocusEvent e) {
                  final JTextComponent c = (JTextComponent)e.getSource();
                  c.setForeground(new java.awt.Color(153, 204, 255));
-                 if (c.equals(pageNumField))   pageNumStatus.setText("number only");
+                 if (c.equals(pageIDField))   IDStatus.setText("number only");
+                 else if (c.equals(pageNumField))   pageNumStatus.setText("number only");
                 }
 
             @Override
@@ -125,7 +130,8 @@ public class PageInfoDialog extends javax.swing.JDialog {
                 
                 try{
                     num = Integer.parseInt(s);
-                    if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
+                    if (c.equals(pageIDField))   IDStatus.setText("vaild book id");
+                    else if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
                     if(errorfound)errorfound = false;
                
                 }catch(java.lang.NumberFormatException nfe){
@@ -143,13 +149,17 @@ public class PageInfoDialog extends javax.swing.JDialog {
     
     private void enableFocusLost(){
         
+        pageIDField.addFocusListener(numberFieldListener);
         pageTitleField.addFocusListener(textFieldListener);
+        bookCodeField.addFocusListener(textFieldListener);
         pageNumField.addFocusListener(numberFieldListener);
     }
     
     private void disableFocusLost(){
         
+        pageIDField.removeFocusListener(numberFieldListener);
         pageTitleField.removeFocusListener(textFieldListener);
+        bookCodeField.removeFocusListener(textFieldListener);
         pageNumField.removeFocusListener(numberFieldListener);
     }
    
@@ -167,30 +177,29 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageTitleField = new javax.swing.JTextField();
         nameStatus = new javax.swing.JLabel();
         bookCodeLabel = new javax.swing.JLabel();
+        bookCodeField = new javax.swing.JTextField();
         codeStatus = new javax.swing.JLabel();
         pageNumLabel = new javax.swing.JLabel();
         pageNumField = new javax.swing.JTextField();
         pageNumStatus = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        bookCodeField = new javax.swing.JComboBox();
-        jTextArea1 = new javax.swing.JTextArea();
 
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(700, 400));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Algerian", 0, 36)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         titleLabel.setText("Page Info");
+        titleLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         getContentPane().add(titleLabel, gridBagConstraints);
 
         pageIDLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -198,26 +207,23 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageIDLabel.setText("Page ID : ");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pageIDLabel, gridBagConstraints);
-
-        pageIDField.setEditable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 100;
-        gridBagConstraints.ipady = 15;
         gridBagConstraints.weightx = 2.0;
         getContentPane().add(pageIDField, gridBagConstraints);
 
         IDStatus.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        IDStatus.setText("*Auto Complete");
+        IDStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(IDStatus, gridBagConstraints);
 
@@ -226,16 +232,15 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageTitleLabel.setText("Page Title:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pageTitleLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 100;
-        gridBagConstraints.ipady = 15;
         gridBagConstraints.weightx = 2.0;
         getContentPane().add(pageTitleField, gridBagConstraints);
 
@@ -243,7 +248,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
         nameStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(nameStatus, gridBagConstraints);
 
@@ -252,15 +257,23 @@ public class PageInfoDialog extends javax.swing.JDialog {
         bookCodeLabel.setText("Book Code : ");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(bookCodeLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 100;
+        gridBagConstraints.weightx = 2.0;
+        getContentPane().add(bookCodeField, gridBagConstraints);
 
         codeStatus.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         codeStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(codeStatus, gridBagConstraints);
 
@@ -268,17 +281,15 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageNumLabel.setLabelFor(pageNumField);
         pageNumLabel.setText("Page Number : ");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pageNumLabel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 100;
-        gridBagConstraints.ipady = 15;
         gridBagConstraints.weightx = 2.0;
         getContentPane().add(pageNumField, gridBagConstraints);
 
@@ -286,7 +297,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
         pageNumStatus.setText("* required");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         getContentPane().add(pageNumStatus, gridBagConstraints);
 
@@ -318,37 +329,6 @@ public class PageInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 11);
         getContentPane().add(cancelButton, gridBagConstraints);
 
-        bookCodeField.setModel(
-            new javax.swing.DefaultComboBoxModel(theController.getbookCode()));
-        bookCodeField.setSelectedItem(" ");
-        bookCodeField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bookCodeFieldActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 15;
-        getContentPane().add(bookCodeField, gridBagConstraints);
-
-        jTextArea1.setBackground(new java.awt.Color(255, 204, 204));
-        jTextArea1.setColumns(10);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("please enter your page information below:\npageID : the index number in Database\nPage Title: title of the Page\nBook Code: book code for the book that the page is from");
-        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTextArea1.setFocusable(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(jTextArea1, gridBagConstraints);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -365,7 +345,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
             //otherwise update thePage info cosponding the book info provide;
          
                     editedPage = new Page(pageTitleField.getText().trim(),
-                            String.valueOf((String)bookCodeField.getSelectedItem()),
+                            bookCodeField.getText().trim(),
                             Integer.parseInt(pageNumField.getText()));
                     if(theController !=null) theController.closePageInfoDialog(mode, editedPage);
                     
@@ -380,8 +360,8 @@ public class PageInfoDialog extends javax.swing.JDialog {
             //otherwise update thePage info cosponding the book info provide;
          
 
-                    editedPage.setPageTitle(pageTitleField.getText());
-                    editedPage.setBookCode(this.bookCodeField.getSelectedItem().toString());
+                    editedPage.setPageTitle(pageIDField.getText());
+                    editedPage.setBookCode(pageTitleField.getText());
                     editedPage.setPageNum(Integer.parseInt(pageNumField.getText()));
                  
                     if(theController != null) theController.closePageInfoDialog(mode, editedPage);
@@ -403,10 +383,6 @@ private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         dispose();
 }//GEN-LAST:event_CancelButtonActionPerformed
 
-    private void bookCodeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookCodeFieldActionPerformed
-   
-        // TODO add your handling code here:}//GEN-LAST:event_bookCodeFieldActionPerformed
- }
 protected void updateInfo(Page p,Controller.operation aopertion){
     if(!mode.equals(aopertion)){
         
@@ -419,7 +395,7 @@ protected void updateInfo(Page p,Controller.operation aopertion){
         
             titleLabel.setText(" ");
             pageIDField.setText(null);
-            bookCodeField.setSelectedItem(null);
+            bookCodeField.setText(null);
             pageTitleField.setText(null);
             pageNumField.setText(null);
             
@@ -427,22 +403,20 @@ protected void updateInfo(Page p,Controller.operation aopertion){
     else{   
             titleLabel.setText(mode.toString()+": "+editedPage.toString());
             pageIDField.setText(editedPage.getPageID()+"");
-            bookCodeField.setSelectedItem(editedPage.getBookCode());
+            bookCodeField.setText(editedPage.getBookCode());
             pageTitleField.setText(editedPage.getPageTitle());
             pageNumField.setText(editedPage.getPageNum()+"");
     }
-      
 }
    
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel IDStatus;
-    private javax.swing.JComboBox bookCodeField;
+    private javax.swing.JTextField bookCodeField;
     private javax.swing.JLabel bookCodeLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel codeStatus;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel nameStatus;
     private javax.swing.JTextField pageIDField;

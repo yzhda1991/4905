@@ -2,40 +2,32 @@
 package model;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import main.Book;
-import main.Page;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import javax.swing.JFrame;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import org.icepdf.core.pobjects.Document;
-import org.icepdf.core.pobjects.graphics.text.WordText;
-import org.icepdf.core.search.DocumentSearchController;
+import main.Book;
+import main.Page;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
 import org.icepdf.ri.common.views.DocumentViewController;
-
-
 import viewer.PageViewer;
 
 
 public class PageViewerFrame extends MenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
-    private ActionListener      searchActionListener;
     private SwingController     theSwingController;
     private ArrayList<Page>     pageCollection;
     private Page                selectedPage;
-    private Connecter           theConnecter;
+    private final Connecter     theConnecter;
     private Controller          theController;
     private SwingViewBuilder    factory;
     private JPanel              newViewer;
@@ -81,7 +73,11 @@ public class PageViewerFrame extends MenuFrame {
         else pageCollection = theConnecter.getPageList();
 
         customized();
-         if(selectedPage!=null)openPage(selectedPage);
+         if(selectedPage!=null)try {
+             openPage(selectedPage);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PageViewerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         doubleClickedPage = new MouseAdapter(){
 
@@ -90,30 +86,18 @@ public class PageViewerFrame extends MenuFrame {
                 if(e.getClickCount()==2){
                     JList theList =  (JList) e.getSource();
                     int index = theList.locationToIndex(e.getPoint());
-                    openPage((Page) theList.getModel().getElementAt(index));
+                    try {
+                        openPage((Page) theList.getModel().getElementAt(index));
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(PageViewerFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
 
         };
         
-        searchActionListener = new ActionListener(){
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                searchHandle(e);
-            }
-            
-        };
-                
-         this.addWindowListener(new WindowAdapter(){
-              public void WindowClosing(WindowEvent e){
-                  if(theController !=null)theController.closeFrame();
-                  else System.exit(0);
-              }
-         });
-        
         super.updateMainPanel(theviewer);
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         enableListener();
         update();
        
@@ -139,7 +123,6 @@ public class PageViewerFrame extends MenuFrame {
         
         newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         theviewer.setMainPanel(newViewer);
-        theviewer.getPageView().setEnabled(false);
        
         update();
     }
@@ -153,7 +136,8 @@ public class PageViewerFrame extends MenuFrame {
         }
         
     }
-    private void openPage(Page p){
+   
+    private void openPage (Page p)throws FileNotFoundException{
         if(p == null) {
             super.setStatus("Null page"); 
             return;
@@ -162,11 +146,11 @@ public class PageViewerFrame extends MenuFrame {
        super.setStatus("opening page :"+p.getPageTitle());
        
         ArrayList<Book> bookFound = theConnecter.searchBook(p.getBookCode(), "code");
-        try{
        
             if(bookFound.size()==1) 
             {
                 theSwingController.openDocument(bookFound.get(0).getBookPath()); 
+                
                 theSwingController.setToolBarVisible(false);
                 theSwingController.setPageFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH, true);
                 theSwingController.showPage(p.getPageNum()-1+bookFound.get(0).getInitPage()-1);
@@ -174,78 +158,21 @@ public class PageViewerFrame extends MenuFrame {
               }
             else super.setStatus("more than one book found;");
             theviewer.setTittle(p.getPageTitle());
-        }catch(Exception  e){
-            super.setStatus("Error :" +e.toString());
-        }
+       
     }
     
-    private void searchHandle(ActionEvent e){
-       
-        if(e.getSource().equals(theviewer.getSearchButton())){
-            if(theviewer.getSearchButton().isEnabled()){
-                System.out.print("ott");
-            theviewer.getPageList().setEnabled(false);
-            newViewer = factory.buildSearchPanel();
-       
-            ComponentKeyBinding.install(theSwingController, newViewer);
-            theSwingController.getDocumentViewController().setAnnotationCallback(
-                new org.icepdf.ri.common.MyAnnotationCallback(
-                   theSwingController.getDocumentViewController())
-                       );
-            
-            newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            theviewer.setMainPanel(newViewer);
-        
-            theviewer.getSearchButton().setEnabled(false);
-            theviewer.getPageView().setEnabled(true);
-            }
-            else{
-                
-            }
-        }
-        else if(e.getSource().equals(theviewer.getPageView())){
-        if(theviewer.getPageView().isEnabled()){
-            newViewer = factory.buildViewerPanel();
-        
-         ComponentKeyBinding.install(theSwingController, newViewer);
-        
-         theSwingController.getDocumentViewController().setAnnotationCallback(
-                new org.icepdf.ri.common.MyAnnotationCallback(
-                   theSwingController.getDocumentViewController())
-                       );
-         
-        theSwingController.setToolBarVisible(false);
-        theSwingController.setPageFitMode(DocumentViewController.PAGE_FIT_WINDOW_WIDTH, true);
-        
-        newViewer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        theviewer.setMainPanel(newViewer);
-        
-        theviewer.getPageList().setEnabled(true);
-        theviewer.getSearchButton().setEnabled(true);
-        theviewer.getPageView().setEnabled(false);
-            
-        
-        }
-        else{
-            
-        }
-    }
-       
-        
-        
-    }
+
+
     private void enableListener(){
         theviewer.getPageList().addMouseListener(doubleClickedPage);
-        theviewer.getSearchButton().addActionListener(searchActionListener);
-        theviewer.getPageView().addActionListener(searchActionListener);
+        
     }   
     private void disableListener(){
         theviewer.getPageList().removeMouseListener(doubleClickedPage);
-        theviewer.getSearchButton().removeActionListener(searchActionListener);
-        theviewer.getPageView().removeActionListener(searchActionListener);
+
     
     }
-    protected void updateInfo(Page p){
+    protected void updateInfo(Page p) throws FileNotFoundException{
         if(p==null) {
             selectedPage = p;
             return;

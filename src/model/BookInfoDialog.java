@@ -186,11 +186,16 @@ public class BookInfoDialog extends javax.swing.JDialog {
         pageNumField = new javax.swing.JTextField();
         pageNumStatus = new javax.swing.JLabel();
         browserButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        descriptionText = new javax.swing.JTextArea();
 
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setMinimumSize(new java.awt.Dimension(300, 500));
+        setPreferredSize(new java.awt.Dimension(300, 500));
+        setResizable(false);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36)); // NOI18N
@@ -247,9 +252,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(bookNameField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -257,9 +264,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(bookCodeField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -267,9 +276,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(bookAuthorField, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -277,9 +288,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(bookPathField, gridBagConstraints);
 
         nameStatus.setText("* required");
@@ -294,7 +307,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 75, 0, 7);
+        gridBagConstraints.insets = new java.awt.Insets(0, 100, 0, 7);
         getContentPane().add(pathStatus, gridBagConstraints);
 
         authorStatus.setText("* required");
@@ -321,8 +334,9 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.ipady = 15;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 20, 2, 100);
+        gridBagConstraints.insets = new java.awt.Insets(2, 20, 10, 100);
         getContentPane().add(submitButton, gridBagConstraints);
 
         cancelButton.setText("Cancel");
@@ -335,8 +349,9 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 8;
+        gridBagConstraints.ipady = 15;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 11);
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 10, 11);
         getContentPane().add(cancelButton, gridBagConstraints);
 
         pageNumLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -352,9 +367,11 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 100;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(pageNumField, gridBagConstraints);
 
         pageNumStatus.setText("* required");
@@ -374,10 +391,29 @@ public class BookInfoDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.ipadx = 10;
+        gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(browserButton, gridBagConstraints);
+
+        descriptionText.setEditable(false);
+        descriptionText.setColumns(20);
+        descriptionText.setRows(5);
+        descriptionText.setText("please enter your Book information below:\n\nBook Name: the name of the book;\nBook Code: the book code for the book\nBook Author:  the Author for the book\nBook Path:  the PDF file Path for the book;\nStart Page Number: the number of page before content;");
+        descriptionText.setFocusable(false);
+        jScrollPane1.setViewportView(descriptionText);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 60;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(14, 10, 10, 10);
+        getContentPane().add(jScrollPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -535,6 +571,8 @@ public class BookInfoDialog extends javax.swing.JDialog {
     private javax.swing.JButton browserButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel codeStatus;
+    private javax.swing.JTextArea descriptionText;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel nameStatus;
     private javax.swing.JTextField pageNumField;
