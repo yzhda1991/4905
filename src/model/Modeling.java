@@ -201,6 +201,7 @@ public class Modeling implements Controller {
 
     @Override
     public void closeBookInfoDialog(operation anOperation,Book b) {
+       
         boolean successed =false;
         if(anOperation.equals(operation.ADD) && b !=null)         successed = theConnecter.addBook(b);
         else if(anOperation.equals(operation.UPDATE))             successed = theConnecter.updateBook(b);
@@ -209,7 +210,7 @@ public class Modeling implements Controller {
         if(successed)System.out.println("successed");
         else System.out.println("failed");
         
-        if(bookDialog.isVisible()){
+        if(bookDialog!=null && bookDialog.isVisible()){
             
             bookDialog.setVisible(false);
             bookDialog.dispose();
