@@ -8,7 +8,6 @@ import java.io.File;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -52,6 +51,8 @@ public class PathSelectionDialog extends javax.swing.JDialog {
         pathLabel.setFont(new java.awt.Font("Lucida Fax", 0, 14)); // NOI18N
         pathLabel.setText("DataBase File Path : ");
 
+        pathField.setDragEnabled(true);
+
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -82,7 +83,7 @@ public class PathSelectionDialog extends javax.swing.JDialog {
         description.setEditable(false);
         description.setFocusable(false);
 
-        DefultCheck.setText("Use System Defult Database");
+        DefultCheck.setText("Use  Default Database");
         DefultCheck.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 DefultCheckStateChanged(evt);
