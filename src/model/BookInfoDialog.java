@@ -4,16 +4,15 @@
  */
 package model;
 
-import main.Book;
-import java.awt.Color;
 import java.awt.Frame;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.io.File;
+import java.util.Arrays;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.JTextComponent;
+import main.Book;
 
 /**
  *
@@ -21,145 +20,198 @@ import javax.swing.text.JTextComponent;
  */
 public class BookInfoDialog extends javax.swing.JDialog {
 
- 
+    private static Controller theController;
+    private Book theBook;
+    private Controller.operation mode;
+    private Frame thisframe;
+
+    private DocumentListener textChenageListener;
+    private boolean[] formChecker = null;
+    private String[] bookCodes = null;
+
+    private final int MAXNAMESTRINGLENGTH = 20;
+    private final int MINNAMESTRINGLENGTH = 5;
+    private final int MAXCODESTRINGLENGTH = 10;
+    private final int MINCODESTRINGLENGTH = 3;
     
-    Controller              theController;
-    Book                    theBook;
-    Controller.operation    mode;
-    Frame                   thisframe;
-    FocusListener           textFieldListener;
-    FocusListener           numberFieldListener;
-    ActionListener          browerButtonListener;
-    boolean                 errorfound = false;
-  
+
     //
-    public BookInfoDialog(String title,Frame parent,Controller c,Book b,Controller.operation anOperation, boolean modal){
-        super(parent,title,modal);
+    public BookInfoDialog(String title, Frame parent, Controller c, Book b, Controller.operation anOperation, boolean modal) {
+        super(parent, title, modal);
         thisframe = parent;
         theController = c;
-        mode =anOperation;
+        mode = anOperation;
         theBook = b;
         initEnvironment();
         titleLabel.setText(title);
-        
+
     }
-    
+
     @Override
-    public void setTitle(String t){
+    public void setTitle(String t) {
         titleLabel.setText(t);
     }
+
     
-  
-    //
-    private  void initEnvironment(){
-        
+    private void initEnvironment() {
+
         initComponents();
-        
+        formChecker = new boolean[5];
         //change the submit button text cosponding to the opertion;
         submitButton.setText(mode.toString());
-       
-        
+        if (theController != null) {
+            
+            bookCodes = theController.getbookCode();
+        }
         //build GUI with book info if thebook is not Null;
         //otherwise build GUI with empty book info
-       
-        if(theBook== null){
-            
+        if (theBook == null) {
+
             bookCodeField.setText(null);
             bookNameField.setText(null);
             bookPathField.setText(null);
             bookAuthorField.setText(null);
             pageNumField.setText(null);
-        }
-        else {
             
+             Arrays.fill(formChecker, Boolean.FALSE);
+            
+        } else {
+
             bookCodeField.setText(theBook.getBookCode());
             bookNameField.setText(theBook.getBookName());
             bookPathField.setText(theBook.getBookPath());
             bookAuthorField.setText(theBook.getAuthor());
-            pageNumField.setText(theBook.getInitPage()+"");
+            pageNumField.setText(theBook.getInitPage() + "");
+            Arrays.fill(formChecker, Boolean.TRUE);
         }
         
-        //define the FocusListener for textfiled and numberfiled;
-        textFieldListener = new FocusListener(){
-            
-            @Override
-            public void focusGained(FocusEvent e) {
-                final JTextComponent c = (JTextComponent)e.getSource(); 
-                 c.setForeground(new java.awt.Color(153, 204, 255));
-                if (c.equals(bookNameField))   nameStatus.setText("book code should be 3-20 charaters !");
-                else if (c.equals(bookCodeField))   codeStatus.setText("book code should be 4-10 characters  !");
-                else if (c.equals(bookPathField))    pathStatus.setText("please enter a full book path !");
-                else if (c.equals(bookAuthorField)) authorStatus.setText("book code should be 10-20characters !");
-                
-                  }
+        textChenageListener =new DocumentListener(){
 
             @Override
-            public void focusLost(FocusEvent e) {
-            if(!e.isTemporary()){
-                
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                
-                else if (s.length()<2){
-                    c.setForeground(Color.red);
-                    
-                if (c.equals(bookNameField))   nameStatus.setText("book code is in vaild !");
-                else if (c.equals(bookCodeField))   codeStatus.setText("book code is invaild !");
-                else if (c.equals(bookPathField))    pathStatus.setText("book path is invaild !");
-                else if (c.equals(bookAuthorField)) authorStatus.setText("book author is invaild !");
-                     if(!errorfound)errorfound = true;
-                }
-                
-                else{
-                     if (c.equals(bookNameField))   nameStatus.setText("vaild book name!");
-                else if (c.equals(bookCodeField))   codeStatus.setText("vaild book code");
-                else if (c.equals(bookPathField))    pathStatus.setText("vaild book path");
-                else if (c.equals(bookAuthorField)) authorStatus.setText("vaild book author");
-                     if(errorfound)errorfound = false;
-                }
+            public void insertUpdate(DocumentEvent e) {
+                formVaildation(e);
             }
-        }
-            
-        };
-                
-        numberFieldListener =new FocusListener(){
 
             @Override
-            public void focusGained(FocusEvent e) {
-                 final JTextComponent c = (JTextComponent)e.getSource();
-                 c.setForeground(new java.awt.Color(153, 204, 255));
-                if (c.equals(pageNumField))   pageNumStatus.setText("number only");
-                }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                int num =0;
-                if(!e.isTemporary()){
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                
-                try{
-                    num = Integer.parseInt(s);
-                     if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
-                    if(errorfound)errorfound = false;
-               
-                }catch(java.lang.NumberFormatException nfe){
-                     if (c.equals(pageNumField))   pageNumStatus.setText("page number is invaild ");
-                     if(!errorfound)errorfound = true;
-                }
+            public void removeUpdate(DocumentEvent e) {
+                formVaildation(e);
             }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                formVaildation(e);
             }
             
         };
         
-        
-        enableFocusLost();
-        
-        
-        this.setSize(600,250);
+        bookNameField.getDocument().addDocumentListener(textChenageListener);
+        bookCodeField.getDocument().addDocumentListener(textChenageListener);
+        bookAuthorField.getDocument().addDocumentListener(textChenageListener);
+        bookPathField.getDocument().addDocumentListener(textChenageListener);
+        pageNumField.getDocument().addDocumentListener(textChenageListener);
+    
+        this.setSize(600, 250);
         this.setResizable(false);
+    }
+    
+    
+    private void formVaildation(DocumentEvent e){
+               
+                if (e.getDocument().equals(bookNameField.getDocument())) {
+
+                    if (bookNameField.getText().trim().length() < MINNAMESTRINGLENGTH || bookNameField.getText().trim().length() > MAXNAMESTRINGLENGTH) {
+                        nameStatus.setText("Book Title should be 5-20 charaters  !");
+                        if (formChecker[0] == true) {
+                            formChecker[0] = false;
+                        }
+                    } else {
+                        nameStatus.setText("Vaild Book Name!");
+                        if (formChecker[0] == false) {
+                            formChecker[0] = true;
+                        }
+                    }
+                }else if (e.getDocument().equals(bookCodeField.getDocument())) {
+                    
+                    String content =bookCodeField.getText().trim().toUpperCase();
+                    if (content.length() < MINCODESTRINGLENGTH || content.length() > MAXCODESTRINGLENGTH) {
+                        codeStatus.setText("Book Code should be 3-10 characters  !");
+                        if (formChecker[1] == true) {
+                            formChecker[1] = false;
+                        }
+
+                    } else if (bookCodes != null && Arrays.toString(bookCodes).contains(content)) {
+                        if(mode.equals(Controller.operation.UPDATE)&&theBook.getBookCode().equalsIgnoreCase(content)){
+                            codeStatus.setText("unchanged Book Code!");
+                        if (formChecker[1] == false) {
+                            formChecker[1] = true;
+                        }
+                        return;
+                        }
+                        codeStatus.setText("Book Code already exists !");
+                        if (formChecker[1] == true) {
+                            formChecker[1] = false;
+                        }
+                    } else {
+                        codeStatus.setText("Vaild Book Code!");
+                        if (formChecker[1] == false) {
+                            formChecker[1] = true;
+                        }
+                    }
+
+                } else if (e.getDocument().equals(bookAuthorField.getDocument())) {
+                     String content =bookAuthorField.getText().trim();
+                    if (content.length() < MINNAMESTRINGLENGTH || content.length() > MAXNAMESTRINGLENGTH) {
+                        authorStatus.setText("book Author should be 5-20 charaters !");
+                        if (formChecker[2] == true) {
+                            formChecker[2] = false;
+                        }
+                    } else {
+                        authorStatus.setText("vaild book Author!");
+                        if (formChecker[2] == false) {
+                            formChecker[2] = true;
+                        }
+                    }
+                } else if (e.getDocument().equals(bookPathField.getDocument())) {
+                       String content =bookPathField.getText().trim();
+                   
+                    File temp = new File(content);
+                    if (!content.endsWith(".pdf") || !temp.isFile()) {
+                        pathStatus.setText("invaild file path ");
+                        if (formChecker[3] == true) {
+                            formChecker[3] = false;
+                        }
+                    } else {
+                        pathStatus.setText("vaild book path");
+                        if (formChecker[3] == false) {
+                            formChecker[3] = true;
+                        }
+                    }
+
+                } else if (e.getDocument().equals(pageNumField.getDocument())) {
+                     String content =pageNumField.getText().trim();
+                   
+                    if (content.length() < 1) {
+                        pageNumStatus.setText("Empty Input!");
+                        if (formChecker[4] == true) {
+                            formChecker[4] = false;
+                        }
+                    }
+                    try {
+                        int num = Integer.parseInt(content);
+                        if (num > 0) {
+                            pageNumStatus.setText("vaild book start page number !");
+                            if (formChecker[4] == false) {
+                            formChecker[4] = true;
+                        }
+                        }
+                    } catch (java.lang.NumberFormatException nfe) {
+                        pageNumStatus.setText("Input is not an Integer!");
+                        if (formChecker[4] == true) {
+                            formChecker[4] = false;
+                        }
+                    }
+                }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -418,121 +470,96 @@ public class BookInfoDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //add FoucusLost to all textFiled;
-    private void enableFocusLost(){
-        
-        bookNameField.addFocusListener(textFieldListener);
-        bookCodeField.addFocusListener(textFieldListener);
-        bookPathField.addFocusListener(textFieldListener);
-        bookAuthorField.addFocusListener(textFieldListener);
-        pageNumField.addFocusListener(numberFieldListener);
-    }
-    
-    //remove FocusLost from all textField;
-    private void disableForcusLost(){
-        
-        bookNameField.removeFocusListener(textFieldListener);
-        bookCodeField.removeFocusListener(textFieldListener);
-        bookPathField.removeFocusListener(textFieldListener);
-        bookAuthorField.removeFocusListener(textFieldListener);
-        pageNumField.removeFocusListener(numberFieldListener);
-    }
-    
     //Action performs when user clicked Submit button
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-         
-          if(errorfound){
-              JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
-              return;
-          }
-             else if(mode.equals(Controller.operation.ADD) ){
-          
+
+        if (Arrays.toString(formChecker).contains("f")) {
+            JOptionPane.showMessageDialog(this, " form complete with error input!,please try again");
+            return;
+        } else if (mode.equals(Controller.operation.ADD)) {
+
             //if there is no error found in the form, create book with book info;
             //if thebook is empty object, create new Book with book info provided;
             //otherwise update theBook info cosponding the book info provide;
+            theBook = new Book(bookCodeField.getText(), bookNameField.getText(), bookPathField.getText(), bookAuthorField.getText(), Integer.parseInt(pageNumField.getText()));
 
-                   theBook = new Book(bookCodeField.getText(),bookNameField.getText(),bookPathField.getText(),bookAuthorField.getText(),Integer.parseInt(pageNumField.getText()));
-                 
-          if(theController != null) theController.closeBookInfoDialog(mode,theBook);
-          
-            }
+        } else if (mode.equals(Controller.operation.UPDATE)) {
 
-   
-            else if(mode.equals(Controller.operation.UPDATE) ){
-          
             //if there is no error found in the form, create book with book info;
             //if thebook is empty object, create new Book with book info provided;
             //otherwise update theBook info cosponding the book info provide;
-         
+            theBook.setBookName(bookNameField.getText());
+            theBook.setBookCode(bookCodeField.getText());
+            theBook.setBookPath(bookPathField.getText());
+            theBook.setAuthor(bookAuthorField.getText());
+            theBook.setPage(Integer.parseInt(pageNumField.getText()));
 
-                     theBook.setBookName(bookNameField.getText());
-                     theBook.setBookCode(bookCodeField.getText());
-                     theBook.setBookPath(bookPathField.getText());
-                     theBook.setAuthor(bookAuthorField.getText());
-                     theBook.setPage(Integer.parseInt(pageNumField.getText()));
-                 
-            if(theController != null ) theController.closeBookInfoDialog(mode, theBook);
-            
-            } else {   
-                 
-            if(theController != null ) theController.closeBookInfoDialog(mode, theBook);
-            
-            }
-          
-          this.setVisible(false);
-          dispose();
-               
-              
-    }//GEN-LAST:event_submitButtonActionPerformed
-  
-    //action perfoms when user clicked Cancel button;
-    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
+        } else {
+
+        }
         
-        if(theController !=null) theController.closeBookInfoDialog(null, theBook);
+        if (theController != null) {
+                theController.closeBookInfoDialog(mode, theBook);
+            }
+
         this.setVisible(false);
         dispose();
-        
-        
+
+
+    }//GEN-LAST:event_submitButtonActionPerformed
+
+    //action perfoms when user clicked Cancel button;
+    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
+
+        if (theController != null) {
+            theController.closeBookInfoDialog(null, theBook);
+        }
+        this.setVisible(false);
+        dispose();
+
+
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void browserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browserButtonActionPerformed
-       
-         JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("pdf","PDF");
-                 chooser.setFileFilter(filter);
-                 int returnVal = chooser.showOpenDialog(this);
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                            bookPathField.setText(chooser.getSelectedFile().getPath());
-                    }
+
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("pdf", "PDF");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            bookPathField.setText(chooser.getSelectedFile().getPath());
+        }
     }//GEN-LAST:event_browserButtonActionPerformed
 
-    protected void updateInfo(Book b ,Controller.operation anOperation ){
-        theBook =b;
-        if(theBook!=null){
+    protected void updateInfo(Book b, Controller.operation anOperation) {
+        theBook = b;
+        if(formChecker==null)formChecker = new boolean[5];
+        if (theBook != null) {
             setTitle(theBook.getBookName());
-        
-        
+
             bookCodeField.setText(theBook.getBookCode());
             bookNameField.setText(theBook.getBookName());
             bookPathField.setText(theBook.getBookPath());
             bookAuthorField.setText(theBook.getAuthor());
-            pageNumField.setText(theBook.getInitPage()+"");
-        }
-        else{
-            setTitle(anOperation.toString()+" ");
+            pageNumField.setText(theBook.getInitPage() + "");
+            
+            Arrays.fill(formChecker, Boolean.TRUE);
+        } else {
+            setTitle(anOperation.toString() + " ");
             bookCodeField.setText(null);
             bookNameField.setText(null);
             bookPathField.setText(null);
             bookAuthorField.setText(null);
             pageNumField.setText(null);
+            Arrays.fill(formChecker, Boolean.FALSE);
+            
         }
-            submitButton.setText(mode.toString());
-       
-        
-        
+        submitButton.setText(mode.toString());
+
     }
-   public static void main(String args[]) {
-       
+
+    public static void main(String args[]) {
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -554,8 +581,8 @@ public class BookInfoDialog extends javax.swing.JDialog {
             @Override
             public void run() {
                 Modeling main = new Modeling();
-                MainFrame     m    = new MainFrame("viewer",main);
-                new BookInfoDialog("add new book",m,main,null,Controller.operation.ADD,true).setVisible(true);
+                MainFrame m = new MainFrame("viewer", main);
+                new BookInfoDialog("add new book", m, main, null, Controller.operation.ADD, true).setVisible(true);
             }
         });
     }

@@ -42,7 +42,7 @@ public class SplashScreen extends javax.swing.JDialog {
                 splashPanel.getMessage().setText("connect to database......");
                 psd = new PathSelectionDialog(new javax.swing.JFrame(),theController,true);
                 psd.setVisible(true);
-                psd.setLocationRelativeTo(null);
+                psd.setLocationRelativeTo(splashPanel);
                 while(!psd.getdialogstatus()){
                     Thread.sleep(1);
                 }
