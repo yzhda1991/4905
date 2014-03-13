@@ -161,8 +161,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
 
                 } else if (e.getDocument().equals(bookAuthorField.getDocument())) {
                     String content =bookAuthorField.getText().trim();
-                     content =bookAuthorField.getText().trim();
-                    if (content.length() < MINNAMESTRINGLENGTH || content.length() > MAXNAMESTRINGLENGTH) {
+                     if (content.length() < MINNAMESTRINGLENGTH || content.length() > MAXNAMESTRINGLENGTH) {
                         authorStatus.setText("book Author should be 5-20 charaters !");
                         if (formChecker[2] == true) {
                             formChecker[2] = false;
