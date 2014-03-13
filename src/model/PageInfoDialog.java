@@ -399,7 +399,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
 
 private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
 // TODO add your handling code here:
-     if(theController !=null) theController.dialogCancelled();
+     if(theController !=null) theController.closePageInfoDialog(null, editedPage);
         dispose();
 }//GEN-LAST:event_CancelButtonActionPerformed
 

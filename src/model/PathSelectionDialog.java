@@ -178,7 +178,7 @@ public class PathSelectionDialog extends javax.swing.JDialog {
        if(jcb.isSelected()){
            browseButton.setEnabled(false);
            pathField.setEnabled(false);
-           pathField.setText("src/database/db_books");
+           pathField.setText("database/db_books");
        }
        else{
            browseButton.setEnabled(true);

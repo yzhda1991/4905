@@ -7,8 +7,6 @@ package model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import main.Book;
@@ -229,9 +227,17 @@ public class Modeling implements Controller {
 
     @Override
     public void closeBookInfoDialog(operation anOperation, Book b) {
+        if(anOperation ==null ||b ==null){
+             if (bookDialog != null && bookDialog.isVisible()) {
 
+            bookDialog.setVisible(false);
+            bookDialog.dispose();
+        }
+        bookDialog = null;
+            return;
+        }
         boolean successed = false;
-        if (anOperation.equals(operation.ADD) && b != null) {
+        if (anOperation.equals(operation.ADD) ) {
             successed = theConnecter.addBook(b);
         } else if (anOperation.equals(operation.UPDATE)) {
             successed = theConnecter.updateBook(b);
@@ -257,8 +263,17 @@ public class Modeling implements Controller {
 
     @Override
     public void closePageInfoDialog(operation anOperation, Page p) {
+        if(anOperation ==null ||p ==null){
+             if (pageDialog != null && pageDialog.isVisible()) {
+
+            pageDialog.setVisible(false);
+            pageDialog.dispose();
+        }
+        pageDialog = null;
+            return;
+        }
         boolean successed = false;
-        if (anOperation.equals(operation.ADD) && p != null) {
+        if (anOperation.equals(operation.ADD)) {
             successed = theConnecter.addPage(p);
         } else if (anOperation.equals(operation.UPDATE)) {
             successed = theConnecter.updatePage(p);
@@ -298,7 +313,7 @@ public class Modeling implements Controller {
 
     @Override
     public void dialogCancelled() {
-
+       
     }
 
     @Override

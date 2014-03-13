@@ -488,9 +488,10 @@ public class BookInfoDialog extends javax.swing.JDialog {
     //action perfoms when user clicked Cancel button;
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
         
-        //if(theController !=null) theController.dialogCancelled();
+        if(theController !=null) theController.closeBookInfoDialog(null, theBook);
         this.setVisible(false);
         dispose();
+        
         
     }//GEN-LAST:event_CancelButtonActionPerformed
 
@@ -499,7 +500,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
          JFileChooser chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("pdf","PDF");
                  chooser.setFileFilter(filter);
-                 int returnVal = chooser.showOpenDialog(null);
+                 int returnVal = chooser.showOpenDialog(this);
                     if(returnVal == JFileChooser.APPROVE_OPTION) {
                             bookPathField.setText(chooser.getSelectedFile().getPath());
                     }

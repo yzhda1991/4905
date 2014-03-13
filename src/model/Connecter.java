@@ -64,7 +64,7 @@ public class Connecter {
 
     public boolean changeDatabase(File f) {
         try {
-            if (isDatabaseActive()) {
+            if (database!=null && isDatabaseActive()) {
                 database.close();
             }
             setDbAdress(f.getPath());

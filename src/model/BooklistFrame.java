@@ -9,7 +9,6 @@ package model;
  * @author byang1
  */
 
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import main.Book;
 import java.awt.event.ActionEvent;
@@ -17,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
@@ -42,7 +42,7 @@ public class BooklistFrame extends MenuFrame{
         
     }
     
-     public BooklistFrame(String title,Modeling view, Controller c,Connecter conn) {
+    public BooklistFrame(String title,Modeling view, Controller c,Connecter conn) {
         super(title,c);
         theConnecter = conn;
         theController = c;
@@ -146,12 +146,18 @@ public class BooklistFrame extends MenuFrame{
         
         bookCollection = searchBook;
         
+        System.out.println(bookCollection.size());
+        
         update();
     }
     
+    protected boolean setCollection(ArrayList<Book> newCollection){
+        bookCollection = newCollection;
+        return false;
+    }
     private void updateList(){
         Book bookArray[] = new Book[1];
-        bookCollection = theConnecter.getBookList(); 
+        //bookCollection = theConnecter.getBookList(); 
         if(bookCollection !=null && !bookCollection.isEmpty())
         mainPanel.getBookList().setListData((Book [])bookCollection.toArray(bookArray)); 
         else {
@@ -167,30 +173,5 @@ public class BooklistFrame extends MenuFrame{
         super.update();
     }
             
-//    public static void main(String args[]) {
-//       
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(BooklistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(BooklistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(BooklistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(BooklistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                new BooklistFrame().setVisible(true);
-//            }
-//        });
-//    }
+
 }
