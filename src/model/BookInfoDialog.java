@@ -131,7 +131,6 @@ public class BookInfoDialog extends javax.swing.JDialog {
                         }
                     }
                 }else if (e.getDocument().equals(bookCodeField.getDocument())) {
-                    
                     String content =bookCodeField.getText().trim().toUpperCase();
                     if (content.length() < MINCODESTRINGLENGTH || content.length() > MAXCODESTRINGLENGTH) {
                         codeStatus.setText("Book Code should be 3-10 characters  !");
@@ -146,12 +145,14 @@ public class BookInfoDialog extends javax.swing.JDialog {
                             formChecker[1] = true;
                         }
                         return;
-                        }
+                        }else{
+
                         codeStatus.setText("Book Code already exists !");
                         if (formChecker[1] == true) {
                             formChecker[1] = false;
                         }
-                    } else {
+                    }
+                    }else {
                         codeStatus.setText("Vaild Book Code!");
                         if (formChecker[1] == false) {
                             formChecker[1] = true;
@@ -159,7 +160,8 @@ public class BookInfoDialog extends javax.swing.JDialog {
                     }
 
                 } else if (e.getDocument().equals(bookAuthorField.getDocument())) {
-                     String content =bookAuthorField.getText().trim();
+                    String content =bookAuthorField.getText().trim();
+                     content =bookAuthorField.getText().trim();
                     if (content.length() < MINNAMESTRINGLENGTH || content.length() > MAXNAMESTRINGLENGTH) {
                         authorStatus.setText("book Author should be 5-20 charaters !");
                         if (formChecker[2] == true) {
