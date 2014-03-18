@@ -1,13 +1,10 @@
-
 package model;
 
 import main.Page;
-import java.awt.Color;
 import java.awt.Frame;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import javax.swing.JOptionPane;
-import javax.swing.text.JTextComponent;
+import java.util.Arrays;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -15,145 +12,120 @@ import javax.swing.text.JTextComponent;
  */
 public class PageInfoDialog extends javax.swing.JDialog {
 
-  
-    Controller            theController;
-    Page                  editedPage;
-    Controller.operation  mode;
-    FocusListener           textFieldListener;
-    FocusListener           numberFieldListener;
-    Frame                   thisframe;
-    boolean                 errorfound = false;
-    public PageInfoDialog(java.awt.Frame parent, boolean modal) {
-        super(parent,"page info", modal);
-        initEnvironment();
-    }
-    
-    public PageInfoDialog(java.awt.Frame parent, String title,Controller theclient, Page p,Controller.operation aopertion ,boolean modal) {
-        super(parent,"page info", modal);
+    private final Controller theController;
+    private Page editedPage;
+    private Controller.operation mode;
+    private Frame thisframe;
+    private DocumentListener theDocumentListener;
+    private final int MINSTRINGLENGTH = 5;
+    private final int MAXSTRINGLENGTH = 20;
+    private boolean[] formchecker = null;
+
+    public PageInfoDialog(java.awt.Frame parent, String title, Controller theclient, Page p, Controller.operation aopertion, boolean modal) {
+        super(parent, "page info", modal);
         theController = theclient;
         editedPage = p;
         mode = aopertion;
         initEnvironment();
         titleLabel.setText(title);
     }
-  
-    
-    private void initEnvironment(){
+
+    private void initEnvironment() {
         initComponents();
-        
+
         //change the submit button text cosponding to the opertion;
         submitButton.setText(mode.toString());
         pageIDField.setEditable(false);
-        
-        if(mode.equals(Controller.operation.DELETE)){
-            //bookCodeField.setEnabled(false);
-            pageTitleField.setEnabled(false);
-            pageNumField.setEnabled(false);
-        }
-       
-        
+
         //build GUI with book info if thePage is not Null;
         //otherwise build GUI with empty book info
-       
-        if(editedPage== null){
+        if (editedPage == null) {
             pageIDField.setText(null);
-            bookCodeField.setSelectedItem(null);
+            if (theController != null) {
+                bookCodeField.setSelectedItem(theController.getSelectedBook().getBookCode());
+            } else {
+                bookCodeField.setSelectedItem(null);
+            }
             pageTitleField.setText(null);
             pageNumField.setText(null);
-        }
-        else {
-            pageIDField.setText(editedPage.getPageID()+"");
+            formchecker = new boolean[2];
+            Arrays.fill(formchecker, Boolean.FALSE);
+
+        } else {
+            pageIDField.setText(editedPage.getPageID() + "");
             bookCodeField.setSelectedItem(editedPage.getBookCode());
             pageTitleField.setText(editedPage.getPageTitle());
-            pageNumField.setText(editedPage.getPageNum()+"");
+            pageNumField.setText(editedPage.getPageNum() + "");
+
+            formchecker = new boolean[2];
+            Arrays.fill(formchecker, Boolean.TRUE);
+
         }
-        
-        this.setSize(600,250);
+
+        theDocumentListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                formVaildation(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                formVaildation(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                formVaildation(e);
+            }
+        };
+        pageTitleField.getDocument().addDocumentListener(theDocumentListener);
+        pageNumField.getDocument().addDocumentListener(theDocumentListener);
+
+        this.setSize(600, 250);
         this.setResizable(false);
-        
-        
-        //define the FocusListener for textfiled and numberfiled;
-        textFieldListener = new FocusListener(){
-            
-            @Override
-            public void focusGained(FocusEvent e) {
-                final JTextComponent c = (JTextComponent)e.getSource(); 
-                 c.setForeground(new java.awt.Color(153, 204, 255));
-                if (c.equals(pageTitleField))       nameStatus.setText("page Title should be 3-20 charaters !");
-                  }
+    }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-            if(!e.isTemporary()){
-                
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                
-                if (s.length()<2){
-                    c.setForeground(Color.red);
-                    
-                    if (c.equals(pageTitleField))   nameStatus.setText("Page Title is invaild !");
-                     if(!errorfound)errorfound = true;
+    private void formVaildation(DocumentEvent e) {
+        if (e.getDocument().equals(pageTitleField.getDocument())) {
+
+            if (pageTitleField.getText().trim().length() < MINSTRINGLENGTH || pageTitleField.getText().trim().length() > MAXSTRINGLENGTH) {
+                nameStatus.setText("page Title should be 5-20 charaters !");
+                if (formchecker[0] == true) {
+                    formchecker[0] = false;
                 }
-                
-                else{
-                     if (c.equals(pageTitleField))  nameStatus.setText("vaild PageTitle!");
-                     if(errorfound)errorfound = false;
+            } else {
+                nameStatus.setText("vaild page Title.");
+                if (formchecker[0] == false) {
+                    formchecker[0] = true;
+                }
+            }
+        } else if (e.getDocument().equals(pageNumField.getDocument())) {
+            if (pageNumField.getText().trim().length() < 1) {
+                pageNumStatus.setText("input is empty!");
+                if (formchecker[1] == true) {
+                    formchecker[1] = false;
+                }
+            } else {
+                try {
+                    int num = Integer.valueOf(pageNumField.getText().trim());
+                    if (num > 0) {
+                        pageNumStatus.setText("valild page Number.");
+                        if (formchecker[1] == false) {
+                            formchecker[1] = true;
+                        }
+                    }
+
+                } catch (java.lang.NumberFormatException nfe) {
+                    pageNumStatus.setText("input is not a Integer!");
+                    if (formchecker[1] == true) {
+                        formchecker[1] = false;
+                    }
+
                 }
             }
         }
-            
-        };
-                
-        numberFieldListener =new FocusListener(){
+    }
 
-            @Override
-            public void focusGained(FocusEvent e) {
-                 final JTextComponent c = (JTextComponent)e.getSource();
-                 c.setForeground(new java.awt.Color(153, 204, 255));
-                 if (c.equals(pageNumField))   pageNumStatus.setText("number only");
-                }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                int num =0;
-                if(!e.isTemporary()){
-                final JTextComponent c = (JTextComponent) e.getSource();
-                String s = c.getText();
-                if(e.isTemporary()) return;
-                
-                try{
-                    num = Integer.parseInt(s);
-                    if (c.equals(pageNumField))   pageNumStatus.setText("vaild book page number");
-                    if(errorfound)errorfound = false;
-               
-                }catch(java.lang.NumberFormatException nfe){
-                    if (c.equals(pageIDField))   IDStatus.setText("book id is invaild");
-                     else if (c.equals(pageNumField))   pageNumStatus.setText("page number is invaild ");
-                     if(!errorfound)errorfound = true;
-                }
-            }
-            }
-            
-        };
-         
-        enableFocusLost();
-    }
-    
-    private void enableFocusLost(){
-        
-        pageTitleField.addFocusListener(textFieldListener);
-        pageNumField.addFocusListener(numberFieldListener);
-    }
-    
-    private void disableFocusLost(){
-        
-        pageTitleField.removeFocusListener(textFieldListener);
-        pageNumField.removeFocusListener(numberFieldListener);
-    }
-   
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
@@ -174,7 +146,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
         submitButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         bookCodeField = new javax.swing.JComboBox();
-        jTextArea1 = new javax.swing.JTextArea();
+        description = new javax.swing.JTextArea();
 
         jTextField1.setText("jTextField1");
 
@@ -182,7 +154,7 @@ public class PageInfoDialog extends javax.swing.JDialog {
         setMinimumSize(new java.awt.Dimension(700, 400));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        titleLabel.setFont(new java.awt.Font("Algerian", 0, 36)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Wawati TC", 0, 36)); // NOI18N
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         titleLabel.setText("Page Info");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -206,7 +178,6 @@ public class PageInfoDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 100;
         gridBagConstraints.ipady = 15;
@@ -321,25 +292,18 @@ public class PageInfoDialog extends javax.swing.JDialog {
         bookCodeField.setModel(
             new javax.swing.DefaultComboBoxModel(theController.getbookCode()));
         bookCodeField.setSelectedItem(" ");
-        bookCodeField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bookCodeFieldActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 15;
         getContentPane().add(bookCodeField, gridBagConstraints);
 
-        jTextArea1.setBackground(new java.awt.Color(255, 204, 204));
-        jTextArea1.setColumns(10);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("please enter your page information below:\npageID : the index number in Database\nPage Title: title of the Page\nBook Code: book code for the book that the page is from");
-        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTextArea1.setFocusable(false);
+        description.setColumns(12);
+        description.setRows(5);
+        description.setText("please enter your page information below:\npageID : the index number in Database\nPage Title: title of the Page\nBook Code: book code for the book that the page is from");
+        description.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        description.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -347,102 +311,88 @@ public class PageInfoDialog extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(jTextArea1, gridBagConstraints);
+        getContentPane().add(description, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        disableFocusLost();
-          if(errorfound){
-              JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
-              return;
-          }
-             if(mode.equals(Controller.operation.ADD) ){
-          
+
+        //if(errorfound){
+        // JOptionPane.showMessageDialog(this," form complete with error input!,please try again");
+        // return;
+        //}
+        if (mode.equals(Controller.operation.ADD)) {
+
             //if there is no error found in the form, create book with book info;
             //if thePage is empty object, create new Book with book info provided;
             //otherwise update thePage info cosponding the book info provide;
-         
-                    editedPage = new Page(pageTitleField.getText().trim(),
-                            String.valueOf((String)bookCodeField.getSelectedItem()),
-                            Integer.parseInt(pageNumField.getText()));
-                    if(theController !=null) theController.closePageInfoDialog(mode, editedPage);
-                    
+            editedPage = new Page(pageTitleField.getText().trim(),
+                    String.valueOf((String) bookCodeField.getSelectedItem()),
+                    Integer.parseInt(pageNumField.getText()));
 
-            }
 
-   
-            else if(mode.equals(Controller.operation.UPDATE) ){
-          
+        } else if (mode.equals(Controller.operation.UPDATE)) {
+
             //if there is no error found in the form, create book with book info;
             //if thePage is empty object, create new Book with book info provided;
             //otherwise update thePage info cosponding the book info provide;
-         
+            editedPage.setPageTitle(pageTitleField.getText());
+            editedPage.setBookCode(this.bookCodeField.getSelectedItem().toString());
+            editedPage.setPageNum(Integer.parseInt(pageNumField.getText()));
 
-                    editedPage.setPageTitle(pageTitleField.getText());
-                    editedPage.setBookCode(this.bookCodeField.getSelectedItem().toString());
-                    editedPage.setPageNum(Integer.parseInt(pageNumField.getText()));
-                 
-                    if(theController != null) theController.closePageInfoDialog(mode, editedPage);
-            
-            }
-            else if(mode.equals(Controller.operation.DELETE)){
-                if(theController !=null) theController.closePageInfoDialog(mode, editedPage);
-            }
-             
-             this.setVisible(false);
-                    dispose();
-          
-          
+
+        }
+        if (theController != null) {
+            theController.closePageInfoDialog(mode, editedPage);
+        }
+
+        this.setVisible(false);
+        dispose();
+
+
     }//GEN-LAST:event_submitButtonActionPerformed
 
 private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
 // TODO add your handling code here:
-     if(theController !=null) theController.closePageInfoDialog(null, editedPage);
-        dispose();
+    if (theController != null) {
+        theController.closePageInfoDialog(null, editedPage);
+    }
+    dispose();
 }//GEN-LAST:event_CancelButtonActionPerformed
 
-    private void bookCodeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookCodeFieldActionPerformed
-   
-        // TODO add your handling code here:}//GEN-LAST:event_bookCodeFieldActionPerformed
- }
-protected void updateInfo(Page p,Controller.operation aopertion){
-    if(!mode.equals(aopertion)){
-        
-        mode = aopertion;
-        submitButton.setText(mode.toString());
-    }
-    
-    editedPage = p;
-    if(editedPage ==null){
-        
+    protected void updateInfo(Page p, Controller.operation aopertion) {
+        if (!mode.equals(aopertion)) {
+
+            mode = aopertion;
+            submitButton.setText(mode.toString());
+        }
+
+        editedPage = p;
+        if (editedPage == null) {
+
             titleLabel.setText(" ");
             pageIDField.setText(null);
             bookCodeField.setSelectedItem(null);
             pageTitleField.setText(null);
             pageNumField.setText(null);
-            
-    }
-    else{   
-            titleLabel.setText(mode.toString()+": "+editedPage.toString());
-            pageIDField.setText(editedPage.getPageID()+"");
+
+        } else {
+            titleLabel.setText(mode.toString() + ": " + editedPage.toString());
+            pageIDField.setText(editedPage.getPageID() + "");
             bookCodeField.setSelectedItem(editedPage.getBookCode());
             pageTitleField.setText(editedPage.getPageTitle());
-            pageNumField.setText(editedPage.getPageNum()+"");
-    }
-      
-}
-   
+            pageNumField.setText(editedPage.getPageNum() + "");
+        }
 
- 
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel IDStatus;
     private javax.swing.JComboBox bookCodeField;
     private javax.swing.JLabel bookCodeLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel codeStatus;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea description;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel nameStatus;
     private javax.swing.JTextField pageIDField;

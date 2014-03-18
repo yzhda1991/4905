@@ -102,6 +102,7 @@ public class PageViewerFrame extends MenuFrame {
         update();
        
     }
+    
     private void customized(){
         theSwingController = new SwingController();
         factory = new SwingViewBuilder(theSwingController);

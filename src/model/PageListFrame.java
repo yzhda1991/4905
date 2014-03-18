@@ -50,6 +50,16 @@ public class PageListFrame extends MenuFrame {
         editedBook = initBook;
         initComponents();
     }
+    
+    protected void setBookCollection(ArrayList<Book> b){
+        
+       bookCollection = b; 
+    }
+    
+    protected void setPageCollection(ArrayList<Page> p){
+        
+        pageCollection = p;
+    }
 
     private void initComponents() {
 

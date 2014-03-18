@@ -23,7 +23,6 @@ public class Modeling implements Controller {
     private final Book editedBook;
     private Page selectedPage;
     private final Page editedPage;
-
     private BooklistFrame bookListviewer;
     private PageListFrame pageListviewer;
     private PageViewerFrame pageviewer;
@@ -46,7 +45,6 @@ public class Modeling implements Controller {
     }
 
     public void initFrame() {
-
         //if(bookListviewer == null) bookListviewer = new BooklistFrame("view book list",this,this,theConnecter);
         // if(pageListviewer == null)pageListviewer = new PageListFrame("view page list",this,this,theConnecter,null);
         // if(pageviewer == null)pageviewer = new PageViewerFrame("view page",this,this,theConnecter,null);
@@ -113,6 +111,7 @@ public class Modeling implements Controller {
             pageListviewer.setVisible(false);
             pageListviewer.dispose();
         }
+        
         if (pageviewer != null && pageviewer.isVisible()) {
             pageviewer.setVisible(false);
             pageListviewer.dispose();
@@ -227,17 +226,20 @@ public class Modeling implements Controller {
 
     @Override
     public void closeBookInfoDialog(operation anOperation, Book b) {
-        if(anOperation ==null ||b ==null){
-             if (bookDialog != null && bookDialog.isVisible()) {
+        if (anOperation == null || b == null) {
+            if (bookDialog != null && bookDialog.isVisible()) {
 
-            bookDialog.setVisible(false);
-            bookDialog.dispose();
-        }
-        bookDialog = null;
+                bookDialog.setVisible(false);
+                bookDialog.dispose();
+            }
+
+            bookDialog = null;
             return;
         }
+
         boolean successed = false;
-        if (anOperation.equals(operation.ADD) ) {
+
+        if (anOperation.equals(operation.ADD)) {
             successed = theConnecter.addBook(b);
         } else if (anOperation.equals(operation.UPDATE)) {
             successed = theConnecter.updateBook(b);
@@ -247,7 +249,13 @@ public class Modeling implements Controller {
         }
 
         if (successed) {
-            System.out.println("successed");
+
+            if (bookListviewer != null) {
+                bookListviewer.setCollection(theConnecter.getBookList());
+            }
+            if (pageListviewer != null) {
+                pageListviewer.setBookCollection(theConnecter.getBookList());
+            }
         } else {
             System.out.println("failed");
         }
@@ -258,18 +266,18 @@ public class Modeling implements Controller {
             bookDialog.dispose();
         }
         bookDialog = null;
-
+        update();
     }
 
     @Override
     public void closePageInfoDialog(operation anOperation, Page p) {
-        if(anOperation ==null ||p ==null){
-             if (pageDialog != null && pageDialog.isVisible()) {
+        if (anOperation == null || p == null) {
+            if (pageDialog != null && pageDialog.isVisible()) {
 
-            pageDialog.setVisible(false);
-            pageDialog.dispose();
-        }
-        pageDialog = null;
+                pageDialog.setVisible(false);
+                pageDialog.dispose();
+            }
+            pageDialog = null;
             return;
         }
         boolean successed = false;
@@ -282,7 +290,10 @@ public class Modeling implements Controller {
         }
 
         if (successed) {
-            System.out.println("successed");
+           if(pageListviewer!=null){
+               pageListviewer.setPageCollection(theConnecter.getPageList());
+           }
+           
         } else {
             System.out.println("failed");
         }
@@ -291,9 +302,9 @@ public class Modeling implements Controller {
 
             pageDialog.setVisible(false);
             pageDialog.dispose();
-            update();
+           
         }
-
+        update();
         pageDialog = null;
     }
 
@@ -313,7 +324,6 @@ public class Modeling implements Controller {
 
     @Override
     public void dialogCancelled() {
-       
     }
 
     @Override
@@ -392,9 +402,9 @@ public class Modeling implements Controller {
 
     @Override
     public boolean closeDatabase() {
-       closeFrame();
-       boolean result =theConnecter.closeConnection();
-       update();
+        closeFrame();
+        boolean result = theConnecter.closeConnection();
+        update();
 
         return result;
 
@@ -410,18 +420,19 @@ public class Modeling implements Controller {
     }
 
     public void update() {
-        if(mainFrame !=null)
+        if (mainFrame != null) {
             mainFrame.update(theConnecter.isDatabaseActive());
-        if(theConnecter.isDatabaseActive()){
-        if (pageListviewer != null) {
-            pageListviewer.update();
         }
-        if (bookListviewer != null) {
-            bookListviewer.update();
-        }
-        if (pageviewer != null) {
-            pageviewer.update();
-        }
+        if (theConnecter.isDatabaseActive()) {
+            if (pageListviewer != null) {
+                pageListviewer.update();
+            }
+            if (bookListviewer != null) {
+                bookListviewer.update();
+            }
+            if (pageviewer != null) {
+                pageviewer.update();
+            }
         }
     }
 
@@ -434,5 +445,4 @@ public class Modeling implements Controller {
         }
         return bookCodeString;
     }
-
 }
