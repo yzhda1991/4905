@@ -82,16 +82,16 @@ public class PageListFrame extends MenuFrame {
         pagelistSelection = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                theController.setSelectedPage((Page) mainPanel.getPageList().getSelectedValue());
-                update();
+                changeselectedPage((Page) mainPanel.getPageList().getSelectedValue());
+               
             }
         };
 
         booklistSelection = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                theController.setSelectedBook((Book) mainPanel.getBookList().getSelectedValue());
-                update();
+                changeselectedBook((Book) mainPanel.getBookList().getSelectedValue());
+                
             }
         };
 
@@ -130,6 +130,20 @@ public class PageListFrame extends MenuFrame {
         update();
     }
 
+     private void changeselectedPage(Page p){
+        if(p!=null){ 
+        theController.setSelectedPage(p);
+         super.setStatus("selected Page: " +p.getPageTitle());
+         update();
+        }
+    }
+     private void changeselectedBook(Book b){
+        if(b!=null){ 
+        theController.setSelectedBook(b);
+         super.setStatus("selected Book: " +b.getBookName());
+         update();
+        }
+    }
     private void searchPage() {
         super.setStatus("searching page ....");
         String searchContent = mainPanel.getSearchField().getText().trim();

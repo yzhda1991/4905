@@ -152,7 +152,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="DefultCheck">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Use  Default Database"/>
+            <Property name="text" type="java.lang.String" value="Use Default Database"/>
           </Properties>
           <Events>
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="DefultCheckStateChanged"/>

@@ -51,8 +51,6 @@ public class PathSelectionDialog extends javax.swing.JDialog {
         pathLabel.setFont(new java.awt.Font("Lucida Fax", 0, 14)); // NOI18N
         pathLabel.setText("DataBase File Path : ");
 
-        pathField.setDragEnabled(true);
-
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,7 +81,7 @@ public class PathSelectionDialog extends javax.swing.JDialog {
         description.setEditable(false);
         description.setFocusable(false);
 
-        DefultCheck.setText("Use  Default Database");
+        DefultCheck.setText("Use Default Database");
         DefultCheck.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 DefultCheckStateChanged(evt);
@@ -179,7 +177,7 @@ public class PathSelectionDialog extends javax.swing.JDialog {
        if(jcb.isSelected()){
            browseButton.setEnabled(false);
            pathField.setEnabled(false);
-           pathField.setText("db_books");
+           pathField.setText("database/db_books");
        }
        else{
            browseButton.setEnabled(true);

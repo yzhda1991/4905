@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import main.Book;
 import main.Page;
 import org.icepdf.ri.common.ComponentKeyBinding;
@@ -24,6 +26,7 @@ import viewer.PageViewer;
 public class PageViewerFrame extends MenuFrame {
     private PageViewer          theviewer;
     private MouseListener       doubleClickedPage;
+    private ListSelectionListener pagelistSelection;
     private SwingController     theSwingController;
     private ArrayList<Page>     pageCollection;
     private Page                selectedPage;
@@ -95,6 +98,12 @@ public class PageViewerFrame extends MenuFrame {
             }
 
         };
+        pagelistSelection = new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                changeselectedPage((Page) theviewer.getPageList().getSelectedValue());
+            }
+        };
         
 
         super.updateMainPanel(theviewer);
@@ -161,15 +170,27 @@ public class PageViewerFrame extends MenuFrame {
             theviewer.setTittle(p.getPageTitle());
        
     }
+    protected void setPageCollection(ArrayList<Page> p){
+        
+        pageCollection = p;
+    }
     
 
-
+    private void changeselectedPage(Page p){
+        if(p!=null){ 
+        theController.setSelectedPage(p);
+         super.setStatus("selected Page: " +p.getPageTitle());
+         update();
+        }
+    }
     private void enableListener(){
         theviewer.getPageList().addMouseListener(doubleClickedPage);
+        theviewer.getPageList().addListSelectionListener(pagelistSelection);
         
     }   
     private void disableListener(){
         theviewer.getPageList().removeMouseListener(doubleClickedPage);
+        theviewer.getPageList().removeListSelectionListener(pagelistSelection);
 
     
     }
@@ -183,15 +204,17 @@ public class PageViewerFrame extends MenuFrame {
             pageCollection = theConnecter.searchPage(selectedPage.getBookCode(), "bookcode");
             if(selectedPage !=null)openPage(selectedPage);
         }
+        update();
     }
     
     private void updateList(){
-        Page pageArray[] = new Page[1]; //just to establish array type
-	    theviewer.getPageList().setListData(((Page []) pageCollection.toArray(pageArray)));
-            
-           
-		if (selectedPage != null)
-			 theviewer.getPageList().setSelectedValue(selectedPage, true);
+        if (pageCollection != null && !pageCollection.isEmpty()) {
+            Page pageArray[] = new Page[1];
+            theviewer.getPageList().setListData(pageCollection.toArray(pageArray));
+        } else {
+            String[] empty = {};
+            theviewer.getPageList().setListData(empty);
+        }
     }
     @Override
     public void update(){

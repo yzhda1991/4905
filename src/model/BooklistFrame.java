@@ -137,11 +137,12 @@ public class BooklistFrame extends MenuFrame {
     }
 
     private void updateList() {
-        Book bookArray[] = new Book[1];
         if (bookCollection != null && !bookCollection.isEmpty()) {
+            Book bookArray[] = new Book[1];
             mainPanel.getBookList().setListData((Book[]) bookCollection.toArray(bookArray));
         } else {
-            mainPanel.getBookList().setVisible(false);
+            String[] empty = {};
+            mainPanel.getBookList().setListData(empty);
         }
     }
 

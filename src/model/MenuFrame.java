@@ -258,7 +258,7 @@ public class MenuFrame extends javax.swing.JFrame {
         } else {
 
             if (theController.getSelectedBook() == null) {
-                JOptionPane.showMessageDialog(this, " System did not found a selected Book information");
+                JOptionPane.showMessageDialog(this, " System did not find a selected Book information");
                 return;
             }
 
@@ -280,13 +280,13 @@ public class MenuFrame extends javax.swing.JFrame {
 //                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
 
                     int dialogButton = JOptionPane.YES_NO_OPTION;
-                    int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book"
+                    int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book "
                             + temp.getBookName() + " ?", "Delete Book: " + temp.getBookName(), dialogButton);
                     if (dialogResult == 1) {
                         setStatus("Operation Cancelled");
                     } else {
                         theController.closeBookInfoDialog(Controller.operation.DELETE, temp);
-                        setStatus(theController.getSelectedBook().getBookName() + "deleted! ");
+                        setStatus(theController.getSelectedBook().getBookName() + " deleted! ");
 
                     }
                 }
@@ -318,15 +318,14 @@ public class MenuFrame extends javax.swing.JFrame {
         } else if (ae.getSource().equals(deletePageMenuItem)) {
             setStatus("delete page : " + theController.getSelectedPage().getPageTitle());
            
-            //theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
             int dialogButton = JOptionPane.YES_NO_OPTION;
-            int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete Page"
+            int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete Page "
                     + editedPage.getPageTitle() + " ?", "Delete Book: " + editedPage.getPageTitle(), dialogButton);
             if (dialogResult == 1) {
                 setStatus("Operation Cancelled");
             } else {
                 theController.closePageInfoDialog(Controller.operation.DELETE, editedPage);
-                 setStatus(theController.getSelectedPage().getPageTitle()+"has deleted! ");
+                 setStatus(theController.getSelectedPage().getPageTitle()+" has deleted! ");
            
             }
         }
@@ -351,17 +350,15 @@ public class MenuFrame extends javax.swing.JFrame {
             if (temp == null) {
                 JOptionPane.showMessageDialog(this, " System did not found a selected Book information");
 
-            } else if (theController != null) {
-//                 theController.openBookInfoDialog(this, Controller.operation.DELETE, theController.getSelectedBook());
-
+            } else if (theController != null) {                
                 int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book"
+                int dialogResult = JOptionPane.showConfirmDialog(this, "do you want to delete book "
                         + temp.getBookName() + " ?", "Delete Book: " + temp.getBookName(), dialogButton);
                 if (dialogResult == 1) {
                     setStatus("Operation Cancelled");
                 } else {
                     theController.closeBookInfoDialog(Controller.operation.DELETE, temp);
-                    setStatus(theController.getSelectedBook().getBookName() + "deleted! ");
+                    setStatus(theController.getSelectedBook().getBookName() + " deleted! ");
                 }
             }
         } else if (ae.getSource().equals(ViewBookButton)) {

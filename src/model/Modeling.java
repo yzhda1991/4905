@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model;
 
 import java.io.File;
@@ -101,6 +98,8 @@ public class Modeling implements Controller {
 
         if (bookListviewer == null) {
             bookListviewer = new BooklistFrame("view book list", this, this, theConnecter);
+        }else{
+            bookListviewer.update();
         }
 
         if (!bookListviewer.isVisible()) {
@@ -252,6 +251,7 @@ public class Modeling implements Controller {
 
             if (bookListviewer != null) {
                 bookListviewer.setCollection(theConnecter.getBookList());
+                
             }
             if (pageListviewer != null) {
                 pageListviewer.setBookCollection(theConnecter.getBookList());
@@ -292,6 +292,7 @@ public class Modeling implements Controller {
         if (successed) {
            if(pageListviewer!=null){
                pageListviewer.setPageCollection(theConnecter.getPageList());
+               pageviewer.setPageCollection(theConnecter.searchPage(selectedPage.getBookCode(), "bookcode"));
            }
            
         } else {

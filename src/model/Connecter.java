@@ -221,11 +221,17 @@ public class Connecter {
         String sqlQuery = "delete from bookcodes where code = '" + b.getBookCode() + "';";
         try {
             int executeUpdate = stat.executeUpdate(sqlQuery);
-
-            return executeUpdate == 1;
+            if(executeUpdate < 0){
+                return false;
+            }
+            sqlQuery ="delete from pagelist where bookcode = '" + b.getBookCode() + "';";
+            System.err.println(sqlQuery);
+            executeUpdate = stat.executeUpdate(sqlQuery);
+            return executeUpdate>=0;
             
         } catch (SQLException ex) {
-            Logger.getLogger(Connecter.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("sql Expection: "+sqlQuery);
+            ex.printStackTrace();
             return false;
         }
     }

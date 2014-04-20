@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package model;
 
 import java.awt.Frame;
@@ -68,6 +65,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         if (theBook == null) {
 
             bookCodeField.setText(null);
+             if(!bookCodeField.isEditable())bookCodeField.setEditable(true);
             bookNameField.setText(null);
             bookPathField.setText(null);
             bookAuthorField.setText(null);
@@ -78,6 +76,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         } else {
 
             bookCodeField.setText(theBook.getBookCode());
+            if(bookCodeField.getText().trim().length()>2) bookCodeField.setEditable(false);
             bookNameField.setText(theBook.getBookName());
             bookPathField.setText(theBook.getBookPath());
             bookAuthorField.setText(theBook.getAuthor());
@@ -176,15 +175,15 @@ public class BookInfoDialog extends javax.swing.JDialog {
                        String content =bookPathField.getText().trim();
                    
                     File temp = new File(content);
-                    if (!content.endsWith(".pdf") || !temp.isFile()) {
-                        pathStatus.setText("invaild file path ");
-                        if (formChecker[3] == true) {
-                            formChecker[3] = false;
-                        }
-                    } else {
+                    if (content.endsWith(".pdf" )|| content.endsWith(".PDF") && temp.isFile()) {
                         pathStatus.setText("vaild book path");
                         if (formChecker[3] == false) {
                             formChecker[3] = true;
+                        }
+                    } else {
+                        pathStatus.setText("invaild file path ");
+                        if (formChecker[3] == true) {
+                            formChecker[3] = false;
                         }
                     }
 
@@ -539,6 +538,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
             setTitle(theBook.getBookName());
 
             bookCodeField.setText(theBook.getBookCode());
+            if(bookCodeField.getText().trim().length()>4) bookCodeField.setEditable(false);
             bookNameField.setText(theBook.getBookName());
             bookPathField.setText(theBook.getBookPath());
             bookAuthorField.setText(theBook.getAuthor());
@@ -548,6 +548,7 @@ public class BookInfoDialog extends javax.swing.JDialog {
         } else {
             setTitle(anOperation.toString() + " ");
             bookCodeField.setText(null);
+            if(!bookCodeField.isEditable())bookCodeField.setEditable(true);
             bookNameField.setText(null);
             bookPathField.setText(null);
             bookAuthorField.setText(null);
