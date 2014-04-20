@@ -1,0 +1,89 @@
+/*
+ * Carleton University - School of Computer Science Honours Project 
+ * Winter 2014
+ * PDF Book Organizer and page Viewer
+ * AUTHOR: Zhangda Yang
+ * SUPERVISOR: Professor Louis Nel
+ * 
+ */
+package carleton.edu.comp4905.honourproject.viewer;
+
+/**
+ * This is the Panel that represents the view of the splash screen
+ *
+ * @author Zhangda Yang
+ */
+public class SplashScreenPanel extends javax.swing.JPanel {
+
+    // constructor
+    public SplashScreenPanel() {
+        initComponents();
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        title = new javax.swing.JLabel();
+        progress = new javax.swing.JProgressBar();
+        message = new javax.swing.JTextField();
+
+        setBackground(new java.awt.Color(49, 64, 41));
+        setLayout(new java.awt.GridBagLayout());
+
+        title.setFont(new java.awt.Font("Mistral", 0, 64)); // NOI18N
+        title.setForeground(new java.awt.Color(247, 205, 61));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        title.setText("Book Viewer");
+        title.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        title.setPreferredSize(new java.awt.Dimension(400, 200));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 20);
+        add(title, gridBagConstraints);
+
+        progress.setBackground(new java.awt.Color(31, 42, 64));
+        progress.setForeground(new java.awt.Color(219, 192, 89));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 15;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(progress, gridBagConstraints);
+
+        message.setEditable(false);
+        message.setBackground(new java.awt.Color(77, 92, 33));
+        message.setText("jTextField1");
+        message.setBorder(null);
+        message.setDisabledTextColor(new java.awt.Color(204, 188, 57));
+        message.setDragEnabled(false);
+        message.setEnabled(false);
+        message.setFocusTraversalKeysEnabled(false);
+        message.setFocusable(false);
+        message.setPreferredSize(new java.awt.Dimension(50, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 10);
+        add(message, gridBagConstraints);
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField message;
+    private javax.swing.JProgressBar progress;
+    private javax.swing.JLabel title;
+    // End of variables declaration//GEN-END:variables
+
+    public javax.swing.JTextField getMessage() {
+        return message;
+    }
+
+    public javax.swing.JProgressBar getProgress() {
+        return progress;
+    }
+}
